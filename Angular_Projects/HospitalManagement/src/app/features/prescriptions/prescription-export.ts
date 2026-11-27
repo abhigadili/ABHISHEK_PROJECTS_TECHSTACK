@@ -1,0 +1,8 @@
+import type { Prescription } from '../../core/models';
+
+/** Builds a standalone, print-ready HTML document (loaded with a DYNAMIC import only when the user prints/downloads – the backend has no PDF endpoint). */
+export function prescriptionToHtml(p: Prescription): string {
+  const esc = (s: string | null | undefined) => (s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] as string);
+  const rows = p.items.map((i, n) => `<tr><td>${n + 1}</td><td><b>${esc(i.medicineName)}</b>${i.instructions ? `<br><small>${esc(i.instructions)}</small>` : ''}</td><td>${esc(i.dosage)}</td><td>${esc(i.frequency)}</td><td>${i.durationDays} d</td><td style="text-align:right">${i.quantity}</td></tr>`).join('');
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Prescription ${p.id}</title><style>body{font-family:Arial,sans-serif;margin:32px;color:#111}h1{margin:0 0 4px}table{width:100%;border-collapse:collapse;margin-top:16px}th,td{border-bottom:1px solid #ccc;padding:8px;text-align:left;font-size:14px}th{font-size:12px;text-transform:uppercase;color:#555}.meta{color:#555;font-size:14px}</style></head><body><h1>Prescription #${p.id}</h1><p class="meta">Issued ${esc(p.issuedAt)} · valid until ${esc(p.validUntil)} · status ${esc(p.status)}</p><p><b>Patient:</b> ${esc(p.patientName)} (#${p.patientId})<br><b>Doctor:</b> ${esc(p.doctorName)}</p>${p.diagnosis ? `<p><b>Diagnosis:</b> ${esc(p.diagnosis)}</p>` : ''}${p.notes ? `<p><b>Notes:</b> ${esc(p.notes)}</p>` : ''}<table><thead><tr><th>#</th><th>Medicine</th><th>Dosage</th><th>Frequency</th><th>Duration</th><th style="text-align:right">Qty</th></tr></thead><tbody>${rows}</tbody></table></body></html>`;
+}

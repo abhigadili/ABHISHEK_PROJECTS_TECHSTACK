@@ -1,0 +1,75 @@
+/* ==========================================================================
+   Global styles – SCSS entry point
+   1. fonts / icons (self-hosted, no CDN)   2. Tailwind (preflight + utilities)   3. Angular Material theme (M3)
+   4. Bootstrap (SCOPED to .bs-scope so its utility classes cannot collide with Tailwind)   5. PrimeNG icons   6. app tokens
+   ========================================================================== */
+@use '@angular/material' as mat;
+@import '@fontsource/roboto/300.css';
+@import '@fontsource/roboto/400.css';
+@import '@fontsource/roboto/500.css';
+@import '@fontsource/roboto/700.css';
+@import 'material-icons/iconfont/material-icons.css';
+@import 'primeicons/primeicons.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---- Angular Material (Material 3 theme via system variables). `color-scheme` switches light/dark (ThemeService) ---- */
+html {
+  color-scheme: light;
+  @include mat.theme((
+    color: (primary: mat.$azure-palette, tertiary: mat.$blue-palette, theme-type: color-scheme),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+html.dark { color-scheme: dark; }
+
+/* ---- Bootstrap: variables/mixins/root custom properties globally, components + utilities only inside .bs-scope ---- */
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/variables-dark';
+@import 'bootstrap/scss/maps';
+@import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/root';
+.bs-scope {
+  @import 'bootstrap/scss/utilities';
+  @import 'bootstrap/scss/grid';
+  @import 'bootstrap/scss/buttons';
+  @import 'bootstrap/scss/forms';
+  @import 'bootstrap/scss/card';
+  @import 'bootstrap/scss/tables';
+  @import 'bootstrap/scss/badge';
+  @import 'bootstrap/scss/alert';
+  @import 'bootstrap/scss/list-group';
+  @import 'bootstrap/scss/nav';
+  @import 'bootstrap/scss/progress';
+  @import 'bootstrap/scss/spinners';
+  @import 'bootstrap/scss/placeholders';
+  @import 'bootstrap/scss/helpers';
+  @import 'bootstrap/scss/utilities/api';
+  color: var(--bs-body-color);
+}
+
+/* ---- Application tokens ---- */
+:root {
+  --hms-bg: #f4f7fb;
+  --hms-surface: #ffffff;
+  --hms-border: #d9e1ec;
+}
+html.dark {
+  --hms-bg: #0b1220;
+  --hms-surface: #111a2e;
+  --hms-border: #243350;
+}
+html, body { height: 100%; }
+body { margin: 0; background: var(--hms-bg); color: var(--mat-sys-on-surface, #0f1b2d); font-family: Roboto, system-ui, sans-serif; }
+a { color: inherit; }
+.hms-grid-auto { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+
+/* Toast colours (Material snackbar panelClass) */
+.hms-toast-success .mdc-snackbar__surface { background: #047857 !important; }
+.hms-toast-error .mdc-snackbar__surface { background: #b91c1c !important; }
+.hms-toast-warning .mdc-snackbar__surface { background: #b45309 !important; }
+@media print { .no-print { display: none !important; } body { background: #fff; } }

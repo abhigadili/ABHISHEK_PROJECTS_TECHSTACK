@@ -1,0 +1,313 @@
+<div class="page">
+  <app-page-header [title]="isEdit ? 'Edit employee' : 'New employee'" [subtitle]="isEdit ? employee!.fullName + ' · ' + employee!.employeeCode : 'Create a record and (optionally) a login account'" />
+
+  @if (serverError(); as e) {
+    <div class="server-error" role="alert" data-testid="form-error">
+      <strong>{{ e.message }}</strong>
+      @for (d of e.details; track d.field) {
+        <div>{{ d.field }}: {{ d.message }}</div>
+      }
+    </div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate data-testid="employee-form">
+    <!-- Personal -->
+    <section class="panel form-section">
+      <h3>Personal details</h3>
+      <div class="form-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>First name</mat-label>
+          <input matInput formControlName="firstName" appAutofocus data-testid="firstName" />
+          <mat-error>{{ err('firstName', 'First name') }}</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Middle name</mat-label>
+          <input matInput formControlName="middleName" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Last name</mat-label>
+          <input matInput formControlName="lastName" data-testid="lastName" />
+          <mat-error>{{ err('lastName', 'Last name') }}</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Date of birth</mat-label>
+          <input matInput type="date" formControlName="dateOfBirth" />
+          <mat-error>{{ err('dateOfBirth', 'Date of birth') }}</mat-error>
+        </mat-form-field>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="panel form-section">
+      <h3>Contact details</h3>
+      <div class="form-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Work email</mat-label>
+          <input matInput type="email" formControlName="workEmail" autocomplete="off" data-testid="workEmail" />
+          @if (checkingEmail()) {
+            <mat-spinner matSuffix diameter="18" />
+          }
+          <mat-hint>Checked against the directory for duplicates</mat-hint>
+          <mat-error>{{ err('workEmail', 'Work email') }}</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Personal email</mat-label>
+          <input matInput type="email" formControlName="personalEmail" />
+          <mat-error>{{ err('personalEmail', 'Personal email') }}</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Phone</mat-label>
+          <input matInput type="tel" formControlName="phone" placeholder="+1 555 010 2000" />
+          <mat-error>{{ err('phone', 'Phone') }}</mat-error>
+        </mat-form-field>
+      </div>
+      <div formGroupName="address" class="form-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Address line</mat-label>
+          <input matInput formControlName="line" />
+          <mat-error>{{ err('address.line', 'Address') }}</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>City</mat-label><input matInput formControlName="city" /></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>State / region</mat-label><input matInput formControlName="state" /></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>Country</mat-label><input matInput formControlName="country" /></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>Postal code</mat-label><input matInput formControlName="postalCode" /></mat-form-field>
+      </div>
+    </section>
+
+    <!-- Emergency contact -->
+    <section class="panel form-section" formGroupName="emergency">
+      <h3>Emergency contact</h3>
+      <div class="form-grid">
+        <mat-form-field appearance="outline"><mat-label>Name</mat-label><input matInput formControlName="name" /></mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Phone</mat-label>
+          <input matInput type="tel" formControlName="phone" />
+          <mat-error>{{ err('emergency.phone', 'Phone') }}</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>Relationship</mat-label><input matInput formControlName="relation" /></mat-form-field>
+      </div>
+    </section>
+
+    <!-- Employment -->
+    <section class="panel form-section">
+      <h3>Employment</h3>
+      <div class="form-grid">
+        @if (!isEdit) {
+          <mat-form-field appearance="outline">
+            <mat-label>Employee code (optional)</mat-label>
+            <input matInput formControlName="employeeCode" placeholder="Auto-generated if empty" />
+            <mat-error>{{ err('employeeCode', 'Employee code') }}</mat-error>
+          </mat-form-field>
+        }
+        <mat-form-field appearance="outline">
+          <mat-label>Joining date</mat-label>
+          <input matInput type="date" formControlName="joiningDate" data-testid="joiningDate" />
+          <mat-error>{{ err('joiningDate', 'Joining date') }}</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Probation ends</mat-label>
+          <input matInput type="date" formControlName="probationEndDate" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Employment type</mat-label>
+          <mat-select formControlName="employmentType">
+            @for (t of types; track t) {
+              <mat-option [value]="t">{{ t | employmentType }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Department</mat-label>
+          <mat-select formControlName="departmentId" data-testid="departmentId">
+            <mat-option [value]="null">— None —</mat-option>
+            @for (d of departments(); track d.id) {
+              <mat-option [value]="d.id">{{ d.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Designation</mat-label>
+          <mat-select formControlName="designationId" data-testid="designationId">
+            <mat-option [value]="null">— None —</mat-option>
+            @for (d of designations(); track d.id) {
+              <mat-option [value]="d.id">{{ d.name }} @if (d.jobLevel) { (L{{ d.jobLevel }}) }</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <!-- custom ControlValueAccessor -->
+        <app-employee-select label="Manager" formControlName="managerId" />
+        <mat-form-field appearance="outline">
+          <mat-label>Job title</mat-label>
+          <input matInput formControlName="jobTitle" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Work location</mat-label>
+          <input matInput formControlName="workLocation" />
+        </mat-form-field>
+        @if (permissions.has('employee.salary.view')) {
+          <mat-form-field appearance="outline">
+            <mat-label>Salary</mat-label>
+            <input matInput type="number" min="0" formControlName="salary" />
+            <mat-error>{{ err('salary', 'Salary') }}</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Currency (ISO 4217)</mat-label>
+            <input matInput formControlName="salaryCurrency" maxlength="3" />
+            <mat-error>{{ err('salaryCurrency', 'Currency') }}</mat-error>
+          </mat-form-field>
+        }
+      </div>
+      @if (form.hasError('probationBeforeJoining')) {
+        <p class="form-err" role="alert">Probation end date cannot be before the joining date.</p>
+      }
+      @if (!isEdit) {
+        <div class="picture-row">
+          <app-file-upload label="Profile picture (optional)" icon="photo_camera" (fileSelected)="pictureFile.set($event)" />
+          @if (pictureFile(); as f) {
+            <span class="muted">{{ f.name }}</span>
+          }
+        </div>
+      }
+    </section>
+
+    <!-- Account (create only) -->
+    @if (!isEdit) {
+      <section class="panel form-section" formGroupName="account">
+        <h3>Login account</h3>
+        <mat-checkbox formControlName="create" data-testid="account-create">Create a login account for this employee</mat-checkbox>
+        @if (accountOn()) {
+          <div class="form-grid account-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Role</mat-label>
+              <mat-select formControlName="role">
+                @for (r of roles; track r) {
+                  <mat-option [value]="r">{{ r.replace('_', ' ') }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Initial password</mat-label>
+              <input matInput type="password" formControlName="password" autocomplete="new-password" data-testid="account-password" />
+              <mat-error>{{ err('account.password', 'Password') }}</mat-error>
+            </mat-form-field>
+            <app-password-strength [password]="form.controls.account.controls.password.value" />
+            <mat-form-field appearance="outline">
+              <mat-label>Confirm password</mat-label>
+              <input matInput type="password" formControlName="confirm" autocomplete="new-password" />
+              <mat-error>{{ err('account.confirm', 'Confirmation') }}</mat-error>
+            </mat-form-field>
+          </div>
+        }
+      </section>
+    }
+
+    <app-notice-banner>{{ localNotice }}</app-notice-banner>
+
+    <!-- Education: FormArray -->
+    <section class="panel form-section" data-testid="education-section">
+      <div class="section-head"><h3>Education history</h3><button mat-stroked-button type="button" (click)="addEducation()" data-testid="add-education"><mat-icon>add</mat-icon> Add education</button></div>
+      <div formArrayName="education">
+        @for (g of education.controls; track g; let i = $index) {
+          <div class="row-card" [formGroupName]="i" [attr.data-testid]="'edu-row-' + i">
+            <div class="form-grid">
+              <mat-form-field appearance="outline">
+                <mat-label>Institution</mat-label>
+                <input matInput formControlName="institution" />
+                <mat-error>{{ rowError(g, 'institution', 'Institution') }}</mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Degree</mat-label>
+                <input matInput formControlName="degree" />
+                <mat-error>{{ rowError(g, 'degree', 'Degree') }}</mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline"><mat-label>Field of study</mat-label><input matInput formControlName="fieldOfStudy" /></mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Start year</mat-label>
+                <input matInput type="number" formControlName="startYear" />
+                <mat-error>{{ rowError(g, 'startYear', 'Start year') }}</mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>End year</mat-label>
+                <input matInput type="number" formControlName="endYear" />
+                <mat-error>{{ rowError(g, 'endYear', 'End year') }}</mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline"><mat-label>Grade</mat-label><input matInput formControlName="grade" /></mat-form-field>
+            </div>
+            @if (g.hasError('numberRange')) {
+              <p class="form-err" role="alert">End year cannot be before start year.</p>
+            }
+            <button mat-button color="warn" type="button" (click)="remove(education, i)" [attr.aria-label]="'Remove education ' + (i + 1)"><mat-icon>delete</mat-icon> Remove</button>
+          </div>
+        } @empty {
+          <p class="muted">No education records. Use “Add education”.</p>
+        }
+      </div>
+    </section>
+
+    <!-- Experience: FormArray -->
+    <section class="panel form-section" data-testid="experience-section">
+      <div class="section-head"><h3>Previous work experience</h3><button mat-stroked-button type="button" (click)="addExperience()" data-testid="add-experience"><mat-icon>add</mat-icon> Add experience</button></div>
+      <div formArrayName="experience">
+        @for (g of experience.controls; track g; let i = $index) {
+          <div class="row-card" [formGroupName]="i" [attr.data-testid]="'exp-row-' + i">
+            <div class="form-grid">
+              <mat-form-field appearance="outline">
+                <mat-label>Company</mat-label>
+                <input matInput formControlName="company" />
+                <mat-error>{{ rowError(g, 'company', 'Company') }}</mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Role</mat-label>
+                <input matInput formControlName="role" />
+                <mat-error>{{ rowError(g, 'role', 'Role') }}</mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Start date</mat-label>
+                <input matInput type="date" formControlName="startDate" />
+                <mat-error>{{ rowError(g, 'startDate', 'Start date') }}</mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>End date</mat-label>
+                <input matInput type="date" formControlName="endDate" />
+                <mat-error>{{ rowError(g, 'endDate', 'End date') }}</mat-error>
+              </mat-form-field>
+            </div>
+            <mat-checkbox formControlName="currentlyWorking">Currently working here</mat-checkbox>
+            <mat-form-field appearance="outline" class="full-width"><mat-label>Summary</mat-label><textarea matInput rows="2" formControlName="summary"></textarea></mat-form-field>
+            @if (g.hasError('dateRange')) {
+              <p class="form-err" role="alert">End date cannot be before start date.</p>
+            }
+            <button mat-button color="warn" type="button" (click)="remove(experience, i)" [attr.aria-label]="'Remove experience ' + (i + 1)"><mat-icon>delete</mat-icon> Remove</button>
+          </div>
+        } @empty {
+          <p class="muted">No previous experience. Use “Add experience”.</p>
+        }
+      </div>
+    </section>
+
+    <!-- Skills: FormArray of FormControls -->
+    <section class="panel form-section" data-testid="skills-section">
+      <div class="section-head"><h3>Skills & certifications</h3><button mat-stroked-button type="button" (click)="addSkill()" data-testid="add-skill"><mat-icon>add</mat-icon> Add skill</button></div>
+      <div formArrayName="skills" class="skills">
+        @for (c of skills.controls; track c; let i = $index) {
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Skill {{ i + 1 }}</mat-label>
+            <input matInput [formControlName]="i" />
+            <button mat-icon-button matSuffix type="button" (click)="remove(skills, i)" [attr.aria-label]="'Remove skill ' + (i + 1)"><mat-icon>close</mat-icon></button>
+            <mat-error>{{ errOf(c, 'Skill') }}</mat-error>
+          </mat-form-field>
+        } @empty {
+          <p class="muted">No skills recorded.</p>
+        }
+      </div>
+    </section>
+
+    <div class="actions">
+      <a mat-button routerLink="..">Cancel</a>
+      <button mat-button type="button" (click)="reset()" [disabled]="!form.dirty">Reset</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="saving()" data-testid="save-employee">
+        @if (saving()) { Saving… } @else { {{ isEdit ? 'Save changes' : 'Create employee' }} }
+      </button>
+    </div>
+  </form>
+</div>
