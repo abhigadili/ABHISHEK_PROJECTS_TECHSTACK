@@ -1,0 +1,4 @@
+{% extends "base.html.j2" %}
+{% block content %}
+<p>Your enrollment in <strong>{{ course_code }} - {{ course_title }}</strong> has been cancelled.</p>{% if reason %}<p>Reason: {{ reason }}</p>{% endif %}
+{% endblock %}

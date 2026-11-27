@@ -1,0 +1,56 @@
+// Prisma schema of the notification-service (database NotificationDB). Tables carry the "hjs_" prefix; this service never touches other services' data.
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Notification {
+  id             Int       @id @default(autoincrement())
+  recipientEmail String    @db.VarChar(120)
+  recipientPhone String?   @db.VarChar(20)
+  channel        String    @default("EMAIL") @db.VarChar(6)
+  subject        String    @db.VarChar(200)
+  message        String    @db.VarChar(2000)
+  eventType      String    @db.VarChar(40)
+  referenceId    String?   @db.VarChar(40)
+  status         String    @default("PENDING") @db.VarChar(8)
+  attempts       Int       @default(0)
+  failureReason  String?   @db.VarChar(255)
+  createdAt      DateTime  @default(now())
+  sentAt         DateTime?
+
+  @@index([recipientEmail, createdAt], map: "idx_notification_recipient")
+  @@index([eventType, referenceId], map: "idx_notification_event")
+  @@index([status, id], map: "idx_notification_status")
+  @@map("hjs_notifications")
+}
+
+// ---- reliable messaging tables (same in every service) ----
+model OutboxEvent {
+  id            Int       @id @default(autoincrement())
+  topic         String    @db.VarChar(150)
+  key           String    @db.VarChar(100)
+  payload       String    @db.MediumText
+  correlationId String?   @db.VarChar(64)
+  createdAt     DateTime  @default(now())
+  sentAt        DateTime?
+  attempts      Int       @default(0)
+
+  @@index([sentAt, id], map: "idx_outbox_unsent")
+  @@map("hjs_outbox_events")
+}
+
+model ProcessedEvent {
+  id          Int      @id @default(autoincrement())
+  eventId     String   @db.VarChar(64)
+  consumer    String   @db.VarChar(120)
+  processedAt DateTime @default(now())
+
+  @@unique([eventId, consumer], map: "uk_processed_event_consumer")
+  @@map("hjs_processed_events")
+}

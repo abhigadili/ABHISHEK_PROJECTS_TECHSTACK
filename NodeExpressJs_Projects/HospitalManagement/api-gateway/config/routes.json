@@ -1,0 +1,16 @@
+{
+  "routes": [
+    { "id": "hospital-auth",   "service": "hospital",        "prefixes": ["/api/auth"],                                   "public": ["/api/auth/login", "/api/auth/register", "/api/auth/refresh", "/api/auth/logout"], "rateLimit": "auth" },
+    { "id": "hospital-users",  "service": "hospital",        "prefixes": ["/api/users"],                                  "roles": ["ADMIN"] },
+    { "id": "hospital-data",   "service": "hospital",        "prefixes": ["/api/hospitals", "/api/departments"] },
+    { "id": "patients",        "service": "patient",         "prefixes": ["/api/patients"] },
+    { "id": "doctors",         "service": "doctor",          "prefixes": ["/api/doctors"] },
+    { "id": "appointments",    "service": "appointment",     "prefixes": ["/api/appointments"] },
+    { "id": "records",         "service": "medical-records", "prefixes": ["/api/records"] },
+    { "id": "prescriptions",   "service": "prescription",    "prefixes": ["/api/prescriptions"] },
+    { "id": "laboratory",      "service": "laboratory",      "prefixes": ["/api/lab"],                                    "roles": ["ADMIN", "DOCTOR", "LAB_STAFF", "PATIENT"] },
+    { "id": "billing",         "service": "billing",         "prefixes": ["/api/bills", "/api/payments"],                 "roles": ["ADMIN", "BILLING_STAFF", "PATIENT"] },
+    { "id": "pharmacy",        "service": "pharmacy",        "prefixes": ["/api/pharmacy"],                               "roles": ["ADMIN", "PHARMACIST", "DOCTOR"] },
+    { "id": "notifications",   "service": "notification",    "prefixes": ["/api/notifications"] }
+  ]
+}

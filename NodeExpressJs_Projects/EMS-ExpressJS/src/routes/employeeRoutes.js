@@ -1,0 +1,24 @@
+const router = require('express').Router();
+const c = require('../controllers/employeeController');
+const v = require('../validators/employeeValidators');
+const validate = require('../middleware/validate');
+const { authorize } = require('../middleware/auth');
+const { imageUpload } = require('../middleware/upload');
+const { ADMINS, ROLES } = require('../constants');
+
+router.get('/', v.list, validate, c.list);
+router.post('/', authorize(ADMINS), v.create, validate, c.create);
+router.get('/:id', v.id, validate, c.get);
+router.put('/:id', authorize(ADMINS), v.update, validate, c.update);
+router.patch('/:id', authorize(ADMINS), v.update, validate, c.update);
+router.delete('/:id', authorize(ADMINS), v.deactivate, validate, c.deactivate);
+router.post('/:id/deactivate', authorize(ADMINS), v.deactivate, validate, c.deactivate);
+router.post('/:id/reactivate', authorize(ADMINS), v.id, validate, c.reactivate);
+router.get('/:id/job-history', v.id, validate, c.history);
+router.post('/:id/job-history', authorize(ADMINS), v.history, validate, c.addHistory);
+router.post('/:id/account', authorize(ADMINS), v.account, validate, c.createAccount);
+router.put('/:id/role', authorize(ROLES.SUPER_ADMIN), v.role, validate, c.setRole);
+router.get('/:id/picture', v.id, validate, c.getPicture);
+router.put('/:id/picture', authorize(ADMINS), v.id, validate, imageUpload, c.putPicture);
+router.delete('/:id/picture', authorize(ADMINS), v.id, validate, c.deletePicture);
+module.exports = router;

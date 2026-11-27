@@ -1,0 +1,70 @@
+// Prisma schema of the prescription-service (database PrescriptionDB). Tables carry the "hjs_" prefix; this service never touches other services' data.
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Prescription {
+  id              Int                @id @default(autoincrement())
+  patientId       Int
+  doctorId        Int
+  appointmentId   Int?
+  patientName     String             @db.VarChar(121)
+  patientEmail    String?            @db.VarChar(120)
+  doctorName      String             @db.VarChar(125)
+  diagnosis       String?            @db.VarChar(500)
+  notes           String?            @db.VarChar(1000)
+  status          String             @default("ACTIVE") @db.VarChar(12)
+  validUntil      DateTime           @db.Date
+  issuedAt        DateTime           @default(now())
+  statusChangedAt DateTime?
+  items           PrescriptionItem[]
+
+  @@index([patientId, issuedAt], map: "idx_rx_patient")
+  @@index([status, validUntil], map: "idx_rx_status_valid")
+  @@map("hjs_prescriptions")
+}
+
+model PrescriptionItem {
+  id             Int          @id @default(autoincrement())
+  prescriptionId Int
+  prescription   Prescription @relation(fields: [prescriptionId], references: [id], onDelete: Cascade)
+  medicineName   String       @db.VarChar(150)
+  dosage         String       @db.VarChar(60)
+  frequency      String       @db.VarChar(80)
+  durationDays   Int
+  quantity       Int
+  instructions   String?      @db.VarChar(255)
+
+  @@map("hjs_prescription_items")
+}
+
+// ---- reliable messaging tables (same in every service) ----
+model OutboxEvent {
+  id            Int       @id @default(autoincrement())
+  topic         String    @db.VarChar(150)
+  key           String    @db.VarChar(100)
+  payload       String    @db.MediumText
+  correlationId String?   @db.VarChar(64)
+  createdAt     DateTime  @default(now())
+  sentAt        DateTime?
+  attempts      Int       @default(0)
+
+  @@index([sentAt, id], map: "idx_outbox_unsent")
+  @@map("hjs_outbox_events")
+}
+
+model ProcessedEvent {
+  id          Int      @id @default(autoincrement())
+  eventId     String   @db.VarChar(64)
+  consumer    String   @db.VarChar(120)
+  processedAt DateTime @default(now())
+
+  @@unique([eventId, consumer], map: "uk_processed_event_consumer")
+  @@map("hjs_processed_events")
+}

@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+pydantic[email]
+pydantic-settings
+sqlalchemy[asyncio]
+aiomysql
+pymysql
+cryptography
+alembic
+aiokafka
+httpx
+pyjwt
+argon2-cffi
+slowapi
+python-multipart
+jinja2
+aiosmtplib

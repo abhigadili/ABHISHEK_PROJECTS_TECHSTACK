@@ -1,0 +1,91 @@
+// Prisma schema of the laboratory-service (database LaboratoryDB). Tables carry the "hjs_" prefix; this service never touches other services' data.
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model LabTest {
+  id              Int          @id @default(autoincrement())
+  code            String       @unique(map: "uk_lab_test_code") @db.VarChar(30)
+  name            String       @db.VarChar(150)
+  sampleType      String?      @db.VarChar(60)
+  price           Decimal      @db.Decimal(10, 2)
+  turnaroundHours Int?
+  active          Boolean      @default(true)
+  requests        LabRequest[]
+
+  @@map("hjs_lab_tests")
+}
+
+model LabRequest {
+  id              Int       @id @default(autoincrement())
+  patientId       Int
+  patientName     String    @db.VarChar(121)
+  patientEmail    String?   @db.VarChar(120)
+  doctorId        Int
+  appointmentId   Int?
+  testId          Int
+  test            LabTest   @relation(fields: [testId], references: [id], onDelete: Restrict)
+  testName        String    @db.VarChar(150)
+  price           Decimal   @db.Decimal(10, 2)
+  priority        String    @default("ROUTINE") @db.VarChar(10)
+  status          String    @default("REQUESTED") @db.VarChar(20)
+  clinicalNotes   String?   @db.VarChar(500)
+  accessionNumber String?   @unique(map: "uk_lab_accession") @db.VarChar(40)
+  queuedAt        DateTime?
+  requestedAt     DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  report          LabReport?
+
+  @@index([patientId, requestedAt], map: "idx_lab_patient")
+  @@index([status, priority], map: "idx_lab_status")
+  @@map("hjs_lab_requests")
+}
+
+model LabReport {
+  id               Int        @id @default(autoincrement())
+  requestId        Int        @unique(map: "uk_report_request")
+  request          LabRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  resultSummary    String     @db.VarChar(1000)
+  resultDetails    String?    @db.VarChar(4000)
+  referenceRange   String?    @db.VarChar(200)
+  abnormal         Boolean    @default(false)
+  reportedBy       String     @db.VarChar(60)
+  reportedAt       DateTime   @default(now())
+  attachmentName   String?    @db.VarChar(200)
+  attachmentPath   String?    @db.VarChar(300)
+  attachmentMime   String?    @db.VarChar(80)
+  attachmentSize   Int?
+
+  @@map("hjs_lab_reports")
+}
+
+// ---- reliable messaging tables (same in every service) ----
+model OutboxEvent {
+  id            Int       @id @default(autoincrement())
+  topic         String    @db.VarChar(150)
+  key           String    @db.VarChar(100)
+  payload       String    @db.MediumText
+  correlationId String?   @db.VarChar(64)
+  createdAt     DateTime  @default(now())
+  sentAt        DateTime?
+  attempts      Int       @default(0)
+
+  @@index([sentAt, id], map: "idx_outbox_unsent")
+  @@map("hjs_outbox_events")
+}
+
+model ProcessedEvent {
+  id          Int      @id @default(autoincrement())
+  eventId     String   @db.VarChar(64)
+  consumer    String   @db.VarChar(120)
+  processedAt DateTime @default(now())
+
+  @@unique([eventId, consumer], map: "uk_processed_event_consumer")
+  @@map("hjs_processed_events")
+}

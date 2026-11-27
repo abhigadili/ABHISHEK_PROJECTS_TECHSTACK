@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sms-common"
+version = "1.0.0"
+description = "Shared building blocks (config, logging, middleware, security, DB, Kafka, outbox, storage) for the SMS microservices"
+requires-python = ">=3.11"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+sms_common = ["py.typed"]

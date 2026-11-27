@@ -1,0 +1,58 @@
+// Prisma schema of the patient-service (database PatientDB). Tables carry the "hjs_" prefix; this service never touches other services' data.
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Patient {
+  id                    Int      @id @default(autoincrement())
+  userId                Int?     @unique(map: "uk_patient_user")
+  firstName             String   @db.VarChar(60)
+  lastName              String   @db.VarChar(60)
+  dateOfBirth           DateTime @db.Date
+  gender                String   @db.VarChar(10)
+  email                 String   @unique(map: "uk_patient_email") @db.VarChar(120)
+  phone                 String   @unique(map: "uk_patient_phone") @db.VarChar(20)
+  identityNumber        String?  @unique(map: "uk_patient_identity") @db.VarChar(40)
+  bloodGroup            String?  @db.VarChar(5)
+  address               String?  @db.VarChar(255)
+  emergencyContactName  String?  @db.VarChar(100)
+  emergencyContactPhone String?  @db.VarChar(20)
+  knownAllergies        String?  @db.VarChar(500)
+  status                String   @default("ACTIVE") @db.VarChar(10)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([lastName, firstName], map: "idx_patient_name")
+  @@map("hjs_patients")
+}
+
+// ---- reliable messaging tables (same in every service) ----
+model OutboxEvent {
+  id            Int       @id @default(autoincrement())
+  topic         String    @db.VarChar(150)
+  key           String    @db.VarChar(100)
+  payload       String    @db.MediumText
+  correlationId String?   @db.VarChar(64)
+  createdAt     DateTime  @default(now())
+  sentAt        DateTime?
+  attempts      Int       @default(0)
+
+  @@index([sentAt, id], map: "idx_outbox_unsent")
+  @@map("hjs_outbox_events")
+}
+
+model ProcessedEvent {
+  id          Int      @id @default(autoincrement())
+  eventId     String   @db.VarChar(64)
+  consumer    String   @db.VarChar(120)
+  processedAt DateTime @default(now())
+
+  @@unique([eventId, consumer], map: "uk_processed_event_consumer")
+  @@map("hjs_processed_events")
+}

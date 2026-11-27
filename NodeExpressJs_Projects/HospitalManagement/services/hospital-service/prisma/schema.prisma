@@ -1,0 +1,69 @@
+// Prisma schema of the hospital-service (database HospitalDB). Tables carry the "hjs_" prefix; this service never touches other services' data.
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Hospital {
+  id          Int          @id @default(autoincrement())
+  name        String       @db.VarChar(150)
+  code        String       @unique(map: "uk_hospital_code") @db.VarChar(30)
+  address     String?      @db.VarChar(255)
+  city        String?      @db.VarChar(80)
+  phone       String?      @db.VarChar(30)
+  email       String?      @db.VarChar(120)
+  active      Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  departments Department[]
+
+  @@index([city], map: "idx_hospital_city")
+  @@map("hjs_hospitals")
+}
+
+model Department {
+  id          Int      @id @default(autoincrement())
+  hospitalId  Int
+  hospital    Hospital @relation(fields: [hospitalId], references: [id], onDelete: Restrict)
+  name        String   @db.VarChar(100)
+  description String?  @db.VarChar(255)
+  active      Boolean  @default(true)
+
+  @@unique([hospitalId, name], map: "uk_department_hospital_name")
+  @@map("hjs_departments")
+}
+
+model User {
+  id             Int            @id @default(autoincrement())
+  username       String         @unique(map: "uk_user_username") @db.VarChar(60)
+  email          String         @unique(map: "uk_user_email") @db.VarChar(120)
+  passwordHash   String         @db.VarChar(100)
+  role           String         @db.VarChar(20)
+  enabled        Boolean        @default(true)
+  failedAttempts Int            @default(0)
+  lockedUntil    DateTime?
+  createdAt      DateTime       @default(now())
+  lastLoginAt    DateTime?
+  refreshTokens  RefreshToken[]
+
+  @@map("hjs_users")
+}
+
+model RefreshToken {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique(map: "uk_refresh_token_hash") @db.VarChar(64)
+  familyId  String    @db.VarChar(36)
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId], map: "idx_refresh_user")
+  @@index([familyId], map: "idx_refresh_family")
+  @@map("hjs_refresh_tokens")
+}

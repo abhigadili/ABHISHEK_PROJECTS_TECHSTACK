@@ -1,0 +1,2 @@
+{ "name": "@hr/api-gateway", "version": "1.0.0", "private": true, "main": "dist/main.js",
+  "scripts": { "start": "node dist/main.js" }, "dependencies": { "@hr/common": "*" } }

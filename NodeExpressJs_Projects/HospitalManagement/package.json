@@ -1,0 +1,15 @@
+{
+  "name": "hospital-management",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Hospital / Healthcare Management System - Node.js + Express 5 microservices",
+  "type": "module",
+  "workspaces": ["shared", "api-gateway", "services/*"],
+  "engines": { "node": ">=20.11" },
+  "scripts": {
+    "prisma:generate": "node scripts/prisma-all.mjs generate",
+    "db:setup": "bash scripts/create-databases.sh",
+    "start": "bash scripts/start-all.sh",
+    "stop": "bash scripts/stop-all.sh"
+  }
+}

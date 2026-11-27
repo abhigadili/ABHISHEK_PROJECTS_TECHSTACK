@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const employee_controller_1 = require("../controllers/employee.controller");
+const authenticate_middleware_1 = require("../middlewares/authenticate.middleware");
+const authorize_middleware_1 = require("../middlewares/authorize.middleware");
+const constants_1 = require("../constants");
+const router = (0, express_1.Router)();
+router.use(authenticate_middleware_1.authenticate);
+router.get('/', (0, authorize_middleware_1.authorize)([constants_1.ROLES.ADMIN, constants_1.ROLES.SUPER_ADMIN, constants_1.ROLES.HR, constants_1.ROLES.MANAGER]), employee_controller_1.employeeController.getAll);
+router.get('/:id', (0, authorize_middleware_1.authorize)([constants_1.ROLES.ADMIN, constants_1.ROLES.SUPER_ADMIN, constants_1.ROLES.HR, constants_1.ROLES.MANAGER]), employee_controller_1.employeeController.getById);
+router.post('/', (0, authorize_middleware_1.authorize)([constants_1.ROLES.ADMIN, constants_1.ROLES.SUPER_ADMIN, constants_1.ROLES.HR]), employee_controller_1.employeeController.create);
+router.put('/:id', (0, authorize_middleware_1.authorize)([constants_1.ROLES.ADMIN, constants_1.ROLES.SUPER_ADMIN, constants_1.ROLES.HR]), employee_controller_1.employeeController.update);
+router.delete('/:id', (0, authorize_middleware_1.authorize)([constants_1.ROLES.SUPER_ADMIN]), employee_controller_1.employeeController.delete);
+exports.default = router;

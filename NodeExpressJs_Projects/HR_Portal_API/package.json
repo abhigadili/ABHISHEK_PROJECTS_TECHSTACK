@@ -1,0 +1,41 @@
+{
+  "name": "hr-portal-node",
+  "private": true,
+  "version": "1.0.0",
+  "description": "HR Portal backend - Node.js / Express / TypeScript microservices",
+  "engines": {
+    "node": ">=20.11"
+  },
+  "workspaces": [
+    "common-library",
+    "api-gateway",
+    "auth-service",
+    "employee-service",
+    "organization-service",
+    "leave-service",
+    "attendance-service",
+    "holiday-service",
+    "payroll-service",
+    "tax-service",
+    "performance-service",
+    "project-service",
+    "timesheet-service",
+    "exit-service",
+    "document-service",
+    "notification-service",
+    "reporting-service"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "tsc -b --clean",
+    "start": "bash infrastructure/scripts/start-all.sh",
+    "stop": "bash infrastructure/scripts/stop-all.sh",
+    "db:migrate": "node common-library/dist/migrate/run.js"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.25",
+    "@types/node": "^20.14.0",
+    "tsx": "^4.23.15",
+    "typescript": "~5.6.3"
+  }
+}

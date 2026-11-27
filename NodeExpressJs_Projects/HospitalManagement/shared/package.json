@@ -1,0 +1,39 @@
+{
+  "name": "@hms/shared",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Cross-cutting infrastructure used by the services: config, logging, errors, auth, Kafka outbox/inbox, gRPC and HTTP clients, cache. No business logic.",
+  "exports": {
+    "./config": "./config/index.js",
+    "./constants": "./constants/index.js",
+    "./contracts": "./contracts/events.js",
+    "./logging": "./logging/index.js",
+    "./utils": "./utils/index.js",
+    "./kafka": "./kafka/index.js",
+    "./grpc": "./grpc/index.js",
+    "./clients": "./clients/index.js",
+    "./docs": "./docs/openapi.js",
+    "./bootstrap": "./bootstrap.js"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.12.0",
+    "@grpc/proto-loader": "^0.7.13",
+    "dotenv": "^16.4.5",
+    "express": "^5.1.0",
+    "helmet": "^8.0.0",
+    "cors": "^2.8.5",
+    "jose": "^5.9.6",
+    "kafkajs": "^2.2.4",
+    "node-cron": "^3.0.3",
+    "opossum": "^8.1.4",
+    "passport": "^0.7.0",
+    "passport-custom": "^1.1.1",
+    "pino": "^9.5.0",
+    "pino-http": "^10.3.0",
+    "pino-roll": "^2.0.0",
+    "redis": "^4.7.0",
+    "swagger-ui-express": "^5.0.1",
+    "zod": "^4.0.0"
+  }
+}

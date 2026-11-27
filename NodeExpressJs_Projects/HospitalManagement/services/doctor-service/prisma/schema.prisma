@@ -1,0 +1,60 @@
+// Prisma schema of the doctor-service (database DoctorDB). Tables carry the "hjs_" prefix; this service never touches other services' data.
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Doctor {
+  id               Int                   @id @default(autoincrement())
+  userId           Int?                  @unique(map: "uk_doctor_user")
+  firstName        String                @db.VarChar(60)
+  lastName         String                @db.VarChar(60)
+  email            String                @unique(map: "uk_doctor_email") @db.VarChar(120)
+  phone            String?               @db.VarChar(20)
+  licenseNumber    String                @unique(map: "uk_doctor_license") @db.VarChar(40)
+  specialization   String                @db.VarChar(80)
+  qualification    String?               @db.VarChar(150)
+  experienceYears  Int?
+  consultationFee  Decimal               @db.Decimal(10, 2)
+  hospitalId       Int
+  departmentId     Int?
+  active           Boolean               @default(true)
+  createdAt        DateTime              @default(now())
+  schedules        DoctorSchedule[]
+  unavailability   DoctorUnavailability[]
+
+  @@index([specialization, active], map: "idx_doctor_specialization")
+  @@index([hospitalId, departmentId], map: "idx_doctor_hospital")
+  @@map("hjs_doctors")
+}
+
+model DoctorSchedule {
+  id          Int     @id @default(autoincrement())
+  doctorId    Int
+  doctor      Doctor  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  dayOfWeek   String  @db.VarChar(10)
+  startTime   String  @db.VarChar(5)
+  endTime     String  @db.VarChar(5)
+  slotMinutes Int
+  breakStart  String? @db.VarChar(5)
+  breakEnd    String? @db.VarChar(5)
+
+  @@unique([doctorId, dayOfWeek], map: "uk_schedule_doctor_day")
+  @@map("hjs_doctor_schedules")
+}
+
+model DoctorUnavailability {
+  id              Int      @id @default(autoincrement())
+  doctorId        Int
+  doctor          Doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  unavailableDate DateTime @db.Date
+  reason          String?  @db.VarChar(200)
+
+  @@unique([doctorId, unavailableDate], map: "uk_unavailable_doctor_date")
+  @@map("hjs_doctor_unavailability")
+}

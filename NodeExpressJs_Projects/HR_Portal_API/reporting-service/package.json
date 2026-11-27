@@ -1,0 +1,8 @@
+{
+  "name": "@hr/reporting-service",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/main.js",
+  "scripts": { "start": "node dist/main.js", "dev": "tsx watch src/main.ts" },
+  "dependencies": { "@hr/common": "*" }
+}

@@ -1,0 +1,19 @@
+{ "files": [], "references": [
+  { "path": "common-library" },
+  { "path": "auth-service" },
+  { "path": "employee-service" },
+  { "path": "organization-service" },
+  { "path": "leave-service" },
+  { "path": "attendance-service" },
+  { "path": "holiday-service" },
+  { "path": "payroll-service" },
+  { "path": "tax-service" },
+  { "path": "performance-service" },
+  { "path": "project-service" },
+  { "path": "timesheet-service" },
+  { "path": "exit-service" },
+  { "path": "document-service" },
+  { "path": "notification-service" },
+  { "path": "reporting-service" },
+  { "path": "api-gateway" }
+] }

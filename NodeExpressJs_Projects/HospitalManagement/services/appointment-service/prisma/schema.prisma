@@ -1,0 +1,66 @@
+// Prisma schema of the appointment-service (database AppointmentDB). Tables carry the "hjs_" prefix; this service never touches other services' data.
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+/// Double booking is prevented by the unique slotKey (doctor|date|start): it is set only while BOOKED and NULL otherwise
+/// (MySQL allows many NULLs in a unique index), so concurrent requests for one slot cannot both succeed.
+model Appointment {
+  id              Int      @id @default(autoincrement())
+  patientId       Int
+  doctorId        Int
+  appointmentDate DateTime @db.Date
+  startTime       String   @db.VarChar(5)
+  endTime         String   @db.VarChar(5)
+  status          String   @default("BOOKED") @db.VarChar(12)
+  slotKey         String?  @unique(map: "uk_appointment_slot") @db.VarChar(80)
+  reason          String?  @db.VarChar(255)
+  cancelReason    String?  @db.VarChar(255)
+  notes           String?  @db.VarChar(1000)
+  fee             Decimal  @default(0) @db.Decimal(10, 2)
+  paymentStatus   String   @default("NOT_BILLED") @db.VarChar(12)
+  billNumber      String?  @db.VarChar(40)
+  patientName     String   @db.VarChar(121)
+  patientEmail    String?  @db.VarChar(120)
+  doctorName      String   @db.VarChar(125)
+  doctorEmail     String?  @db.VarChar(120)
+  reminderSent    Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([doctorId, appointmentDate, status], map: "idx_appt_doctor_date")
+  @@index([patientId, appointmentDate], map: "idx_appt_patient")
+  @@index([status, reminderSent, appointmentDate], map: "idx_appt_reminder")
+  @@map("hjs_appointments")
+}
+
+// ---- reliable messaging tables (same in every service) ----
+model OutboxEvent {
+  id            Int       @id @default(autoincrement())
+  topic         String    @db.VarChar(150)
+  key           String    @db.VarChar(100)
+  payload       String    @db.MediumText
+  correlationId String?   @db.VarChar(64)
+  createdAt     DateTime  @default(now())
+  sentAt        DateTime?
+  attempts      Int       @default(0)
+
+  @@index([sentAt, id], map: "idx_outbox_unsent")
+  @@map("hjs_outbox_events")
+}
+
+model ProcessedEvent {
+  id          Int      @id @default(autoincrement())
+  eventId     String   @db.VarChar(64)
+  consumer    String   @db.VarChar(120)
+  processedAt DateTime @default(now())
+
+  @@unique([eventId, consumer], map: "uk_processed_event_consumer")
+  @@map("hjs_processed_events")
+}

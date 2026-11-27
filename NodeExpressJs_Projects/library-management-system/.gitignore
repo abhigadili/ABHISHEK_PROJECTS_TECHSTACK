@@ -1,0 +1,14 @@
+node_modules/
+.next/
+dist/
+out/
+*.tsbuildinfo
+next-env.d.ts
+# secrets & local config - never commit
+.env
+.env.local
+.env.*.local
+# generated
+*.log
+e2e/out-*.png
+.DS_Store

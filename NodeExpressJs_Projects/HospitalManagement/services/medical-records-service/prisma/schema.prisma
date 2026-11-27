@@ -1,0 +1,66 @@
+// Prisma schema of the medical-records-service (database MedicalRecordsDB). Tables carry the "hjs_" prefix; this service never touches other services' data.
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model PatientRecord {
+  id                Int           @id @default(autoincrement())
+  patientId         Int           @unique(map: "uk_record_patient")
+  patientName       String        @db.VarChar(121)
+  chronicConditions String?       @db.VarChar(500)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  entries           RecordEntry[]
+
+  @@map("hjs_patient_records")
+}
+
+model RecordEntry {
+  id            Int           @id @default(autoincrement())
+  recordId      Int
+  record        PatientRecord @relation(fields: [recordId], references: [id], onDelete: Cascade)
+  patientId     Int
+  entryType     String        @db.VarChar(15)
+  title         String        @db.VarChar(200)
+  details       String?       @db.VarChar(4000)
+  doctorId      Int?
+  referenceType String?       @db.VarChar(30)
+  referenceId   Int?
+  source        String        @default("MANUAL") @db.VarChar(10)
+  recordedAt    DateTime      @default(now())
+
+  @@unique([entryType, referenceType, referenceId], map: "uk_entry_reference")
+  @@index([patientId, recordedAt], map: "idx_entry_patient_time")
+  @@map("hjs_record_entries")
+}
+
+// ---- reliable messaging tables (same in every service) ----
+model OutboxEvent {
+  id            Int       @id @default(autoincrement())
+  topic         String    @db.VarChar(150)
+  key           String    @db.VarChar(100)
+  payload       String    @db.MediumText
+  correlationId String?   @db.VarChar(64)
+  createdAt     DateTime  @default(now())
+  sentAt        DateTime?
+  attempts      Int       @default(0)
+
+  @@index([sentAt, id], map: "idx_outbox_unsent")
+  @@map("hjs_outbox_events")
+}
+
+model ProcessedEvent {
+  id          Int      @id @default(autoincrement())
+  eventId     String   @db.VarChar(64)
+  consumer    String   @db.VarChar(120)
+  processedAt DateTime @default(now())
+
+  @@unique([eventId, consumer], map: "uk_processed_event_consumer")
+  @@map("hjs_processed_events")
+}

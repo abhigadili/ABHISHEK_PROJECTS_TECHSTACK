@@ -1,0 +1,17 @@
+{
+  "name": "sms-express-outpost",
+  "version": "1.0.0",
+  "description": "Student Management Service (Express + MySQL) integrated with Hookdeck Outpost for outbound webhook/event delivery",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mysql2": "^3.12.0"
+  }
+}

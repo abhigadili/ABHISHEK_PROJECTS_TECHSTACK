@@ -1,0 +1,85 @@
+// Prisma schema of the pharmacy-service (database PharmacyDB). Tables carry the "hjs_" prefix; this service never touches other services' data.
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Medicine {
+  id                  Int                 @id @default(autoincrement())
+  sku                 String              @unique(map: "uk_medicine_sku") @db.VarChar(40)
+  name                String              @db.VarChar(150)
+  genericName         String?             @db.VarChar(150)
+  unitPrice           Decimal             @db.Decimal(10, 2)
+  stockQuantity       Int
+  reorderLevel        Int                 @default(20)
+  active              Boolean             @default(true)
+  lastLowStockAlertAt DateTime?
+  orderItems          PharmacyOrderItem[]
+
+  @@index([name], map: "idx_medicine_name")
+  @@index([genericName], map: "idx_medicine_generic")
+  @@map("hjs_medicines")
+}
+
+model PharmacyOrder {
+  id              Int                 @id @default(autoincrement())
+  prescriptionId  Int                 @unique(map: "uk_order_prescription")
+  patientId       Int
+  patientName     String              @db.VarChar(121)
+  patientEmail    String?             @db.VarChar(120)
+  doctorName      String?             @db.VarChar(125)
+  status          String              @default("PENDING") @db.VarChar(10)
+  totalAmount     Decimal             @default(0) @db.Decimal(12, 2)
+  dispensedBy     String?             @db.VarChar(60)
+  dispensedAt     DateTime?
+  rejectionReason String?             @db.VarChar(255)
+  createdAt       DateTime            @default(now())
+  items           PharmacyOrderItem[]
+
+  @@index([status, createdAt], map: "idx_order_status")
+  @@map("hjs_pharmacy_orders")
+}
+
+model PharmacyOrderItem {
+  id           Int           @id @default(autoincrement())
+  orderId      Int
+  order        PharmacyOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  medicineName String        @db.VarChar(150)
+  dosage       String?       @db.VarChar(60)
+  quantity     Int
+  medicineId   Int?
+  medicine     Medicine?     @relation(fields: [medicineId], references: [id], onDelete: SetNull)
+  unitPrice    Decimal?      @db.Decimal(10, 2)
+
+  @@map("hjs_pharmacy_order_items")
+}
+
+// ---- reliable messaging tables (same in every service) ----
+model OutboxEvent {
+  id            Int       @id @default(autoincrement())
+  topic         String    @db.VarChar(150)
+  key           String    @db.VarChar(100)
+  payload       String    @db.MediumText
+  correlationId String?   @db.VarChar(64)
+  createdAt     DateTime  @default(now())
+  sentAt        DateTime?
+  attempts      Int       @default(0)
+
+  @@index([sentAt, id], map: "idx_outbox_unsent")
+  @@map("hjs_outbox_events")
+}
+
+model ProcessedEvent {
+  id          Int      @id @default(autoincrement())
+  eventId     String   @db.VarChar(64)
+  consumer    String   @db.VarChar(120)
+  processedAt DateTime @default(now())
+
+  @@unique([eventId, consumer], map: "uk_processed_event_consumer")
+  @@map("hjs_processed_events")
+}

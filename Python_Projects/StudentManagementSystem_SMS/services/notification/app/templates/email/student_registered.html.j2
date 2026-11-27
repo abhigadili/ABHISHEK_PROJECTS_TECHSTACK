@@ -1,0 +1,4 @@
+{% extends "base.html.j2" %}
+{% block content %}
+<p>Your student record has been created.</p><p>Student number: <strong>{{ student_number }}</strong>{% if department_code %}<br>Department: {{ department_code }}{% endif %}</p>
+{% endblock %}

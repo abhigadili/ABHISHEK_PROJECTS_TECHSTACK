@@ -1,0 +1,12 @@
+syntax = "proto3";
+package hms.hospitals;
+
+// Internal contract: hospital / department information retrieval (Doctor Service validates doctor assignments with it).
+service HospitalService {
+  rpc GetHospital (HospitalIdRequest) returns (HospitalInfo);
+  rpc GetDepartment (DepartmentIdRequest) returns (DepartmentInfo);
+}
+message HospitalIdRequest { int64 hospital_id = 1; }
+message DepartmentIdRequest { int64 department_id = 1; }
+message HospitalInfo { int64 id = 1; string name = 2; string code = 3; string city = 4; bool active = 5; }
+message DepartmentInfo { int64 id = 1; int64 hospital_id = 2; string name = 3; bool active = 4; }

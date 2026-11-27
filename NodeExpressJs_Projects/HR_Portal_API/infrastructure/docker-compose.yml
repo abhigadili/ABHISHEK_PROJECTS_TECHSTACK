@@ -1,0 +1,314 @@
+# Infrastructure for the Node.js HR Portal. MySQL is NOT started here: the existing MySQL server
+# (shared with the Java HR Portal) is used. Ports are offset from the Java stack (9192/9379).
+name: hr-portal-node
+services:
+  kafka:
+    image: apache/kafka:3.9.0
+    container_name: hrnode-kafka
+    ports: ["9292:9292"]
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9292,INTERNAL://:9094,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9292,INTERNAL://kafka:9094
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,INTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    volumes: [hrnode-kafka-data:/var/lib/kafka/data]
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9292 --list >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: hrnode-kafka-ui
+    ports: ["9290:8080"]
+    environment:
+      KAFKA_CLUSTERS_0_NAME: hr-node
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9094
+    depends_on:
+      kafka: { condition: service_healthy }
+  redis:
+    image: redis:7-alpine
+    container_name: hrnode-redis
+    command: ["redis-server", "--appendonly", "yes", "--port", "9479"]
+    ports: ["9479:9479"]
+    volumes: [hrnode-redis-data:/data]
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "9479", "ping"]
+      interval: 5s
+      retries: 10
+
+# ---- application services (docker compose --profile apps up -d). MySQL stays the existing host server. ----
+
+  api-gateway:
+    profiles: ["apps"]
+    build: { context: .., dockerfile: infrastructure/docker/Dockerfile, args: { SERVICE: api-gateway } }
+    image: hr-node-api-gateway
+    container_name: hrnode-api-gateway
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["31080:31080"]
+    env_file: ../.env
+    environment: &appenv
+      MYSQL_HOST: host.docker.internal
+      REDIS_URL: redis://redis:9479
+      KAFKA_BROKERS: kafka:9094
+      STORAGE_DIR: /app/storage
+      AUTH_SERVICE_URL: http://auth-service:31101
+      EMPLOYEE_SERVICE_URL: http://employee-service:31102
+      ORGANIZATION_SERVICE_URL: http://organization-service:31103
+      LEAVE_SERVICE_URL: http://leave-service:31104
+      ATTENDANCE_SERVICE_URL: http://attendance-service:31105
+      HOLIDAY_SERVICE_URL: http://holiday-service:31106
+      PAYROLL_SERVICE_URL: http://payroll-service:31107
+      TAX_SERVICE_URL: http://tax-service:31108
+      PERFORMANCE_SERVICE_URL: http://performance-service:31109
+      PROJECT_SERVICE_URL: http://project-service:31110
+      TIMESHEET_SERVICE_URL: http://timesheet-service:31111
+      EXIT_SERVICE_URL: http://exit-service:31112
+      DOCUMENT_SERVICE_URL: http://document-service:31113
+      NOTIFICATION_SERVICE_URL: http://notification-service:31114
+      REPORTING_SERVICE_URL: http://reporting-service:31115
+
+    volumes: [hrnode-storage:/app/storage]
+    depends_on:
+      kafka: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+  auth-service:
+    profiles: ["apps"]
+    build: { context: .., dockerfile: infrastructure/docker/Dockerfile, args: { SERVICE: auth-service } }
+    image: hr-node-auth-service
+    container_name: hrnode-auth-service
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["31101:31101"]
+    env_file: ../.env
+    environment:
+      <<: *appenv
+    volumes: [hrnode-storage:/app/storage]
+    depends_on:
+      kafka: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+  employee-service:
+    profiles: ["apps"]
+    build: { context: .., dockerfile: infrastructure/docker/Dockerfile, args: { SERVICE: employee-service } }
+    image: hr-node-employee-service
+    container_name: hrnode-employee-service
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["31102:31102"]
+    env_file: ../.env
+    environment:
+      <<: *appenv
+    volumes: [hrnode-storage:/app/storage]
+    depends_on:
+      kafka: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+  organization-service:
+    profiles: ["apps"]
+    build: { context: .., dockerfile: infrastructure/docker/Dockerfile, args: { SERVICE: organization-service } }
+    image: hr-node-organization-service
+    container_name: hrnode-organization-service
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["31103:31103"]
+    env_file: ../.env
+    environment:
+      <<: *appenv
+    volumes: [hrnode-storage:/app/storage]
+    depends_on:
+      kafka: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+  leave-service:
+    profiles: ["apps"]
+    build: { context: .., dockerfile: infrastructure/docker/Dockerfile, args: { SERVICE: leave-service } }
+    image: hr-node-leave-service
+    container_name: hrnode-leave-service
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["31104:31104"]
+    env_file: ../.env
+    environment:
+      <<: *appenv
+    volumes: [hrnode-storage:/app/storage]
+    depends_on:
+      kafka: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+  attendance-service:
+    profiles: ["apps"]
+    build: { context: .., dockerfile: infrastructure/docker/Dockerfile, args: { SERVICE: attendance-service } }
+    image: hr-node-attendance-service
+    container_name: hrnode-attendance-service
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["31105:31105"]
+    env_file: ../.env
+    environment:
+      <<: *appenv
+    volumes: [hrnode-storage:/app/storage]
+    depends_on:
+      kafka: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+  holiday-service:
+    profiles: ["apps"]
+    build: { context: .., dockerfile: infrastructure/docker/Dockerfile, args: { SERVICE: holiday-service } }
+    image: hr-node-holiday-service
+    container_name: hrnode-holiday-service
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["31106:31106"]
+    env_file: ../.env
+    environment:
+      <<: *appenv
+    volumes: [hrnode-storage:/app/storage]
+    depends_on:
+      kafka: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+  payroll-service:
+    profiles: ["apps"]
+    build: { context: .., dockerfile: infrastructure/docker/Dockerfile, args: { SERVICE: payroll-service } }
+    image: hr-node-payroll-service
+    container_name: hrnode-payroll-service
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["31107:31107"]
+    env_file: ../.env
+    environment:
+      <<: *appenv
+    volumes: [hrnode-storage:/app/storage]
+    depends_on:
+      kafka: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+  tax-service:
+    profiles: ["apps"]
+    build: { context: .., dockerfile: infrastructure/docker/Dockerfile, args: { SERVICE: tax-service } }
+    image: hr-node-tax-service
+    container_name: hrnode-tax-service
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["31108:31108"]
+    env_file: ../.env
+    environment:
+      <<: *appenv
+    volumes: [hrnode-storage:/app/storage]
+    depends_on:
+      kafka: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+  performance-service:
+    profiles: ["apps"]
+    build: { context: .., dockerfile: infrastructure/docker/Dockerfile, args: { SERVICE: performance-service } }
+    image: hr-node-performance-service
+    container_name: hrnode-performance-service
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["31109:31109"]
+    env_file: ../.env
+    environment:
+      <<: *appenv
+    volumes: [hrnode-storage:/app/storage]
+    depends_on:
+      kafka: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+  project-service:
+    profiles: ["apps"]
+    build: { context: .., dockerfile: infrastructure/docker/Dockerfile, args: { SERVICE: project-service } }
+    image: hr-node-project-service
+    container_name: hrnode-project-service
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["31110:31110"]
+    env_file: ../.env
+    environment:
+      <<: *appenv
+    volumes: [hrnode-storage:/app/storage]
+    depends_on:
+      kafka: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+  timesheet-service:
+    profiles: ["apps"]
+    build: { context: .., dockerfile: infrastructure/docker/Dockerfile, args: { SERVICE: timesheet-service } }
+    image: hr-node-timesheet-service
+    container_name: hrnode-timesheet-service
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["31111:31111"]
+    env_file: ../.env
+    environment:
+      <<: *appenv
+    volumes: [hrnode-storage:/app/storage]
+    depends_on:
+      kafka: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+  exit-service:
+    profiles: ["apps"]
+    build: { context: .., dockerfile: infrastructure/docker/Dockerfile, args: { SERVICE: exit-service } }
+    image: hr-node-exit-service
+    container_name: hrnode-exit-service
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["31112:31112"]
+    env_file: ../.env
+    environment:
+      <<: *appenv
+    volumes: [hrnode-storage:/app/storage]
+    depends_on:
+      kafka: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+  document-service:
+    profiles: ["apps"]
+    build: { context: .., dockerfile: infrastructure/docker/Dockerfile, args: { SERVICE: document-service } }
+    image: hr-node-document-service
+    container_name: hrnode-document-service
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["31113:31113"]
+    env_file: ../.env
+    environment:
+      <<: *appenv
+    volumes: [hrnode-storage:/app/storage]
+    depends_on:
+      kafka: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+  notification-service:
+    profiles: ["apps"]
+    build: { context: .., dockerfile: infrastructure/docker/Dockerfile, args: { SERVICE: notification-service } }
+    image: hr-node-notification-service
+    container_name: hrnode-notification-service
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["31114:31114"]
+    env_file: ../.env
+    environment:
+      <<: *appenv
+    volumes: [hrnode-storage:/app/storage]
+    depends_on:
+      kafka: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+  reporting-service:
+    profiles: ["apps"]
+    build: { context: .., dockerfile: infrastructure/docker/Dockerfile, args: { SERVICE: reporting-service } }
+    image: hr-node-reporting-service
+    container_name: hrnode-reporting-service
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["31115:31115"]
+    env_file: ../.env
+    environment:
+      <<: *appenv
+    volumes: [hrnode-storage:/app/storage]
+    depends_on:
+      kafka: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+volumes:
+  hrnode-kafka-data:
+  hrnode-redis-data:
+  hrnode-storage:

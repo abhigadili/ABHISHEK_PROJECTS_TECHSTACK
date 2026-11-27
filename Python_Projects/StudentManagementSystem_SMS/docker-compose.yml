@@ -1,0 +1,186 @@
+# Student Management System - full stack.
+#   docker compose up -d --build            # infra + 6 services
+#   docker compose --profile tools up -d    # + Kafka UI (:8090) and Mailpit (:8025)
+# Secrets/ports come from .env (see .env.example).  Host ports are configurable so the stack can
+# run next to a local MySQL (3306) / Kafka (9092) / locally started services.
+name: sms
+
+x-service-env: &service-env
+  ENVIRONMENT: ${ENVIRONMENT:-development}
+  LOG_FORMAT: json
+  MYSQL_HOST: mysql
+  MYSQL_PORT: "3306"
+  MYSQL_USER: ${MYSQL_USER:?set MYSQL_USER in .env}
+  MYSQL_PASSWORD: ${MYSQL_PASSWORD:?set MYSQL_PASSWORD in .env}
+  JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
+  KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+  AUTH_SERVICE_URL: http://auth-service:8001
+  STUDENT_SERVICE_URL: http://student-service:8002
+  COURSE_SERVICE_URL: http://course-service:8003
+  ENROLLMENT_SERVICE_URL: http://enrollment-service:8004
+  NOTIFICATION_SERVICE_URL: http://notification-service:8005
+
+x-app: &app
+  restart: unless-stopped
+  networks: [sms-net]
+
+x-needs-infra: &needs-infra
+  depends_on:
+    mysql: {condition: service_healthy}
+    kafka-init: {condition: service_completed_successfully}
+
+services:
+  # ------------------------------------------------------------------ infrastructure
+  mysql:
+    image: mysql:8.0
+    <<: *app
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--default-time-zone=+00:00"]
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?set MYSQL_ROOT_PASSWORD in .env}
+      MYSQL_USER: ${MYSQL_USER:?}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?}
+    ports: ["127.0.0.1:${MYSQL_HOST_PORT:-3308}:3306"]
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docker/mysql:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
+  kafka:
+    image: apache/kafka:latest      # KRaft mode: no ZooKeeper
+    <<: *app
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: INTERNAL://:29092,EXTERNAL://:9094,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:${KAFKA_HOST_PORT:-9094}
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    ports: ["127.0.0.1:${KAFKA_HOST_PORT:-9094}:9094"]
+    volumes: [kafka-data:/var/lib/kafka/data]
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:29092 >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+      start_period: 15s
+
+  kafka-init:                         # one-shot job: create the topics + dead-letter topics
+    image: apache/kafka:latest
+    networks: [sms-net]
+    depends_on:
+      kafka: {condition: service_healthy}
+    restart: "no"
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        set -e
+        for t in sms.auth.events sms.student.events sms.course.events sms.enrollment.events sms.notification.requests; do
+          /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:29092 --create --if-not-exists --topic $$t --partitions 3 --replication-factor 1
+          /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:29092 --create --if-not-exists --topic $$t.dlq --partitions 1 --replication-factor 1
+        done
+        echo "topics ready"
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    <<: *app
+    profiles: [tools]
+    environment:
+      KAFKA_CLUSTERS_0_NAME: sms
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+    ports: ["127.0.0.1:${KAFKA_UI_PORT:-8090}:8080"]
+    depends_on: {kafka: {condition: service_healthy}}
+
+  mailpit:                            # dev SMTP server with a web inbox: set EMAIL_BACKEND=smtp, SMTP_HOST=mailpit, SMTP_PORT=1025
+    image: axllent/mailpit:latest
+    <<: *app
+    profiles: [tools]
+    ports: ["127.0.0.1:${MAILPIT_UI_PORT:-8025}:8025"]
+
+  # ---------------------------------------------------------------------- microservices
+  auth-service:
+    build: {context: ., dockerfile: services/auth/Dockerfile}
+    image: sms/auth-service:1.0.0
+    <<: [*app, *needs-infra]
+    env_file: [.env]
+    environment:
+      <<: *service-env
+      BOOTSTRAP_ADMIN_EMAIL: ${BOOTSTRAP_ADMIN_EMAIL:-admin@sms.example.com}
+      BOOTSTRAP_ADMIN_PASSWORD: ${BOOTSTRAP_ADMIN_PASSWORD:?set BOOTSTRAP_ADMIN_PASSWORD in .env}
+    ports: ["${AUTH_PORT:-8001}:8001"]
+
+  student-service:
+    build: {context: ., dockerfile: services/student/Dockerfile}
+    image: sms/student-service:1.0.0
+    <<: [*app, *needs-infra]
+    env_file: [.env]
+    environment: {<<: *service-env, STORAGE_ROOT: /data/storage}
+    volumes: ["./var/compose/storage:/data/storage"]
+    ports: ["${STUDENT_PORT:-8002}:8002"]
+
+  course-service:
+    build: {context: ., dockerfile: services/course/Dockerfile}
+    image: sms/course-service:1.0.0
+    <<: [*app, *needs-infra]
+    env_file: [.env]
+    environment: {<<: *service-env, STORAGE_ROOT: /data/storage}
+    volumes: ["./var/compose/storage:/data/storage"]
+    ports: ["${COURSE_PORT:-8003}:8003"]
+
+  enrollment-service:
+    build: {context: ., dockerfile: services/enrollment/Dockerfile}
+    image: sms/enrollment-service:1.0.0
+    <<: [*app, *needs-infra]
+    env_file: [.env]
+    environment: {<<: *service-env}
+    ports: ["${ENROLLMENT_PORT:-8004}:8004"]
+
+  notification-service:
+    build: {context: ., dockerfile: services/notification/Dockerfile}
+    image: sms/notification-service:1.0.0
+    <<: [*app, *needs-infra]
+    env_file: [.env]
+    environment:
+      <<: *service-env
+      EMAIL_BACKEND: ${EMAIL_BACKEND:-file}
+      EMAIL_FILE_DIR: /data/emails
+      SMTP_HOST: ${SMTP_HOST:-mailpit}
+      SMTP_PORT: ${SMTP_PORT:-1025}
+    volumes: ["./var/compose/emails:/data/emails"]
+    ports: ["${NOTIFICATION_PORT:-8005}:8005"]
+
+  api-gateway:
+    build: {context: ., dockerfile: services/gateway/Dockerfile}
+    image: sms/api-gateway:1.0.0
+    <<: *app
+    env_file: [.env]
+    environment:
+      <<: *service-env
+      RATE_LIMIT_DEFAULT: ${RATE_LIMIT_DEFAULT:-120/minute}
+      RATE_LIMIT_AUTH: ${RATE_LIMIT_AUTH:-20/minute}
+      RATE_LIMIT_LOGIN: ${RATE_LIMIT_LOGIN:-5/minute}
+    depends_on:
+      auth-service: {condition: service_healthy}
+      student-service: {condition: service_healthy}
+      course-service: {condition: service_healthy}
+      enrollment-service: {condition: service_healthy}
+      notification-service: {condition: service_healthy}
+    ports: ["${GATEWAY_PORT:-8000}:8000"]
+
+networks:
+  sms-net:
+    name: sms-net
+
+volumes:
+  mysql-data:
+  kafka-data:
