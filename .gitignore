@@ -1,0 +1,24 @@
+# Java
+target/
+build/
+
+# .NET
+bin/
+obj/
+
+# React / Angular / Node
+node_modules/
+dist/
+
+# Environment
+.env
+.env.*
+
+# Logs
+*.log
+
+# IDE
+.idea/
+.vscode/
+.Next/
+.git/
