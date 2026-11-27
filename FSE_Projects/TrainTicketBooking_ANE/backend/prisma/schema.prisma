@@ -1,0 +1,546 @@
+// Train Ticket Booking - MySQL schema (Prisma 6)
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+/// ───────── Authentication & users ─────────
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  PENDING
+}
+
+model Role {
+  id          Int              @id @default(autoincrement())
+  key         String           @unique @db.VarChar(30) // PASSENGER, ADMIN, BOOKING_STAFF, TRAIN_OPERATOR
+  name        String           @db.VarChar(60)
+  users       UserRole[]
+  permissions RolePermission[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id    Int              @id @default(autoincrement())
+  key   String           @unique @db.VarChar(60)
+  label String           @db.VarChar(160)
+  roles RolePermission[]
+
+  @@map("permissions")
+}
+
+/// many-to-many Role <-> Permission
+model RolePermission {
+  roleId       Int
+  permissionId Int
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+/// many-to-many User <-> Role
+model UserRole {
+  userId Int
+  roleId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model User {
+  id               Int                     @id @default(autoincrement())
+  name             String                  @db.VarChar(120)
+  email            String                  @unique @db.VarChar(160)
+  mobile           String                  @unique @db.VarChar(20)
+  passwordHash     String                  @db.VarChar(100)
+  status           UserStatus              @default(ACTIVE)
+  failedLogins     Int                     @default(0)
+  lockedUntil      DateTime?
+  lastLoginAt      DateTime?
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+  deletedAt        DateTime? // soft delete
+  roles            UserRole[]
+  refreshTokens    RefreshToken[]
+  resetTokens      PasswordResetToken[]
+  passengers       Passenger[]
+  bookings         Booking[]
+  notifications    Notification[]
+  preferences      NotificationPreference?
+
+  @@index([status, deletedAt])
+  @@map("users")
+}
+
+model RefreshToken {
+  id         Int       @id @default(autoincrement())
+  userId     Int
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash  String    @unique @db.VarChar(64)
+  familyId   String    @db.VarChar(36) // rotation family; replay of a rotated token revokes the family
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  userAgent  String?   @db.VarChar(255)
+  createdAt  DateTime  @default(now())
+
+  @@index([userId])
+  @@index([familyId])
+  @@map("refresh_tokens")
+}
+
+model PasswordResetToken {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique @db.VarChar(64)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@map("password_reset_tokens")
+}
+
+/// ───────── Stations, trains, routes, schedules ─────────
+model Station {
+  id        Int                @id @default(autoincrement())
+  code      String             @unique @db.VarChar(10)
+  name      String             @db.VarChar(120)
+  city      String             @db.VarChar(80)
+  state     String             @db.VarChar(80)
+  active    Boolean            @default(true)
+  createdAt DateTime           @default(now())
+  routeStops TrainRouteStation[]
+  bookingsFrom Booking[]       @relation("BookingFrom")
+  bookingsTo   Booking[]       @relation("BookingTo")
+
+  @@index([city])
+  @@index([name])
+  @@map("stations")
+}
+
+enum TrainType {
+  EXPRESS
+  SUPERFAST
+  SUBURBAN
+  PASSENGER
+  PREMIUM
+}
+
+enum TrainStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+model Train {
+  id         Int               @id @default(autoincrement())
+  number     String            @unique @db.VarChar(10)
+  name       String            @db.VarChar(120)
+  type       TrainType         @default(EXPRESS)
+  status     TrainStatus       @default(ACTIVE)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+  route      TrainRoute? // one-to-one
+  schedules  TrainSchedule[]
+  overrides  TrainDateOverride[]
+  coaches    TrainCoach[]
+  bookings   Booking[]
+
+  @@index([status])
+  @@index([name])
+  @@map("trains")
+}
+
+/// one-to-one Train <-> Route
+model TrainRoute {
+  id      Int                 @id @default(autoincrement())
+  trainId Int                 @unique
+  train   Train               @relation(fields: [trainId], references: [id], onDelete: Cascade)
+  name    String              @db.VarChar(160)
+  stops   TrainRouteStation[]
+
+  @@map("train_routes")
+}
+
+/// ordered stops of a route (sequence 1..n). Times are "HH:mm"; dayOffset = days after departure day (overnight trains).
+model TrainRouteStation {
+  id            Int        @id @default(autoincrement())
+  routeId       Int
+  route         TrainRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  stationId     Int
+  station       Station    @relation(fields: [stationId], references: [id])
+  seq           Int
+  arrivalTime   String?    @db.VarChar(5)
+  departureTime String?    @db.VarChar(5)
+  dayOffset     Int        @default(0)
+  distanceKm    Int        @default(0) // cumulative from origin
+
+  @@unique([routeId, seq])
+  @@unique([routeId, stationId])
+  @@index([stationId])
+  @@map("train_route_stations")
+}
+
+model TrainSchedule {
+  id            Int                @id @default(autoincrement())
+  trainId       Int
+  train         Train              @relation(fields: [trainId], references: [id], onDelete: Cascade)
+  validFrom     DateTime           @db.Date
+  validTo       DateTime?          @db.Date
+  active        Boolean            @default(true)
+  notes         String?            @db.VarChar(255)
+  operatingDays TrainOperatingDay[]
+  createdAt     DateTime           @default(now())
+
+  @@index([trainId])
+  @@map("train_schedules")
+}
+
+model TrainOperatingDay {
+  id         Int           @id @default(autoincrement())
+  scheduleId Int
+  schedule   TrainSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  dayOfWeek  Int // 0 = Sunday
+
+  @@unique([scheduleId, dayOfWeek])
+  @@map("train_operating_days")
+}
+
+/// per-date availability control (cancel a single run of a train)
+model TrainDateOverride {
+  id        Int      @id @default(autoincrement())
+  trainId   Int
+  train     Train    @relation(fields: [trainId], references: [id], onDelete: Cascade)
+  date      DateTime @db.Date
+  cancelled Boolean  @default(true)
+  reason    String?  @db.VarChar(200)
+
+  @@unique([trainId, date])
+  @@map("train_date_overrides")
+}
+
+/// ───────── Coaches & seats ─────────
+model CoachType {
+  id             Int          @id @default(autoincrement())
+  code           String       @unique @db.VarChar(5) // SL, 1A, 2A, 3A, CC, 2S
+  name           String       @db.VarChar(60)
+  farePerKm      Decimal      @db.Decimal(6, 2)
+  seatsPerCoach  Int
+  berthLayout    String       @db.VarChar(20) // BERTH6 | BERTH4 | BERTH2 | SEAT
+  coaches        TrainCoach[]
+  bookings       Booking[]
+
+  @@map("coach_types")
+}
+
+model SeatType {
+  id     Int         @id @default(autoincrement())
+  code   String      @unique @db.VarChar(20) // LOWER, MIDDLE, UPPER, SIDE_LOWER, SIDE_UPPER, WINDOW, MIDDLE_SEAT, AISLE
+  name   String      @db.VarChar(40)
+  seats  CoachSeat[]
+
+  @@map("seat_types")
+}
+
+model TrainCoach {
+  id          Int         @id @default(autoincrement())
+  trainId     Int
+  train       Train       @relation(fields: [trainId], references: [id], onDelete: Cascade)
+  coachTypeId Int
+  coachType   CoachType   @relation(fields: [coachTypeId], references: [id])
+  number      String      @db.VarChar(6) // S1, B2, A1 ...
+  seats       CoachSeat[]
+
+  @@unique([trainId, number])
+  @@index([coachTypeId])
+  @@map("train_coaches")
+}
+
+enum SeatStatus {
+  ACTIVE
+  BLOCKED
+}
+
+model CoachSeat {
+  id           Int               @id @default(autoincrement())
+  coachId      Int
+  coach        TrainCoach        @relation(fields: [coachId], references: [id], onDelete: Cascade)
+  seatNumber   Int
+  seatTypeId   Int
+  seatType     SeatType          @relation(fields: [seatTypeId], references: [id])
+  status       SeatStatus        @default(ACTIVE)
+  reservations SeatReservation[]
+  bookingSeats BookingSeat[]
+
+  @@unique([coachId, seatNumber])
+  @@map("coach_seats")
+}
+
+/// One row per (seat, journey date, SEGMENT). A passenger travelling stops 2→5 occupies segments 2,3,4.
+/// `active` is 1 while the row is valid and NULL after release; UNIQUE(seat, date, segment, active) makes a double allocation
+/// of the same segment impossible at DATABASE level, while a released segment can be re-booked.
+model SeatReservation {
+  id            Int         @id @default(autoincrement())
+  seatId        Int
+  seat          CoachSeat   @relation(fields: [seatId], references: [id], onDelete: Cascade)
+  journeyDate   DateTime    @db.Date
+  segmentSeq    Int
+  bookingSeatId Int
+  bookingSeat   BookingSeat @relation(fields: [bookingSeatId], references: [id], onDelete: Cascade)
+  active        Int?        @default(1)
+  createdAt     DateTime    @default(now())
+
+  @@unique([seatId, journeyDate, segmentSeq, active])
+  @@index([bookingSeatId])
+  @@index([journeyDate])
+  @@map("seat_reservations")
+}
+
+/// ───────── Passengers & bookings ─────────
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+/// saved passenger address book of a user (one-to-many User -> Passenger)
+model Passenger {
+  id         Int                @id @default(autoincrement())
+  userId     Int
+  user       User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String             @db.VarChar(120)
+  age        Int
+  gender     Gender
+  mobile     String?            @db.VarChar(20)
+  idType     String?            @db.VarChar(20)
+  idLast4    String?            @db.VarChar(4) // only the last 4 characters of an ID number are stored
+  createdAt  DateTime           @default(now())
+  deletedAt  DateTime?
+  bookingPassengers BookingPassenger[]
+
+  @@index([userId])
+  @@map("passengers")
+}
+
+enum BookingStatus {
+  PENDING_PAYMENT
+  CONFIRMED
+  PARTIALLY_CANCELLED
+  CANCELLED
+  EXPIRED
+  FAILED
+}
+
+model Booking {
+  id            Int                 @id @default(autoincrement())
+  userId        Int
+  user          User                @relation(fields: [userId], references: [id])
+  trainId       Int
+  train         Train               @relation(fields: [trainId], references: [id])
+  journeyDate   DateTime            @db.Date
+  fromStationId Int
+  fromStation   Station             @relation("BookingFrom", fields: [fromStationId], references: [id])
+  toStationId   Int
+  toStation     Station             @relation("BookingTo", fields: [toStationId], references: [id])
+  fromSeq       Int
+  toSeq         Int
+  coachTypeId   Int
+  coachType     CoachType           @relation(fields: [coachTypeId], references: [id])
+  status        BookingStatus       @default(PENDING_PAYMENT)
+  totalAmount   Decimal             @db.Decimal(10, 2)
+  departureAt   DateTime // origin-boarding date-time (used by cancellation rules)
+  expiresAt     DateTime? // seat hold deadline while PENDING_PAYMENT
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  passengers    BookingPassenger[]
+  pnr           PnrRecord? // one-to-one
+  payments      Payment[]
+  refunds       Refund[]
+  cancellations CancellationRecord[]
+
+  @@index([userId, createdAt])
+  @@index([trainId, journeyDate])
+  @@index([status])
+  @@index([status, expiresAt])
+  @@map("bookings")
+}
+
+/// one-to-one Booking <-> PNR
+model PnrRecord {
+  id        Int      @id @default(autoincrement())
+  pnr       String   @unique @db.VarChar(12)
+  bookingId Int      @unique
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  issuedAt  DateTime @default(now())
+
+  @@map("pnr_records")
+}
+
+enum PassengerStatus {
+  CONFIRMED
+  CANCELLED
+}
+
+model BookingPassenger {
+  id          Int             @id @default(autoincrement())
+  bookingId   Int
+  booking     Booking         @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  passengerId Int?
+  passenger   Passenger?      @relation(fields: [passengerId], references: [id], onDelete: SetNull)
+  name        String          @db.VarChar(120)
+  age         Int
+  gender      Gender
+  mobile      String?         @db.VarChar(20)
+  fare        Decimal         @db.Decimal(10, 2)
+  status      PassengerStatus @default(CONFIRMED)
+  seat        BookingSeat?
+
+  @@index([bookingId])
+  @@map("booking_passengers")
+}
+
+enum BookingSeatStatus {
+  HELD
+  CONFIRMED
+  RELEASED
+}
+
+model BookingSeat {
+  id                 Int               @id @default(autoincrement())
+  bookingPassengerId Int               @unique
+  bookingPassenger   BookingPassenger  @relation(fields: [bookingPassengerId], references: [id], onDelete: Cascade)
+  seatId             Int
+  seat               CoachSeat         @relation(fields: [seatId], references: [id])
+  status             BookingSeatStatus @default(HELD)
+  reservations       SeatReservation[]
+
+  @@index([seatId])
+  @@map("booking_seats")
+}
+
+/// ───────── Payments, refunds, cancellations ─────────
+enum PaymentStatus {
+  INITIATED
+  SUCCEEDED
+  FAILED
+  PARTIALLY_REFUNDED
+  REFUNDED
+}
+
+model Payment {
+  id          Int           @id @default(autoincrement())
+  bookingId   Int
+  booking     Booking       @relation(fields: [bookingId], references: [id])
+  amount      Decimal       @db.Decimal(10, 2)
+  method      String        @db.VarChar(20)
+  provider    String        @db.VarChar(20)
+  reference   String        @unique @db.VarChar(40)
+  status      PaymentStatus @default(INITIATED)
+  cardLast4   String?       @db.VarChar(4) // never the PAN / CVV
+  failureReason String?     @db.VarChar(160)
+  createdAt   DateTime      @default(now())
+  confirmedAt DateTime?
+  refunds     Refund[]
+
+  @@index([bookingId])
+  @@index([status])
+  @@map("payments")
+}
+
+enum RefundStatus {
+  PENDING
+  PROCESSED
+  FAILED
+}
+
+model Refund {
+  id          Int          @id @default(autoincrement())
+  paymentId   Int
+  payment     Payment      @relation(fields: [paymentId], references: [id])
+  bookingId   Int
+  booking     Booking      @relation(fields: [bookingId], references: [id])
+  cancellationId Int?      @unique
+  cancellation CancellationRecord? @relation(fields: [cancellationId], references: [id])
+  amount      Decimal      @db.Decimal(10, 2)
+  status      RefundStatus @default(PENDING)
+  reference   String       @unique @db.VarChar(40)
+  createdAt   DateTime     @default(now())
+  processedAt DateTime?
+
+  @@index([bookingId])
+  @@map("refunds")
+}
+
+model CancellationRecord {
+  id            Int      @id @default(autoincrement())
+  bookingId     Int
+  booking       Booking  @relation(fields: [bookingId], references: [id])
+  cancelledById Int
+  passengerIds  Json // booking_passenger ids cancelled in this request
+  hoursBefore   Int
+  chargePercent Decimal  @db.Decimal(5, 2)
+  grossFare     Decimal  @db.Decimal(10, 2)
+  chargeAmount  Decimal  @db.Decimal(10, 2)
+  refundAmount  Decimal  @db.Decimal(10, 2)
+  reason        String?  @db.VarChar(255)
+  createdAt     DateTime @default(now())
+  refund        Refund?
+
+  @@index([bookingId])
+  @@map("cancellation_records")
+}
+
+/// configurable cancellation policy: applies when the journey starts `minHours` or more (and < next rule) from now
+model CancellationRule {
+  id            Int     @id @default(autoincrement())
+  minHoursBefore Int    @unique
+  chargePercent Decimal @db.Decimal(5, 2)
+  label         String  @db.VarChar(80)
+
+  @@map("cancellation_rules")
+}
+
+model AppSetting {
+  key   String @id @db.VarChar(60)
+  value String @db.VarChar(200)
+
+  @@map("app_settings")
+}
+
+/// ───────── Notifications ─────────
+model Notification {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String    @db.VarChar(40)
+  title     String    @db.VarChar(160)
+  message   String    @db.VarChar(500)
+  link      String?   @db.VarChar(200)
+  readAt    DateTime?
+  emailSent Boolean   @default(false)
+  createdAt DateTime  @default(now())
+
+  @@index([userId, readAt])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+/// one-to-one User <-> preferences
+model NotificationPreference {
+  userId  Int     @id
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  inApp   Boolean @default(true)
+  email   Boolean @default(true)
+
+  @@map("notification_preferences")
+}

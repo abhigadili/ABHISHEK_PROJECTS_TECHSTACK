@@ -1,0 +1,22 @@
+import { z } from 'zod';
+import { isoDate } from '../validations/common';
+import { Router } from 'express';
+import { trainController as c } from '../controllers';
+import { authenticate, authorize } from '../middlewares/auth';
+import { validate } from '../middlewares/validate';
+import { coachSchema, dateOverrideSchema, trainQuery, trainSchema, trainStatusSchema, trainUpdateSchema } from '../validations/catalog';
+import { searchQuery } from '../validations/booking';
+const r = Router();
+r.get('/search', validate('query', searchQuery), c.search); // public train search (declared BEFORE /:id)
+r.get('/', validate('query', trainQuery), c.list);
+r.get('/:id', c.get);
+r.get('/:id/availability', validate('query', z.object({ date: isoDate, from: z.coerce.number().int().positive().optional(), to: z.coerce.number().int().positive().optional() })), c.availability);
+r.get('/:id/coaches', c.coaches);
+r.post('/', authenticate, authorize('train:manage'), validate('body', trainSchema), c.create);
+r.put('/:id', authenticate, authorize('train:manage'), validate('body', trainUpdateSchema), c.update);
+r.patch('/:id/status', authenticate, authorize('train:operate', 'train:manage'), validate('body', trainStatusSchema), c.status);
+r.delete('/:id', authenticate, authorize('train:manage'), c.remove);
+r.post('/:id/coaches', authenticate, authorize('train:operate', 'train:manage'), validate('body', coachSchema), c.addCoach);
+r.post('/:id/date-overrides', authenticate, authorize('train:operate', 'train:manage'), validate('body', dateOverrideSchema), c.override);
+r.delete('/:id/date-overrides/:overrideId', authenticate, authorize('train:operate', 'train:manage'), c.removeOverride);
+export default r;

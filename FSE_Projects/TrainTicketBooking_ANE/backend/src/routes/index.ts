@@ -1,0 +1,13 @@
+import { Router } from 'express';
+import authRoutes from './auth.routes';
+import userRoutes from './user.routes';
+import stationRoutes from './station.routes';
+import trainRoutes from './train.routes';
+import { coachRoutes, lookupRoutes, routeRoutes, scheduleRoutes, seatRoutes } from './catalog.routes';
+import { adminRoutes, bookingRoutes, cancellationRoutes, notificationRoutes, passengerRoutes, paymentRoutes, refundRoutes } from './booking.routes';
+export const api = Router();
+api.get('/health', (_req, res) => res.json({ success: true, data: { status: 'ok', time: new Date().toISOString() } }));
+api.use('/auth', authRoutes); api.use('/users', userRoutes); api.use('/stations', stationRoutes); api.use('/trains', trainRoutes);
+api.use('/routes', routeRoutes); api.use('/schedules', scheduleRoutes); api.use('/coaches', coachRoutes); api.use('/seats', seatRoutes); api.use('/lookups', lookupRoutes);
+api.use('/bookings', bookingRoutes); api.use('/passengers', passengerRoutes); api.use('/payments', paymentRoutes); api.use('/refunds', refundRoutes);
+api.use('/cancellations', cancellationRoutes); api.use('/notifications', notificationRoutes); api.use('/admin', adminRoutes);
