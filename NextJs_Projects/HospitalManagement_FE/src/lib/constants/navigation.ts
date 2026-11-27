@@ -1,0 +1,18 @@
+import type { RoleKey } from './rbac';
+export interface NavItem { label: string; href: string; icon: string }
+const N = (label: string, href: string, icon: string): NavItem => ({ label, href, icon });
+/** Role-based navigation menus (sidebar). `icon` is a lucide icon name resolved in the client shell. */
+export const NAV: Record<RoleKey, NavItem[]> = {
+  PATIENT: [N('Overview', '/patient', 'LayoutDashboard'), N('Book appointment', '/patient/book', 'CalendarPlus'), N('My appointments', '/patient/appointments', 'CalendarDays'), N('Hospitals', '/patient/hospitals', 'Building2'), N('Doctors', '/patient/doctors', 'Stethoscope'), N('Medical records', '/patient/records', 'FileText'), N('Prescriptions', '/patient/prescriptions', 'Pill'), N('Lab reports', '/patient/lab', 'FlaskConical'), N('Billing', '/patient/billing', 'ReceiptText'), N('Payments', '/patient/payments', 'Wallet'), N('Notifications', '/patient/notifications', 'Bell'), N('Profile', '/patient/profile', 'UserRound')],
+  DOCTOR: [N('Overview', '/doctor', 'LayoutDashboard'), N('Appointments', '/doctor/appointments', 'CalendarDays'), N('Availability', '/doctor/availability', 'Clock'), N('Patients', '/doctor/patients', 'Users'), N('New prescription', '/doctor/prescriptions/new', 'Pill'), N('Lab requests', '/doctor/lab', 'FlaskConical'), N('Notifications', '/doctor/notifications', 'Bell'), N('Profile', '/doctor/profile', 'UserRound')],
+  HOSPITAL_ADMIN: [N('Overview', '/admin', 'LayoutDashboard'), N('Hospital', '/admin/hospital', 'Building2'), N('Doctors', '/admin/doctors', 'Stethoscope'), N('Staff', '/admin/staff', 'UserCog'), N('Patients', '/admin/patients', 'Users'), N('Appointments', '/admin/appointments', 'CalendarDays'), N('Reports', '/admin/reports', 'BarChart3'), N('Notifications', '/admin/notifications', 'Bell')],
+  RECEPTIONIST: [N('Overview', '/admin', 'LayoutDashboard'), N('Doctors', '/admin/doctors', 'Stethoscope'), N('Patients', '/admin/patients', 'Users'), N('Appointments', '/admin/appointments', 'CalendarDays'), N('Notifications', '/admin/notifications', 'Bell')],
+  LAB_STAFF: [N('Overview', '/lab', 'LayoutDashboard'), N('Test catalog', '/lab/catalog', 'ListChecks'), N('Requests', '/lab/requests', 'FlaskConical'), N('Published reports', '/lab/reports', 'FileText'), N('Notifications', '/lab/notifications', 'Bell')],
+  PHARMACIST: [N('Overview', '/pharmacy', 'LayoutDashboard'), N('Medicines', '/pharmacy/medicines', 'Pill'), N('Inventory', '/pharmacy/inventory', 'Boxes'), N('Prescription queue', '/pharmacy/queue', 'ClipboardList'), N('Dispensing history', '/pharmacy/history', 'History'), N('Expiry', '/pharmacy/expiry', 'CalendarX'), N('Notifications', '/pharmacy/notifications', 'Bell')],
+  BILLING_STAFF: [N('Overview', '/billing', 'LayoutDashboard'), N('Invoices', '/billing/invoices', 'ReceiptText'), N('Payments & refunds', '/billing/payments', 'Wallet'), N('Reports', '/billing/reports', 'BarChart3'), N('Notifications', '/billing/notifications', 'Bell')],
+  SUPER_ADMIN: [N('Overview', '/superadmin', 'LayoutDashboard'), N('Users', '/superadmin/users', 'Users'), N('Roles & permissions', '/superadmin/roles', 'ShieldCheck'), N('Hospitals', '/superadmin/hospitals', 'Building2'), N('System config', '/superadmin/config', 'Settings'), N('Audit logs', '/superadmin/audit', 'ScrollText'), N('Notifications', '/superadmin/notifications', 'Bell')],
+};
+/** URL prefix → roles allowed (used by proxy.ts as a convenience layer and by layouts as the authoritative check). */
+export const AREA_ROLES: Record<string, RoleKey[]> = {
+  '/patient': ['PATIENT'], '/doctor': ['DOCTOR'], '/admin': ['HOSPITAL_ADMIN', 'RECEPTIONIST'], '/lab': ['LAB_STAFF'], '/pharmacy': ['PHARMACIST'], '/billing': ['BILLING_STAFF'], '/superadmin': ['SUPER_ADMIN'],
+};

@@ -1,0 +1,10 @@
+import dayjs from 'dayjs';
+export const fmtDate = (d?: Date | string | null) => (d ? dayjs(d).format('DD MMM YYYY') : '—');
+export const fmtDateTime = (d?: Date | string | null) => (d ? dayjs(d).format('DD MMM YYYY, HH:mm') : '—');
+export const fmtTime = (d?: Date | string | null) => (d ? dayjs(d).format('HH:mm') : '—');
+export const fmtMoney = (n?: number | string | { toString(): string } | null) => (n === null || n === undefined ? '—' : new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(Number(n.toString())));
+export const humanize = (s: string) => s.toLowerCase().replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
+export const fullName = (u?: { firstName: string; lastName: string } | null) => (u ? `${u.firstName} ${u.lastName}` : '—');
+export const age = (dob: Date | string) => dayjs().diff(dayjs(dob), 'year');
+export const avatarUrl = (name: string) => `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&size=256&background=0f766e&color=fff&bold=true&format=png`;
+export const todayISO = () => dayjs().format('YYYY-MM-DD');

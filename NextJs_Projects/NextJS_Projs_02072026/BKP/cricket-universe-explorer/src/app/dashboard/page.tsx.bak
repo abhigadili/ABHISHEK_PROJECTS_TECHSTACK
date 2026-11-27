@@ -1,0 +1,201 @@
+/**
+ * ============================================================
+ * app/dashboard/page.tsx — Protected Dashboard Page
+ * ============================================================
+ *
+ * SERVER-SIDE AUTHENTICATION CHECK:
+ *   This page performs auth at the server level — before any
+ *   HTML is sent to the browser. Here's why this matters:
+ *
+ *   Client-side guard (WRONG approach):
+ *     useEffect(() => {
+ *       if (!user) router.push('/login')
+ *     }, [user])
+ *   Problem: The page HTML renders first, then the redirect
+ *   happens. Authenticated content flashes briefly. The HTML
+ *   is also sent to the browser (SEO / caching risk).
+ *
+ *   Server-side guard (THIS approach):
+ *     const user = getCurrentUser(cookieStore)
+ *     if (!user) redirect('/login')
+ *   Benefit: redirect() is called before any HTML is generated.
+ *   The browser receives a 307 Temporary Redirect immediately.
+ *   No content flash, no race condition.
+ *
+ * COOKIES() API:
+ *   `cookies()` from 'next/headers' is async in Next.js 15+.
+ *   It reads the HTTP request cookies on the server.
+ *   The `auth-token` cookie is HttpOnly — set by the login API
+ *   route and unreadable by client-side JavaScript. This prevents
+ *   XSS attacks from stealing the auth token.
+ *
+ * WHY PROTECT AT THE SERVER LEVEL?
+ *   1. Security: the server is the authority. Client-side JS can
+ *      be bypassed by disabling JavaScript or modifying state.
+ *   2. Performance: no client-side auth waterfall.
+ *   3. SEO: protected pages correctly return 307 for crawlers.
+ *   4. UX: zero flash of unauthorized content.
+ *
+ * MIDDLEWARE vs PAGE-LEVEL CHECK:
+ *   Middleware (middleware.ts) can protect entire route segments
+ *   globally — better for large apps. Page-level checks (like
+ *   this one) are fine for a handful of protected pages.
+ * ============================================================
+ */
+
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import { getCurrentUser } from '@/lib/auth'
+
+export const metadata: Metadata = {
+  title: 'Dashboard | Cricket Universe Explorer',
+  description: 'Your personal cricket explorer dashboard.',
+}
+
+// ─── Page Component ───────────────────────────────────────────────────────────
+
+export default async function DashboardPage() {
+  // ── Server-side auth check ────────────────────────────────────────────────
+  //
+  // Step 1: await cookies()
+  //   In Next.js 15+, cookies() is async. The returned
+  //   ReadonlyRequestCookies object has .get(), .has(), etc.
+  //
+  // Step 2: getCurrentUser(cookieStore)
+  //   Reads the 'auth-token' HttpOnly cookie, decodes it,
+  //   validates the expiry, and returns User | null.
+  //
+  // Step 3: redirect('/login') if no user
+  //   redirect() throws a Next.js internal error that triggers
+  //   a 307 Temporary Redirect. It never returns — code after
+  //   it is unreachable (TypeScript understands this).
+
+  const cookieStore = await cookies()
+  const user = getCurrentUser(cookieStore)
+
+  if (!user) {
+    // No valid session — redirect to login page.
+    // The route group (auth)/login maps to the /login URL.
+    redirect('/login')
+  }
+
+  // ── Stats data ────────────────────────────────────────────────────────────
+  // Hard-coded to match the in-memory data set.
+  const stats = [
+    { label: 'Countries', value: 6, icon: '🌍', href: '/countries' },
+    { label: 'Leagues', value: 36, icon: '🏆', href: '/countries' },
+    { label: 'Teams', value: 14, icon: '👕', href: '/countries' },
+    { label: 'Players', value: 47, icon: '🏏', href: '/countries' },
+  ]
+
+  const exploreLinks = [
+    { label: 'Browse Countries', href: '/countries', icon: '🌍', description: 'Explore cricket nations' },
+    { label: 'View Profile', href: '/profile', icon: '👤', description: 'Your account details' },
+    { label: 'Read Docs', href: '/docs/routing', icon: '📖', description: 'Next.js concepts guide' },
+    { label: 'See Examples', href: '/examples', icon: '💡', description: 'Code pattern examples' },
+  ]
+
+  return (
+    <div className="bg-gray-950 min-h-full">
+
+      {/* ── Welcome hero ─────────────────────────────────────────────────── */}
+      <div className="bg-gradient-to-br from-emerald-950 to-gray-950 border-b border-emerald-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-5xl mb-4" aria-hidden="true">🏏</div>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-2">
+            Welcome back,{' '}
+            <span className="text-emerald-400">{user.name}</span>!
+          </h1>
+          <p className="text-emerald-300 text-base">
+            {user.email} •{' '}
+            <span className="inline-flex items-center bg-emerald-800 text-emerald-300 text-xs font-semibold px-2 py-0.5 rounded-full capitalize">
+              {user.role}
+            </span>
+          </p>
+        </div>
+      </div>
+
+      {/* ── Main content ─────────────────────────────────────────────────── */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+
+        {/* Summary stats */}
+        <section>
+          <h2 className="text-xl font-bold text-white mb-4">
+            Cricket Universe at a Glance
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {stats.map((stat) => (
+              <Link
+                key={stat.label}
+                href={stat.href}
+                className="group rounded-xl border border-emerald-800 bg-emerald-950/50 p-5 text-center hover:border-emerald-600 hover:bg-emerald-950 transition-all duration-200"
+              >
+                <div className="text-3xl mb-2" aria-hidden="true">{stat.icon}</div>
+                <div className="text-3xl font-extrabold text-emerald-400 mb-1 group-hover:text-emerald-300">
+                  {stat.value}
+                </div>
+                <div className="text-emerald-200 text-sm">{stat.label}</div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* Explore sections */}
+        <section>
+          <h2 className="text-xl font-bold text-white mb-4">Explore</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {exploreLinks.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="group flex items-center gap-4 rounded-xl border border-emerald-800 bg-emerald-950/50 p-5 hover:border-emerald-600 hover:bg-emerald-950 transition-all duration-200"
+              >
+                <span className="text-3xl flex-shrink-0" aria-hidden="true">{link.icon}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="text-white font-semibold text-sm group-hover:text-emerald-300 transition-colors">
+                    {link.label}
+                  </div>
+                  <div className="text-emerald-500 text-xs mt-0.5">{link.description}</div>
+                </div>
+                <span
+                  className="text-emerald-600 group-hover:text-emerald-400 transition-all duration-200 group-hover:translate-x-1"
+                  aria-hidden="true"
+                >
+                  →
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* Auth info panel (educational) */}
+        <section className="rounded-xl border border-emerald-800 bg-emerald-950/50 p-6">
+          <h2 className="text-lg font-bold text-white mb-3">
+            How server-side auth works on this page
+          </h2>
+          <ul className="space-y-2 text-sm text-emerald-300">
+            <li className="flex gap-2">
+              <span className="text-emerald-500 flex-shrink-0">1.</span>
+              <span><code className="bg-emerald-900 px-1 rounded text-emerald-200">cookies()</code> reads the HttpOnly <code className="bg-emerald-900 px-1 rounded text-emerald-200">auth-token</code> cookie — unreadable by client JS.</span>
+            </li>
+            <li className="flex gap-2">
+              <span className="text-emerald-500 flex-shrink-0">2.</span>
+              <span><code className="bg-emerald-900 px-1 rounded text-emerald-200">getCurrentUser()</code> decodes and validates the token, returns User | null.</span>
+            </li>
+            <li className="flex gap-2">
+              <span className="text-emerald-500 flex-shrink-0">3.</span>
+              <span>If no user, <code className="bg-emerald-900 px-1 rounded text-emerald-200">redirect()</code> fires before any HTML is generated — no content flash.</span>
+            </li>
+            <li className="flex gap-2">
+              <span className="text-emerald-500 flex-shrink-0">4.</span>
+              <span>The browser receives a 307 redirect to <code className="bg-emerald-900 px-1 rounded text-emerald-200">/login</code> immediately.</span>
+            </li>
+          </ul>
+        </section>
+
+      </div>
+    </div>
+  )
+}

@@ -1,0 +1,33 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Global CSS + design tokens (Light / Dark theme management). Every UI library (MUI, Tailwind, Radix, shadcn-style) reads these. */
+:root {
+  --bg: #f4f7f9; --surface: #ffffff; --surface-2: #eef3f6; --line: #dbe3ea; --fg: #0f172a; --muted: #5b6b7c;
+  --primary: #0f766e; --primary-hover: #0b5f58; --primary-fg: #ffffff; --accent: #0ea5e9;
+  --danger: #dc2626; --warn: #b45309; --ok: #15803d; --info: #0369a1; --radius: 12px;
+}
+.dark {
+  --bg: #0b1220; --surface: #111a2b; --surface-2: #17233a; --line: #243247; --fg: #e6edf5; --muted: #93a4b8;
+  --primary: #2dd4bf; --primary-hover: #5eead4; --primary-fg: #04201d; --accent: #38bdf8;
+  --danger: #f87171; --warn: #fbbf24; --ok: #4ade80; --info: #7dd3fc;
+}
+@theme inline {
+  --color-bg: var(--bg); --color-surface: var(--surface); --color-surface2: var(--surface-2); --color-line: var(--line);
+  --color-fg: var(--fg); --color-muted: var(--muted); --color-primary: var(--primary); --color-primary-hover: var(--primary-hover);
+  --color-primary-fg: var(--primary-fg); --color-accent: var(--accent); --color-danger: var(--danger); --color-warn: var(--warn);
+  --color-ok: var(--ok); --color-info: var(--info);
+  --font-sans: var(--font-inter), system-ui, sans-serif; --font-mono: var(--font-mono-local), ui-monospace, monospace;
+  --radius-card: var(--radius);
+}
+html { color-scheme: light; }
+html.dark { color-scheme: dark; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-inter), system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+/* skeleton shimmer used by loading.tsx files */
+@keyframes shimmer { 0% { background-position: -400px 0 } 100% { background-position: 400px 0 } }
+.skeleton { background: linear-gradient(90deg, var(--surface-2) 25%, var(--line) 37%, var(--surface-2) 63%); background-size: 800px 100%; animation: shimmer 1.4s infinite linear; border-radius: 8px; }
+.num { font-variant-numeric: tabular-nums; }
+@media print { aside, header, .no-print { display: none !important; } body { background: #fff; color: #000; } }
+@keyframes fade-in { from { opacity: 0; transform: translateY(4px) } to { opacity: 1; transform: none } }
