@@ -1,0 +1,135 @@
+@use 'sass:color';
+
+$connector: #90a4ae;
+$node-width: 200px;
+
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+}
+
+// ---- Organization chart (generated from backend data; CSS draws the connector lines) --------------------------------
+.org-tree {
+  overflow-x: auto;
+  padding: 16px 8px 32px;
+  ul {
+    display: flex;
+    justify-content: center;
+    padding-top: 24px;
+    margin: 0;
+    position: relative;
+    list-style: none;
+  }
+  li {
+    position: relative;
+    padding: 24px 8px 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 50%;
+      border-top: 2px solid $connector;
+      width: 50%;
+      height: 24px;
+    }
+    &::after {
+      right: auto;
+      left: 50%;
+      border-left: 2px solid $connector;
+    }
+    &:only-child {
+      padding-top: 0;
+      &::before,
+      &::after {
+        display: none;
+      }
+    }
+    &:first-child::before,
+    &:last-child::after {
+      border: 0 none;
+    }
+    &:last-child::before {
+      border-right: 2px solid $connector;
+      border-radius: 0 8px 0 0;
+    }
+    &:first-child::after {
+      border-radius: 8px 0 0 0;
+    }
+  }
+  ul ul::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    border-left: 2px solid $connector;
+    height: 24px;
+  }
+  > ul {
+    padding-top: 0;
+  }
+  .org-node {
+    width: $node-width;
+  }
+}
+
+@media (max-width: 600px) {
+  .org-tree .org-node {
+    width: 150px;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+// ---- Calendar grids --------------------------------------------------------------------------------------------------
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+.cal-cell {
+  min-height: 84px;
+  padding: 4px 6px;
+  border: 1px solid rgba(128, 128, 128, 0.25);
+  border-radius: 8px;
+  font-size: 0.78rem;
+  overflow: hidden;
+  &.muted {
+    opacity: 0.35;
+  }
+  &.off {
+    background: rgba(128, 128, 128, 0.12);
+  }
+  &.holiday {
+    background: rgba(156, 39, 176, 0.14);
+  }
+  &.today {
+    outline: 2px solid #1565c0;
+  }
+}
+@media (max-width: 600px) {
+  .cal-cell {
+    min-height: 56px;
+    font-size: 0.68rem;
+  }
+}

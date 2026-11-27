@@ -1,0 +1,44 @@
+/* CSS Modules: class names are locally scoped (hashed) so they cannot clash with Tailwind, MUI or global CSS. */
+.page { display: flex; flex-direction: column; gap: 16px; }
+.card { background: var(--hms-surface); border: 1px solid var(--hms-border); border-radius: 12px; padding: 16px 18px; }
+.cardTitle { margin: 0 0 8px; font-size: 14px; font-weight: 700; }
+.muted { color: var(--hms-muted); font-size: 13px; }
+.counts { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+.count { border: 1px solid var(--hms-border); border-radius: 10px; padding: 10px 12px; background: var(--hms-surface-alt); }
+.countValue { font-size: 22px; font-weight: 700; line-height: 1.1; }
+.countLabel { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--hms-muted); }
+.tabsList { display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid var(--hms-border); margin-bottom: 12px; }
+.tabsTrigger { appearance: none; background: none; border: 0; padding: 8px 12px; font: inherit; font-size: 13px; font-weight: 600; color: var(--hms-muted); cursor: pointer; border-bottom: 2px solid transparent; }
+.tabsTrigger[data-state='active'] { color: var(--hms-accent); border-bottom-color: var(--hms-accent); }
+.tabsTrigger:hover { color: var(--hms-fg); }
+.toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+.input, .textarea, .select { font: inherit; font-size: 14px; color: var(--hms-fg); background: var(--hms-surface); border: 1px solid var(--hms-border); border-radius: 8px; padding: 8px 10px; width: 100%; }
+.textarea { min-height: 96px; resize: vertical; }
+.input:focus, .textarea:focus, .select:focus { outline: 2px solid var(--hms-accent); outline-offset: 1px; }
+.field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; font-size: 13px; font-weight: 600; }
+.error { color: #dc2626; font-size: 12px; font-weight: 500; }
+.btn { appearance: none; border: 1px solid var(--hms-border); background: var(--hms-surface); color: var(--hms-fg); padding: 8px 14px; border-radius: 8px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.btn:hover { background: var(--hms-surface-alt); }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+.btnPrimary { background: var(--hms-accent); border-color: var(--hms-accent); color: #fff; }
+.btnPrimary:hover { filter: brightness(.93); background: var(--hms-accent); }
+.entry { display: flex; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--hms-border); cursor: pointer; background: var(--hms-surface); }
+.entry:hover { background: var(--hms-surface-alt); }
+.entryIcon { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 700; color: #fff; }
+.entryBody { min-width: 0; flex: 1; }
+.entryTitle { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.entryMeta { font-size: 12px; color: var(--hms-muted); }
+.entryDetails { font-size: 13px; color: var(--hms-muted); margin-top: 2px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; white-space: pre-line; }
+.badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--hms-surface-alt); border: 1px solid var(--hms-border); }
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 50; }
+.dialog { position: fixed; z-index: 51; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(94vw, 520px); max-height: 90vh; overflow: auto; background: var(--hms-surface); color: var(--hms-fg); border: 1px solid var(--hms-border); border-radius: 14px; padding: 22px; box-shadow: 0 20px 50px rgba(0,0,0,.3); }
+.dialogTitle { margin: 0 0 4px; font-size: 18px; font-weight: 700; }
+.dialogDesc { margin: 0 0 16px; color: var(--hms-muted); font-size: 13px; }
+.dialogActions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+.accItem { border: 1px solid var(--hms-border); border-radius: 10px; margin-bottom: 8px; background: var(--hms-surface); overflow: hidden; }
+.accTrigger { appearance: none; width: 100%; background: none; border: 0; text-align: left; padding: 12px 14px; font: inherit; font-weight: 600; font-size: 14px; display: flex; justify-content: space-between; cursor: pointer; color: var(--hms-fg); }
+.accContent { padding: 0 14px 14px; font-size: 13px; }
+.tooltip { background: #0f172a; color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 12px; z-index: 80; }
+.docRow { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--hms-border); flex-wrap: wrap; }
+.progress { height: 6px; background: var(--hms-surface-alt); border-radius: 999px; overflow: hidden; }
+.progressBar { height: 100%; background: var(--hms-accent); transition: width .2s; }

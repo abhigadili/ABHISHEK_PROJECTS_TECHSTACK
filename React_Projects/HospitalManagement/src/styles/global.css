@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---- Global CSS: design tokens (light/dark), shared reset, print rules ---- */
+:root {
+  --hms-surface: #ffffff;
+  --hms-surface-alt: #eef2f7;
+  --hms-bg: #f4f7fb;
+  --hms-fg: #0f1b2d;
+  --hms-muted: #5b6b82;
+  --hms-border: #d9e1ec;
+  --hms-sidebar: #0f2744;
+  --hms-sidebar-fg: #cfe0f5;
+  --hms-accent: #1d76f1;
+  color-scheme: light;
+}
+:root[data-theme='dark'] {
+  --hms-surface: #111a2e;
+  --hms-surface-alt: #18233b;
+  --hms-bg: #0b1220;
+  --hms-fg: #e6edf7;
+  --hms-muted: #93a4bd;
+  --hms-border: #243350;
+  --hms-sidebar: #08111f;
+  --hms-sidebar-fg: #b6c8e2;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; border-width: 0; border-style: solid; border-color: var(--hms-border); }
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  background: var(--hms-bg);
+  color: var(--hms-fg);
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4, h5, h6, p, dl, dd, figure, blockquote { margin: 0; }
+/* Tailwind preflight is disabled (MUI ships CssBaseline), so the parts of preflight we rely on are restated here. */
+h1, h2, h3, h4, h5, h6 { font-size: inherit; font-weight: inherit; }
+ul, ol { list-style: none; margin: 0; padding: 0; }
+table { border-collapse: collapse; text-indent: 0; border-color: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { background: none; cursor: pointer; }
+/* MUI components keep their own typography/list styling because they set explicit classes */
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; }
+img, svg { display: block; max-width: 100%; }
+:focus-visible { outline: 2px solid var(--hms-accent); outline-offset: 2px; }
+
+/* Layout helpers (CSS Grid / Flexbox utilities used outside Tailwind modules) */
+.hms-grid-auto { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.hms-stack { display: flex; flex-direction: column; gap: 16px; }
+.hms-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+/* top progress bar (global fetching indicator) */
+@keyframes hms-progress { 0% { transform: translateX(-100%); } 100% { transform: translateX(350%); } }
+.hms-progress { position: fixed; z-index: 100; top: 0; left: 0; right: 0; height: 3px; overflow: hidden; }
+.hms-progress > div { width: 30%; height: 100%; background: var(--hms-accent); animation: hms-progress 1.1s linear infinite; }
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; color: #000; }
+}

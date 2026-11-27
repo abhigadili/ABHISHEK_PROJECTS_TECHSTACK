@@ -1,0 +1,6655 @@
+[
+ {
+  "id": "auth.roles",
+  "fn": "roles",
+  "method": "PUT",
+  "path": "/api/v1/auth/users/{id}/roles",
+  "service": "auth",
+  "tag": "User Administration",
+  "summary": "roles",
+  "module": "administration",
+  "files": [
+   "src/features/administration/UsersPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "auth.map",
+  "fn": "map",
+  "method": "PUT",
+  "path": "/api/v1/auth/users/{id}/employee-mapping",
+  "service": "auth",
+  "tag": "User Administration",
+  "summary": "map",
+  "module": "administration",
+  "files": [
+   "src/features/administration/UsersPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "auth.setPermissions",
+  "fn": "setPermissions",
+  "method": "PUT",
+  "path": "/api/v1/auth/roles/{id}/permissions",
+  "service": "auth",
+  "tag": "Roles and Permissions",
+  "summary": "setPermissions",
+  "module": "administration",
+  "files": [
+   "src/features/administration/RolesPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasRole('SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "auth.unlock",
+  "fn": "unlock",
+  "method": "POST",
+  "path": "/api/v1/auth/users/{id}/unlock",
+  "service": "auth",
+  "tag": "User Administration",
+  "summary": "unlock",
+  "module": "administration",
+  "files": [
+   "src/features/administration/UsersPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "auth.revoke",
+  "fn": "revoke",
+  "method": "POST",
+  "path": "/api/v1/auth/users/{id}/revoke-sessions",
+  "service": "auth",
+  "tag": "User Administration",
+  "summary": "Invalidate every live session / token of the user",
+  "module": "administration",
+  "files": [
+   "src/features/administration/UsersPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "auth.reset",
+  "fn": "reset",
+  "method": "POST",
+  "path": "/api/v1/auth/users/{id}/reset-password",
+  "service": "auth",
+  "tag": "User Administration",
+  "summary": "reset",
+  "module": "administration",
+  "files": [
+   "src/features/administration/UsersPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "auth.rolesRolesAndPermissions",
+  "fn": "rolesRolesAndPermissions",
+  "method": "GET",
+  "path": "/api/v1/auth/roles",
+  "service": "auth",
+  "tag": "Roles and Permissions",
+  "summary": "roles_1",
+  "module": "administration",
+  "files": [
+   "src/features/administration/RolesPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "auth.createRole",
+  "fn": "createRole",
+  "method": "POST",
+  "path": "/api/v1/auth/roles",
+  "service": "auth",
+  "tag": "Roles and Permissions",
+  "summary": "createRole",
+  "module": "administration",
+  "files": [
+   "src/features/administration/RolesPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasRole('SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "auth.resetPassword",
+  "fn": "resetPassword",
+  "method": "POST",
+  "path": "/api/v1/auth/reset-password",
+  "service": "auth",
+  "tag": "Authentication",
+  "summary": "Complete the password reset with the e-mailed token",
+  "module": "authentication",
+  "files": [
+   "src/features/authentication/ResetPasswordPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": true
+ },
+ {
+  "id": "auth.register",
+  "fn": "register",
+  "method": "POST",
+  "path": "/api/v1/auth/register",
+  "service": "auth",
+  "tag": "Authentication",
+  "summary": "Provision a user account (HR / super admin)",
+  "module": "administration",
+  "files": [
+   "src/features/administration/UsersPage.tsx",
+   "src/features/authentication/LoginPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "auth.refresh",
+  "fn": "refresh",
+  "method": "POST",
+  "path": "/api/v1/auth/refresh",
+  "service": "auth",
+  "tag": "Authentication",
+  "summary": "Exchange a refresh token for a new token pair (rotation)",
+  "module": "authentication",
+  "files": [
+   "src/features/authentication/authService.ts"
+  ],
+  "status": "infrastructure",
+  "authorize": null,
+  "public": true
+ },
+ {
+  "id": "auth.permissions",
+  "fn": "permissions",
+  "method": "GET",
+  "path": "/api/v1/auth/permissions",
+  "service": "auth",
+  "tag": "Roles and Permissions",
+  "summary": "permissions",
+  "module": "administration",
+  "files": [
+   "src/features/administration/RolesPage.tsx",
+   "src/features/profile/ProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "auth.createPermission",
+  "fn": "createPermission",
+  "method": "POST",
+  "path": "/api/v1/auth/permissions",
+  "service": "auth",
+  "tag": "Roles and Permissions",
+  "summary": "createPermission",
+  "module": "administration",
+  "files": [
+   "src/features/administration/RolesPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasRole('SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "auth.logout",
+  "fn": "logout",
+  "method": "POST",
+  "path": "/api/v1/auth/logout",
+  "service": "auth",
+  "tag": "Authentication",
+  "summary": "Logout: revokes the refresh token and the current access token",
+  "module": "authentication",
+  "files": [
+   "src/features/authentication/authService.ts"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "auth.login",
+  "fn": "login",
+  "method": "POST",
+  "path": "/api/v1/auth/login",
+  "service": "auth",
+  "tag": "Authentication",
+  "summary": "Login with username + password; returns access and refresh tokens",
+  "module": "authentication",
+  "files": [
+   "src/features/authentication/authService.ts"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": true
+ },
+ {
+  "id": "auth.forgotPassword",
+  "fn": "forgotPassword",
+  "method": "POST",
+  "path": "/api/v1/auth/forgot-password",
+  "service": "auth",
+  "tag": "Authentication",
+  "summary": "Start the password reset workflow (always answers 202, never reveals whether the e-mail exists)",
+  "module": "authentication",
+  "files": [
+   "src/features/authentication/ForgotPasswordPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": true
+ },
+ {
+  "id": "auth.changePassword",
+  "fn": "changePassword",
+  "method": "POST",
+  "path": "/api/v1/auth/change-password",
+  "service": "auth",
+  "tag": "Authentication",
+  "summary": "Change own password (revokes all sessions)",
+  "module": "authentication",
+  "files": [
+   "src/features/authentication/ChangePasswordPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "auth.status",
+  "fn": "status",
+  "method": "PATCH",
+  "path": "/api/v1/auth/users/{id}/status",
+  "service": "auth",
+  "tag": "User Administration",
+  "summary": "Activate / deactivate an account",
+  "module": "administration",
+  "files": [
+   "src/features/administration/UsersPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "auth.ping",
+  "fn": "ping",
+  "method": "GET",
+  "path": "/ping",
+  "service": "auth",
+  "tag": "ping-controller",
+  "summary": "ping",
+  "module": "administration",
+  "files": [
+   "src/features/administration/ApiExplorerPage.tsx"
+  ],
+  "status": "infrastructure",
+  "authorize": null,
+  "public": true
+ },
+ {
+  "id": "auth.search",
+  "fn": "search",
+  "method": "GET",
+  "path": "/api/v1/auth/users",
+  "service": "auth",
+  "tag": "User Administration",
+  "summary": "Search users (paged, sortable allowlist)",
+  "module": "administration",
+  "files": [
+   "src/features/administration/UsersPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "auth.get",
+  "fn": "get",
+  "method": "GET",
+  "path": "/api/v1/auth/users/{id}",
+  "service": "auth",
+  "tag": "User Administration",
+  "summary": "get",
+  "module": "administration",
+  "files": [
+   "src/features/administration/UsersPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "auth.byEmployee",
+  "fn": "byEmployee",
+  "method": "GET",
+  "path": "/api/v1/auth/users/by-employee/{employeeId}",
+  "service": "auth",
+  "tag": "User Administration",
+  "summary": "Employee-to-user account lookup",
+  "module": "administration",
+  "files": [
+   "src/features/administration/UsersPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "auth.me",
+  "fn": "me",
+  "method": "GET",
+  "path": "/api/v1/auth/me",
+  "service": "auth",
+  "tag": "Authentication",
+  "summary": "Current user profile, roles and permissions",
+  "module": "authentication",
+  "files": [
+   "src/features/authentication/authService.ts",
+   "src/features/profile/ProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "auth.searchAudit",
+  "fn": "searchAudit",
+  "method": "GET",
+  "path": "/api/v1/auth/audit",
+  "service": "auth",
+  "tag": "Audit History",
+  "summary": "search_1",
+  "module": "administration",
+  "files": [
+   "src/features/administration/AuditPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.get",
+  "fn": "get",
+  "method": "GET",
+  "path": "/api/v1/employees/{id}",
+  "service": "employee",
+  "tag": "Employees",
+  "summary": "Employee profile: allowed for the employee, their manager and HR / payroll / finance",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.update",
+  "fn": "update",
+  "method": "PUT",
+  "path": "/api/v1/employees/{id}",
+  "service": "employee",
+  "tag": "Employees",
+  "summary": "Update profile fields (HR) - partial update with optimistic locking",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_EMPLOYEE_WRITE')",
+  "public": false
+ },
+ {
+  "id": "employee.updateExperience",
+  "fn": "updateExperience",
+  "method": "PUT",
+  "path": "/api/v1/employees/{employeeId}/experience/{id}",
+  "service": "employee",
+  "tag": "Employee Details",
+  "summary": "updateExperience",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.deleteExperience",
+  "fn": "deleteExperience",
+  "method": "DELETE",
+  "path": "/api/v1/employees/{employeeId}/experience/{id}",
+  "service": "employee",
+  "tag": "Employee Details",
+  "summary": "deleteExperience",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.updateContact",
+  "fn": "updateContact",
+  "method": "PUT",
+  "path": "/api/v1/employees/{employeeId}/emergency-contacts/{id}",
+  "service": "employee",
+  "tag": "Employee Details",
+  "summary": "updateContact",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.deleteContact",
+  "fn": "deleteContact",
+  "method": "DELETE",
+  "path": "/api/v1/employees/{employeeId}/emergency-contacts/{id}",
+  "service": "employee",
+  "tag": "Employee Details",
+  "summary": "deleteContact",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.updateEducation",
+  "fn": "updateEducation",
+  "method": "PUT",
+  "path": "/api/v1/employees/{employeeId}/education/{id}",
+  "service": "employee",
+  "tag": "Employee Details",
+  "summary": "updateEducation",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.deleteEducation",
+  "fn": "deleteEducation",
+  "method": "DELETE",
+  "path": "/api/v1/employees/{employeeId}/education/{id}",
+  "service": "employee",
+  "tag": "Employee Details",
+  "summary": "deleteEducation",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.bank",
+  "fn": "bank",
+  "method": "GET",
+  "path": "/api/v1/employees/{employeeId}/bank-details",
+  "service": "employee",
+  "tag": "Employee Details",
+  "summary": "bank",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.saveBank",
+  "fn": "saveBank",
+  "method": "PUT",
+  "path": "/api/v1/employees/{employeeId}/bank-details",
+  "service": "employee",
+  "tag": "Employee Details",
+  "summary": "saveBank",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.updateAddress",
+  "fn": "updateAddress",
+  "method": "PUT",
+  "path": "/api/v1/employees/{employeeId}/addresses/{id}",
+  "service": "employee",
+  "tag": "Employee Details",
+  "summary": "updateAddress",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.deleteAddress",
+  "fn": "deleteAddress",
+  "method": "DELETE",
+  "path": "/api/v1/employees/{employeeId}/addresses/{id}",
+  "service": "employee",
+  "tag": "Employee Details",
+  "summary": "deleteAddress",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.updateMyContact",
+  "fn": "updateMyContact",
+  "method": "PUT",
+  "path": "/api/v1/employees/me/contact",
+  "service": "employee",
+  "tag": "Employees",
+  "summary": "Update my own contact details (self service)",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx",
+   "src/features/profile/ProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.search",
+  "fn": "search",
+  "method": "GET",
+  "path": "/api/v1/employees",
+  "service": "employee",
+  "tag": "Employees",
+  "summary": "Search / filter / sort / paginate employees",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeesPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN','PAYROLL_ADMIN','FINANCE_ADMIN','MANAGER','PROJECT_MANAGER')",
+  "public": false
+ },
+ {
+  "id": "employee.onboard",
+  "fn": "onboard",
+  "method": "POST",
+  "path": "/api/v1/employees",
+  "service": "employee",
+  "tag": "Employees",
+  "summary": "Onboard a new employee (HR)",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeesPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_EMPLOYEE_WRITE')",
+  "public": false
+ },
+ {
+  "id": "employee.experience",
+  "fn": "experience",
+  "method": "GET",
+  "path": "/api/v1/employees/{employeeId}/experience",
+  "service": "employee",
+  "tag": "Employee Details",
+  "summary": "experience",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.addExperience",
+  "fn": "addExperience",
+  "method": "POST",
+  "path": "/api/v1/employees/{employeeId}/experience",
+  "service": "employee",
+  "tag": "Employee Details",
+  "summary": "addExperience",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.contacts",
+  "fn": "contacts",
+  "method": "GET",
+  "path": "/api/v1/employees/{employeeId}/emergency-contacts",
+  "service": "employee",
+  "tag": "Employee Details",
+  "summary": "contacts",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.addContact",
+  "fn": "addContact",
+  "method": "POST",
+  "path": "/api/v1/employees/{employeeId}/emergency-contacts",
+  "service": "employee",
+  "tag": "Employee Details",
+  "summary": "addContact",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.education",
+  "fn": "education",
+  "method": "GET",
+  "path": "/api/v1/employees/{employeeId}/education",
+  "service": "employee",
+  "tag": "Employee Details",
+  "summary": "education",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.addEducation",
+  "fn": "addEducation",
+  "method": "POST",
+  "path": "/api/v1/employees/{employeeId}/education",
+  "service": "employee",
+  "tag": "Employee Details",
+  "summary": "addEducation",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.addresses",
+  "fn": "addresses",
+  "method": "GET",
+  "path": "/api/v1/employees/{employeeId}/addresses",
+  "service": "employee",
+  "tag": "Employee Details",
+  "summary": "addresses",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.addAddress",
+  "fn": "addAddress",
+  "method": "POST",
+  "path": "/api/v1/employees/{employeeId}/addresses",
+  "service": "employee",
+  "tag": "Employee Details",
+  "summary": "addAddress",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.lookup",
+  "fn": "lookup",
+  "method": "POST",
+  "path": "/api/v1/employees/lookup",
+  "service": "employee",
+  "tag": "Employees",
+  "summary": "Bulk summaries by id (used by other microservices)",
+  "module": "shared",
+  "files": [
+   "src/components/op/employees.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.transfer",
+  "fn": "transfer",
+  "method": "PATCH",
+  "path": "/api/v1/employees/{id}/transfer",
+  "service": "employee",
+  "tag": "Employees",
+  "summary": "Transfer / promote: department, designation, location, job grade",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_EMPLOYEE_WRITE')",
+  "public": false
+ },
+ {
+  "id": "employee.status",
+  "fn": "status",
+  "method": "PATCH",
+  "path": "/api/v1/employees/{id}/status",
+  "service": "employee",
+  "tag": "Employees",
+  "summary": "Change employment status (ACTIVE, INACTIVE, ON_NOTICE, RESIGNED, TERMINATED)",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx",
+   "src/features/employees/EmployeesPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_EMPLOYEE_WRITE')",
+  "public": false
+ },
+ {
+  "id": "employee.manager",
+  "fn": "manager",
+  "method": "PATCH",
+  "path": "/api/v1/employees/{id}/manager",
+  "service": "employee",
+  "tag": "Employees",
+  "summary": "Assign / change the reporting manager",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_EMPLOYEE_WRITE')",
+  "public": false
+ },
+ {
+  "id": "employee.ping",
+  "fn": "ping",
+  "method": "GET",
+  "path": "/ping",
+  "service": "employee",
+  "tag": "ping-controller",
+  "summary": "ping",
+  "module": "administration",
+  "files": [
+   "src/features/administration/ApiExplorerPage.tsx"
+  ],
+  "status": "infrastructure",
+  "authorize": null,
+  "public": true
+ },
+ {
+  "id": "employee.team",
+  "fn": "team",
+  "method": "GET",
+  "path": "/api/v1/employees/{id}/team",
+  "service": "employee",
+  "tag": "Employees",
+  "summary": "Direct reports of a manager",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.summary",
+  "fn": "summary",
+  "method": "GET",
+  "path": "/api/v1/employees/{id}/summary",
+  "service": "employee",
+  "tag": "Employees",
+  "summary": "Non-sensitive employee summary (used by other microservices)",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.statusHistory",
+  "fn": "statusHistory",
+  "method": "GET",
+  "path": "/api/v1/employees/{employeeId}/status-history",
+  "service": "employee",
+  "tag": "Employee Details",
+  "summary": "statusHistory",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.profileHistory",
+  "fn": "profileHistory",
+  "method": "GET",
+  "path": "/api/v1/employees/{employeeId}/profile-history",
+  "service": "employee",
+  "tag": "Employee Details",
+  "summary": "profileHistory",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.employmentHistory",
+  "fn": "employmentHistory",
+  "method": "GET",
+  "path": "/api/v1/employees/{employeeId}/employment-history",
+  "service": "employee",
+  "tag": "Employee Details",
+  "summary": "employmentHistory",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.me",
+  "fn": "me",
+  "method": "GET",
+  "path": "/api/v1/employees/me",
+  "service": "employee",
+  "tag": "Employees",
+  "summary": "My own profile",
+  "module": "profile",
+  "files": [
+   "src/features/profile/ProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.directory",
+  "fn": "directory",
+  "method": "GET",
+  "path": "/api/v1/employees/directory",
+  "service": "employee",
+  "tag": "Employee Directory",
+  "summary": "Company directory (non-sensitive columns only; cached in Redis)",
+  "module": "employees",
+  "files": [
+   "src/components/layout/GlobalSearch.tsx",
+   "src/features/employees/DirectoryPage.tsx",
+   "src/features/employees/EmployeesPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.grouped",
+  "fn": "grouped",
+  "method": "GET",
+  "path": "/api/v1/employees/directory/grouped",
+  "service": "employee",
+  "tag": "Employee Directory",
+  "summary": "Directory grouped alphabetically with status counts",
+  "module": "employees",
+  "files": [
+   "src/features/employees/DirectoryPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.searchAudit",
+  "fn": "searchAudit",
+  "method": "GET",
+  "path": "/api/v1/employees/audit",
+  "service": "employee",
+  "tag": "Audit History",
+  "summary": "search_1",
+  "module": "administration",
+  "files": [
+   "src/features/administration/AuditPage.tsx",
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "employee.span",
+  "fn": "span",
+  "method": "GET",
+  "path": "/api/v1/employees/analytics/span-of-control",
+  "service": "employee",
+  "tag": "Employee Directory",
+  "summary": "Managers ranked by number of active direct reports",
+  "module": "employees",
+  "files": [
+   "src/features/employees/DirectoryPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "employee.headcount",
+  "fn": "headcount",
+  "method": "GET",
+  "path": "/api/v1/employees/analytics/headcount",
+  "service": "employee",
+  "tag": "Employee Directory",
+  "summary": "Headcount by department and status (Criteria API)",
+  "module": "employees",
+  "files": [
+   "src/features/employees/DirectoryPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN','FINANCE_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "organization.get",
+  "fn": "get",
+  "method": "GET",
+  "path": "/api/v1/organization/organizations/{id}",
+  "service": "organization",
+  "tag": "Organizations",
+  "summary": "get",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.update",
+  "fn": "update",
+  "method": "PUT",
+  "path": "/api/v1/organization/organizations/{id}",
+  "service": "organization",
+  "tag": "Organizations",
+  "summary": "update",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.delete",
+  "fn": "delete",
+  "method": "DELETE",
+  "path": "/api/v1/organization/organizations/{id}",
+  "service": "organization",
+  "tag": "Organizations",
+  "summary": "delete",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.getLocations",
+  "fn": "getLocations",
+  "method": "GET",
+  "path": "/api/v1/organization/locations/{id}",
+  "service": "organization",
+  "tag": "Locations",
+  "summary": "get_1",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.updateLocations",
+  "fn": "updateLocations",
+  "method": "PUT",
+  "path": "/api/v1/organization/locations/{id}",
+  "service": "organization",
+  "tag": "Locations",
+  "summary": "update_1",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.deleteLocations",
+  "fn": "deleteLocations",
+  "method": "DELETE",
+  "path": "/api/v1/organization/locations/{id}",
+  "service": "organization",
+  "tag": "Locations",
+  "summary": "delete_1",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.getJobGrades",
+  "fn": "getJobGrades",
+  "method": "GET",
+  "path": "/api/v1/organization/job-grades/{id}",
+  "service": "organization",
+  "tag": "Job Grades",
+  "summary": "get_2",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.updateJobGrades",
+  "fn": "updateJobGrades",
+  "method": "PUT",
+  "path": "/api/v1/organization/job-grades/{id}",
+  "service": "organization",
+  "tag": "Job Grades",
+  "summary": "update_2",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.deleteJobGrades",
+  "fn": "deleteJobGrades",
+  "method": "DELETE",
+  "path": "/api/v1/organization/job-grades/{id}",
+  "service": "organization",
+  "tag": "Job Grades",
+  "summary": "delete_2",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.getDesignations",
+  "fn": "getDesignations",
+  "method": "GET",
+  "path": "/api/v1/organization/designations/{id}",
+  "service": "organization",
+  "tag": "Designations",
+  "summary": "get_3",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.updateDesignations",
+  "fn": "updateDesignations",
+  "method": "PUT",
+  "path": "/api/v1/organization/designations/{id}",
+  "service": "organization",
+  "tag": "Designations",
+  "summary": "update_3",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.deleteDesignations",
+  "fn": "deleteDesignations",
+  "method": "DELETE",
+  "path": "/api/v1/organization/designations/{id}",
+  "service": "organization",
+  "tag": "Designations",
+  "summary": "delete_3",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.getDepartments",
+  "fn": "getDepartments",
+  "method": "GET",
+  "path": "/api/v1/organization/departments/{id}",
+  "service": "organization",
+  "tag": "Departments",
+  "summary": "get_4",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.updateDepartments",
+  "fn": "updateDepartments",
+  "method": "PUT",
+  "path": "/api/v1/organization/departments/{id}",
+  "service": "organization",
+  "tag": "Departments",
+  "summary": "update_4",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.deleteDepartments",
+  "fn": "deleteDepartments",
+  "method": "DELETE",
+  "path": "/api/v1/organization/departments/{id}",
+  "service": "organization",
+  "tag": "Departments",
+  "summary": "delete_4",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.assignHead",
+  "fn": "assignHead",
+  "method": "PUT",
+  "path": "/api/v1/organization/departments/{id}/head",
+  "service": "organization",
+  "tag": "Organization Structure",
+  "summary": "Assign the head (manager) of a department",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "organization.getBusinessUnits",
+  "fn": "getBusinessUnits",
+  "method": "GET",
+  "path": "/api/v1/organization/business-units/{id}",
+  "service": "organization",
+  "tag": "Business Units",
+  "summary": "get_5",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.updateBusinessUnits",
+  "fn": "updateBusinessUnits",
+  "method": "PUT",
+  "path": "/api/v1/organization/business-units/{id}",
+  "service": "organization",
+  "tag": "Business Units",
+  "summary": "update_5",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.deleteBusinessUnits",
+  "fn": "deleteBusinessUnits",
+  "method": "DELETE",
+  "path": "/api/v1/organization/business-units/{id}",
+  "service": "organization",
+  "tag": "Business Units",
+  "summary": "delete_5",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.list",
+  "fn": "list",
+  "method": "GET",
+  "path": "/api/v1/organization/organizations",
+  "service": "organization",
+  "tag": "Organizations",
+  "summary": "list",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.create",
+  "fn": "create",
+  "method": "POST",
+  "path": "/api/v1/organization/organizations",
+  "service": "organization",
+  "tag": "Organizations",
+  "summary": "create",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.listLocations",
+  "fn": "listLocations",
+  "method": "GET",
+  "path": "/api/v1/organization/locations",
+  "service": "organization",
+  "tag": "Locations",
+  "summary": "list_1",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.createLocations",
+  "fn": "createLocations",
+  "method": "POST",
+  "path": "/api/v1/organization/locations",
+  "service": "organization",
+  "tag": "Locations",
+  "summary": "create_1",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.listJobGrades",
+  "fn": "listJobGrades",
+  "method": "GET",
+  "path": "/api/v1/organization/job-grades",
+  "service": "organization",
+  "tag": "Job Grades",
+  "summary": "list_2",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.createJobGrades",
+  "fn": "createJobGrades",
+  "method": "POST",
+  "path": "/api/v1/organization/job-grades",
+  "service": "organization",
+  "tag": "Job Grades",
+  "summary": "create_2",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.listDesignations",
+  "fn": "listDesignations",
+  "method": "GET",
+  "path": "/api/v1/organization/designations",
+  "service": "organization",
+  "tag": "Designations",
+  "summary": "list_3",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.createDesignations",
+  "fn": "createDesignations",
+  "method": "POST",
+  "path": "/api/v1/organization/designations",
+  "service": "organization",
+  "tag": "Designations",
+  "summary": "create_3",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.listDepartments",
+  "fn": "listDepartments",
+  "method": "GET",
+  "path": "/api/v1/organization/departments",
+  "service": "organization",
+  "tag": "Departments",
+  "summary": "list_4",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.createDepartments",
+  "fn": "createDepartments",
+  "method": "POST",
+  "path": "/api/v1/organization/departments",
+  "service": "organization",
+  "tag": "Departments",
+  "summary": "create_4",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.listBusinessUnits",
+  "fn": "listBusinessUnits",
+  "method": "GET",
+  "path": "/api/v1/organization/business-units",
+  "service": "organization",
+  "tag": "Business Units",
+  "summary": "list_5",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.createBusinessUnits",
+  "fn": "createBusinessUnits",
+  "method": "POST",
+  "path": "/api/v1/organization/business-units",
+  "service": "organization",
+  "tag": "Business Units",
+  "summary": "create_5",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.ping",
+  "fn": "ping",
+  "method": "GET",
+  "path": "/ping",
+  "service": "organization",
+  "tag": "ping-controller",
+  "summary": "ping",
+  "module": "administration",
+  "files": [
+   "src/features/administration/ApiExplorerPage.tsx"
+  ],
+  "status": "infrastructure",
+  "authorize": null,
+  "public": true
+ },
+ {
+  "id": "organization.subordinates",
+  "fn": "subordinates",
+  "method": "GET",
+  "path": "/api/v1/organization/employees/{employeeId}/subordinates",
+  "service": "organization",
+  "tag": "Organization Structure",
+  "summary": "Direct and indirect reports (recursive CTE)",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN','MANAGER','PROJECT_MANAGER') or @authz.isSelf(#employeeId)",
+  "public": false
+ },
+ {
+  "id": "organization.chain",
+  "fn": "chain",
+  "method": "GET",
+  "path": "/api/v1/organization/employees/{employeeId}/reporting-chain",
+  "service": "organization",
+  "tag": "Organization Structure",
+  "summary": "Reporting-manager chain upwards (recursive CTE)",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.departmentEmployees",
+  "fn": "departmentEmployees",
+  "method": "GET",
+  "path": "/api/v1/organization/departments/{id}/employees",
+  "service": "organization",
+  "tag": "Organization Structure",
+  "summary": "Employees of a department (read model fed by employee events)",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrgChartPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN','MANAGER','PROJECT_MANAGER','FINANCE_ADMIN','PAYROLL_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "organization.departmentTree",
+  "fn": "departmentTree",
+  "method": "GET",
+  "path": "/api/v1/organization/departments/tree",
+  "service": "organization",
+  "tag": "Organization Structure",
+  "summary": "Department hierarchy with active headcount",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrgChartPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.headcount",
+  "fn": "headcount",
+  "method": "GET",
+  "path": "/api/v1/organization/departments/headcount",
+  "service": "organization",
+  "tag": "Organization Structure",
+  "summary": "Headcount per department ranked with a SQL window function",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrgChartPage.tsx",
+   "src/features/organization/OrganizationSetupPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN','FINANCE_ADMIN','MANAGER')",
+  "public": false
+ },
+ {
+  "id": "organization.chart",
+  "fn": "chart",
+  "method": "GET",
+  "path": "/api/v1/organization/chart",
+  "service": "organization",
+  "tag": "Organization Structure",
+  "summary": "Organization chart of the whole company as a hierarchy",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrgChartPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.chartFor",
+  "fn": "chartFor",
+  "method": "GET",
+  "path": "/api/v1/organization/chart/{employeeId}",
+  "service": "organization",
+  "tag": "Organization Structure",
+  "summary": "Organization chart below one employee",
+  "module": "organization",
+  "files": [
+   "src/features/organization/OrgChartPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "organization.searchAudit",
+  "fn": "searchAudit",
+  "method": "GET",
+  "path": "/api/v1/organization/audit",
+  "service": "organization",
+  "tag": "Audit History",
+  "summary": "search",
+  "module": "administration",
+  "files": [
+   "src/features/administration/AuditPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "leave.updateType",
+  "fn": "updateType",
+  "method": "PUT",
+  "path": "/api/v1/leaves/types/{id}",
+  "service": "leave",
+  "tag": "Leave Administration",
+  "summary": "updateType",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_LEAVE_POLICY_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "leave.deleteType",
+  "fn": "deleteType",
+  "method": "DELETE",
+  "path": "/api/v1/leaves/types/{id}",
+  "service": "leave",
+  "tag": "Leave Administration",
+  "summary": "deleteType",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_LEAVE_POLICY_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "leave.policy",
+  "fn": "policy",
+  "method": "GET",
+  "path": "/api/v1/leaves/policies/{id}",
+  "service": "leave",
+  "tag": "Leave Administration",
+  "summary": "policy",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "leave.updatePolicy",
+  "fn": "updatePolicy",
+  "method": "PUT",
+  "path": "/api/v1/leaves/policies/{id}",
+  "service": "leave",
+  "tag": "Leave Administration",
+  "summary": "updatePolicy",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_LEAVE_POLICY_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "leave.get",
+  "fn": "get",
+  "method": "GET",
+  "path": "/api/v1/leaves/applications/{id}",
+  "service": "leave",
+  "tag": "Leave Applications",
+  "summary": "get",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "leave.update",
+  "fn": "update",
+  "method": "PUT",
+  "path": "/api/v1/leaves/applications/{id}",
+  "service": "leave",
+  "tag": "Leave Applications",
+  "summary": "Change a PENDING application",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "leave.types",
+  "fn": "types",
+  "method": "GET",
+  "path": "/api/v1/leaves/types",
+  "service": "leave",
+  "tag": "Leave Administration",
+  "summary": "types",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "leave.createType",
+  "fn": "createType",
+  "method": "POST",
+  "path": "/api/v1/leaves/types",
+  "service": "leave",
+  "tag": "Leave Administration",
+  "summary": "createType",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_LEAVE_POLICY_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "leave.policies",
+  "fn": "policies",
+  "method": "GET",
+  "path": "/api/v1/leaves/policies",
+  "service": "leave",
+  "tag": "Leave Administration",
+  "summary": "policies",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "leave.createPolicy",
+  "fn": "createPolicy",
+  "method": "POST",
+  "path": "/api/v1/leaves/policies",
+  "service": "leave",
+  "tag": "Leave Administration",
+  "summary": "createPolicy",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_LEAVE_POLICY_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "leave.carryForward",
+  "fn": "carryForward",
+  "method": "POST",
+  "path": "/api/v1/leaves/carry-forward/run",
+  "service": "leave",
+  "tag": "Leave Administration",
+  "summary": "carryForward",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_LEAVE_POLICY_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "leave.encash",
+  "fn": "encash",
+  "method": "POST",
+  "path": "/api/v1/leaves/balances/{employeeId}/encash",
+  "service": "leave",
+  "tag": "Leave Balances and Calendar",
+  "summary": "encash",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN','PAYROLL_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "leave.adjust",
+  "fn": "adjust",
+  "method": "POST",
+  "path": "/api/v1/leaves/balances/{employeeId}/adjust",
+  "service": "leave",
+  "tag": "Leave Balances and Calendar",
+  "summary": "adjust",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "leave.apply",
+  "fn": "apply",
+  "method": "POST",
+  "path": "/api/v1/leaves/applications",
+  "service": "leave",
+  "tag": "Leave Applications",
+  "summary": "Apply for leave (validates range, overlap, eligibility, holidays and balance)",
+  "module": "leaves",
+  "files": [
+   "src/components/layout/Topbar.tsx",
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "leave.withdraw",
+  "fn": "withdraw",
+  "method": "POST",
+  "path": "/api/v1/leaves/applications/{id}/withdraw",
+  "service": "leave",
+  "tag": "Leave Applications",
+  "summary": "Withdraw a PENDING application",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "leave.reject",
+  "fn": "reject",
+  "method": "POST",
+  "path": "/api/v1/leaves/applications/{id}/reject",
+  "service": "leave",
+  "tag": "Leave Applications",
+  "summary": "reject",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_LEAVE_APPROVE')",
+  "public": false
+ },
+ {
+  "id": "leave.comments",
+  "fn": "comments",
+  "method": "GET",
+  "path": "/api/v1/leaves/applications/{id}/comments",
+  "service": "leave",
+  "tag": "Leave Applications",
+  "summary": "comments",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "leave.addComment",
+  "fn": "addComment",
+  "method": "POST",
+  "path": "/api/v1/leaves/applications/{id}/comments",
+  "service": "leave",
+  "tag": "Leave Applications",
+  "summary": "addComment",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "leave.rejectCancellation",
+  "fn": "rejectCancellation",
+  "method": "POST",
+  "path": "/api/v1/leaves/applications/{id}/cancellation/reject",
+  "service": "leave",
+  "tag": "Leave Applications",
+  "summary": "rejectCancellation",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_LEAVE_APPROVE')",
+  "public": false
+ },
+ {
+  "id": "leave.approveCancellation",
+  "fn": "approveCancellation",
+  "method": "POST",
+  "path": "/api/v1/leaves/applications/{id}/cancellation/approve",
+  "service": "leave",
+  "tag": "Leave Applications",
+  "summary": "approveCancellation",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_LEAVE_APPROVE')",
+  "public": false
+ },
+ {
+  "id": "leave.cancel",
+  "fn": "cancel",
+  "method": "POST",
+  "path": "/api/v1/leaves/applications/{id}/cancel",
+  "service": "leave",
+  "tag": "Leave Applications",
+  "summary": "Request cancellation of an approved leave (a pending one is withdrawn)",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "leave.approve",
+  "fn": "approve",
+  "method": "POST",
+  "path": "/api/v1/leaves/applications/{id}/approve",
+  "service": "leave",
+  "tag": "Leave Applications",
+  "summary": "approve",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_LEAVE_APPROVE')",
+  "public": false
+ },
+ {
+  "id": "leave.accrue",
+  "fn": "accrue",
+  "method": "POST",
+  "path": "/api/v1/leaves/accrual/run",
+  "service": "leave",
+  "tag": "Leave Administration",
+  "summary": "accrue",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_LEAVE_POLICY_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "leave.ping",
+  "fn": "ping",
+  "method": "GET",
+  "path": "/ping",
+  "service": "leave",
+  "tag": "ping-controller",
+  "summary": "ping",
+  "module": "administration",
+  "files": [
+   "src/features/administration/ApiExplorerPage.tsx"
+  ],
+  "status": "infrastructure",
+  "authorize": null,
+  "public": true
+ },
+ {
+  "id": "leave.unpaid",
+  "fn": "unpaid",
+  "method": "GET",
+  "path": "/api/v1/leaves/unpaid-days",
+  "service": "leave",
+  "tag": "Leave Balances and Calendar",
+  "summary": "Unpaid leave days of an employee in a month (consumed by Payroll)",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('PAYROLL_ADMIN','HR_ADMIN','FINANCE_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "leave.cancellationRequests",
+  "fn": "cancellationRequests",
+  "method": "GET",
+  "path": "/api/v1/leaves/cancellation-requests",
+  "service": "leave",
+  "tag": "Leave Applications",
+  "summary": "cancellationRequests",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_LEAVE_APPROVE')",
+  "public": false
+ },
+ {
+  "id": "leave.myCalendar",
+  "fn": "myCalendar",
+  "method": "GET",
+  "path": "/api/v1/leaves/calendar",
+  "service": "leave",
+  "tag": "Leave Balances and Calendar",
+  "summary": "My approved leave in a date range",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "leave.upcoming",
+  "fn": "upcoming",
+  "method": "GET",
+  "path": "/api/v1/leaves/calendar/upcoming",
+  "service": "leave",
+  "tag": "Leave Balances and Calendar",
+  "summary": "Upcoming approved leave of my team in the next N days",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('MANAGER','HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "leave.teamCalendar",
+  "fn": "teamCalendar",
+  "method": "GET",
+  "path": "/api/v1/leaves/calendar/team",
+  "service": "leave",
+  "tag": "Leave Balances and Calendar",
+  "summary": "Team leave calendar (manager: direct reports, HR: company / department)",
+  "module": "dashboard",
+  "files": [
+   "src/features/dashboard/DashboardPage.tsx",
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('MANAGER','HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "leave.of",
+  "fn": "of",
+  "method": "GET",
+  "path": "/api/v1/leaves/balances/{employeeId}",
+  "service": "leave",
+  "tag": "Leave Balances and Calendar",
+  "summary": "of",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "@authz.isSelfOrFinanceStaff(#employeeId)",
+  "public": false
+ },
+ {
+  "id": "leave.reconcile",
+  "fn": "reconcile",
+  "method": "GET",
+  "path": "/api/v1/leaves/balances/{employeeId}/reconciliation",
+  "service": "leave",
+  "tag": "Leave Balances and Calendar",
+  "summary": "Recalculate balances with the stored procedure sp_calculate_leave_balance and compare with the ledger",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx",
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "leave.history",
+  "fn": "history",
+  "method": "GET",
+  "path": "/api/v1/leaves/balances/{employeeId}/history",
+  "service": "leave",
+  "tag": "Leave Balances and Calendar",
+  "summary": "Balance transaction history (written by a MySQL trigger)",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "@authz.isSelfOrFinanceStaff(#employeeId)",
+  "public": false
+ },
+ {
+  "id": "leave.encashable",
+  "fn": "encashable",
+  "method": "GET",
+  "path": "/api/v1/leaves/balances/{employeeId}/encashable",
+  "service": "leave",
+  "tag": "Leave Balances and Calendar",
+  "summary": "Days that may be encashed (policy configuration vs. available balance); used by the exit settlement",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN','PAYROLL_ADMIN','FINANCE_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "leave.mine",
+  "fn": "mine",
+  "method": "GET",
+  "path": "/api/v1/leaves/balances/me",
+  "service": "leave",
+  "tag": "Leave Balances and Calendar",
+  "summary": "My leave balances (Redis cached)",
+  "module": "dashboard",
+  "files": [
+   "src/features/dashboard/DashboardPage.tsx",
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "leave.searchAudit",
+  "fn": "searchAudit",
+  "method": "GET",
+  "path": "/api/v1/leaves/audit",
+  "service": "leave",
+  "tag": "Audit History",
+  "summary": "search",
+  "module": "administration",
+  "files": [
+   "src/features/administration/AuditPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "leave.pending",
+  "fn": "pending",
+  "method": "GET",
+  "path": "/api/v1/leaves/approvals/pending",
+  "service": "leave",
+  "tag": "Leave Applications",
+  "summary": "Applications waiting for my approval (manager stage / HR stage)",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/dashboard/DashboardPage.tsx",
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_LEAVE_APPROVE')",
+  "public": false
+ },
+ {
+  "id": "leave.approvals",
+  "fn": "approvals",
+  "method": "GET",
+  "path": "/api/v1/leaves/applications/{id}/approvals",
+  "service": "leave",
+  "tag": "Leave Applications",
+  "summary": "approvals",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "leave.mineLeaveApplications",
+  "fn": "mineLeaveApplications",
+  "method": "GET",
+  "path": "/api/v1/leaves/applications/me",
+  "service": "leave",
+  "tag": "Leave Applications",
+  "summary": "My leave applications (filter by status)",
+  "module": "leaves",
+  "files": [
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "leave.forEmployee",
+  "fn": "forEmployee",
+  "method": "GET",
+  "path": "/api/v1/leaves/applications/employee/{employeeId}",
+  "service": "leave",
+  "tag": "Leave Applications",
+  "summary": "Leave applications of an employee (self, their manager or HR)",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "attendance.updateShift",
+  "fn": "updateShift",
+  "method": "PUT",
+  "path": "/api/v1/attendance/shifts/{id}",
+  "service": "attendance",
+  "tag": "Attendance Requests and Shifts",
+  "summary": "updateShift",
+  "module": "attendance",
+  "files": [
+   "src/features/attendance/AttendancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_ATTENDANCE_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "attendance.deleteShift",
+  "fn": "deleteShift",
+  "method": "DELETE",
+  "path": "/api/v1/attendance/shifts/{id}",
+  "service": "attendance",
+  "tag": "Attendance Requests and Shifts",
+  "summary": "deleteShift",
+  "module": "attendance",
+  "files": [
+   "src/features/attendance/AttendancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_ATTENDANCE_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "attendance.requestWfh",
+  "fn": "requestWfh",
+  "method": "POST",
+  "path": "/api/v1/attendance/wfh",
+  "service": "attendance",
+  "tag": "Attendance Requests and Shifts",
+  "summary": "requestWfh",
+  "module": "attendance",
+  "files": [
+   "src/components/layout/Topbar.tsx",
+   "src/features/attendance/AttendancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "attendance.rejectWfh",
+  "fn": "rejectWfh",
+  "method": "POST",
+  "path": "/api/v1/attendance/wfh/{id}/reject",
+  "service": "attendance",
+  "tag": "Attendance Requests and Shifts",
+  "summary": "rejectWfh",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/attendance/AttendancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_ATTENDANCE_APPROVE')",
+  "public": false
+ },
+ {
+  "id": "attendance.cancelWfh",
+  "fn": "cancelWfh",
+  "method": "POST",
+  "path": "/api/v1/attendance/wfh/{id}/cancel",
+  "service": "attendance",
+  "tag": "Attendance Requests and Shifts",
+  "summary": "cancelWfh",
+  "module": "attendance",
+  "files": [
+   "src/features/attendance/AttendancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "attendance.approveWfh",
+  "fn": "approveWfh",
+  "method": "POST",
+  "path": "/api/v1/attendance/wfh/{id}/approve",
+  "service": "attendance",
+  "tag": "Attendance Requests and Shifts",
+  "summary": "approveWfh",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/attendance/AttendancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_ATTENDANCE_APPROVE')",
+  "public": false
+ },
+ {
+  "id": "attendance.shifts",
+  "fn": "shifts",
+  "method": "GET",
+  "path": "/api/v1/attendance/shifts",
+  "service": "attendance",
+  "tag": "Attendance Requests and Shifts",
+  "summary": "shifts",
+  "module": "attendance",
+  "files": [
+   "src/features/attendance/AttendancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "attendance.createShift",
+  "fn": "createShift",
+  "method": "POST",
+  "path": "/api/v1/attendance/shifts",
+  "service": "attendance",
+  "tag": "Attendance Requests and Shifts",
+  "summary": "createShift",
+  "module": "attendance",
+  "files": [
+   "src/features/attendance/AttendancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_ATTENDANCE_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "attendance.assign",
+  "fn": "assign",
+  "method": "POST",
+  "path": "/api/v1/attendance/shifts/{id}/assignments",
+  "service": "attendance",
+  "tag": "Attendance Requests and Shifts",
+  "summary": "assign",
+  "module": "attendance",
+  "files": [
+   "src/features/attendance/AttendancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_ATTENDANCE_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "attendance.importPunches",
+  "fn": "importPunches",
+  "method": "POST",
+  "path": "/api/v1/attendance/punches/import",
+  "service": "attendance",
+  "tag": "Attendance",
+  "summary": "Bulk punch import (device export): queued and processed by a background consumer",
+  "module": "attendance",
+  "files": [
+   "src/features/attendance/AttendancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_ATTENDANCE_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "attendance.runMissingPunchJob",
+  "fn": "runMissingPunchJob",
+  "method": "POST",
+  "path": "/api/v1/attendance/jobs/missing-punch",
+  "service": "attendance",
+  "tag": "Attendance",
+  "summary": "Run the missing-punch detection now (also runs nightly)",
+  "module": "attendance",
+  "files": [
+   "src/features/attendance/AttendancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_ATTENDANCE_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "attendance.requestCorrection",
+  "fn": "requestCorrection",
+  "method": "POST",
+  "path": "/api/v1/attendance/corrections",
+  "service": "attendance",
+  "tag": "Attendance Requests and Shifts",
+  "summary": "requestCorrection",
+  "module": "attendance",
+  "files": [
+   "src/features/attendance/AttendancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "attendance.rejectCorrection",
+  "fn": "rejectCorrection",
+  "method": "POST",
+  "path": "/api/v1/attendance/corrections/{id}/reject",
+  "service": "attendance",
+  "tag": "Attendance Requests and Shifts",
+  "summary": "rejectCorrection",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/attendance/AttendancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_ATTENDANCE_APPROVE')",
+  "public": false
+ },
+ {
+  "id": "attendance.cancelCorrection",
+  "fn": "cancelCorrection",
+  "method": "POST",
+  "path": "/api/v1/attendance/corrections/{id}/cancel",
+  "service": "attendance",
+  "tag": "Attendance Requests and Shifts",
+  "summary": "cancelCorrection",
+  "module": "attendance",
+  "files": [
+   "src/features/attendance/AttendancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "attendance.approveCorrection",
+  "fn": "approveCorrection",
+  "method": "POST",
+  "path": "/api/v1/attendance/corrections/{id}/approve",
+  "service": "attendance",
+  "tag": "Attendance Requests and Shifts",
+  "summary": "approveCorrection",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/attendance/AttendancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_ATTENDANCE_APPROVE')",
+  "public": false
+ },
+ {
+  "id": "attendance.checkOut",
+  "fn": "checkOut",
+  "method": "POST",
+  "path": "/api/v1/attendance/check-out",
+  "service": "attendance",
+  "tag": "Attendance",
+  "summary": "Check out now: computes worked time, early departure and overtime",
+  "module": "attendance",
+  "files": [
+   "src/features/attendance/AttendancePage.tsx",
+   "src/features/dashboard/DashboardPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "attendance.checkIn",
+  "fn": "checkIn",
+  "method": "POST",
+  "path": "/api/v1/attendance/check-in",
+  "service": "attendance",
+  "tag": "Attendance",
+  "summary": "Check in now (office, or WFH when an approved request exists)",
+  "module": "attendance",
+  "files": [
+   "src/components/layout/Topbar.tsx",
+   "src/features/attendance/AttendancePage.tsx",
+   "src/features/dashboard/DashboardPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "attendance.ping",
+  "fn": "ping",
+  "method": "GET",
+  "path": "/ping",
+  "service": "attendance",
+  "tag": "ping-controller",
+  "summary": "ping",
+  "module": "administration",
+  "files": [
+   "src/features/administration/ApiExplorerPage.tsx"
+  ],
+  "status": "infrastructure",
+  "authorize": null,
+  "public": true
+ },
+ {
+  "id": "attendance.pendingWfh",
+  "fn": "pendingWfh",
+  "method": "GET",
+  "path": "/api/v1/attendance/wfh/pending",
+  "service": "attendance",
+  "tag": "Attendance Requests and Shifts",
+  "summary": "pendingWfh",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/attendance/AttendancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_ATTENDANCE_APPROVE')",
+  "public": false
+ },
+ {
+  "id": "attendance.myWfh",
+  "fn": "myWfh",
+  "method": "GET",
+  "path": "/api/v1/attendance/wfh/me",
+  "service": "attendance",
+  "tag": "Attendance Requests and Shifts",
+  "summary": "myWfh",
+  "module": "attendance",
+  "files": [
+   "src/features/attendance/AttendancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "attendance.teamReport",
+  "fn": "teamReport",
+  "method": "GET",
+  "path": "/api/v1/attendance/team/report",
+  "service": "attendance",
+  "tag": "Attendance",
+  "summary": "Team attendance report for a month (summaries computed in parallel)",
+  "module": "attendance",
+  "files": [
+   "src/features/attendance/AttendancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('MANAGER','HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "attendance.assignments",
+  "fn": "assignments",
+  "method": "GET",
+  "path": "/api/v1/attendance/shifts/assignments/{employeeId}",
+  "service": "attendance",
+  "tag": "Attendance Requests and Shifts",
+  "summary": "assignments",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "@authz.isSelfOrHr(#employeeId) or hasRole('MANAGER')",
+  "public": false
+ },
+ {
+  "id": "attendance.monthlySummary",
+  "fn": "monthlySummary",
+  "method": "GET",
+  "path": "/api/v1/attendance/monthly/{employeeId}",
+  "service": "attendance",
+  "tag": "Attendance",
+  "summary": "Monthly attendance summary (stored procedure sp_monthly_attendance_summary); used by Payroll",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "attendance.myMonthly",
+  "fn": "myMonthly",
+  "method": "GET",
+  "path": "/api/v1/attendance/monthly/me",
+  "service": "attendance",
+  "tag": "Attendance",
+  "summary": "myMonthly",
+  "module": "attendance",
+  "files": [
+   "src/features/attendance/AttendancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "attendance.mine",
+  "fn": "mine",
+  "method": "GET",
+  "path": "/api/v1/attendance/me",
+  "service": "attendance",
+  "tag": "Attendance",
+  "summary": "My attendance records (defaults to the current month)",
+  "module": "attendance",
+  "files": [
+   "src/features/attendance/AttendancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "attendance.today",
+  "fn": "today",
+  "method": "GET",
+  "path": "/api/v1/attendance/me/today",
+  "service": "attendance",
+  "tag": "Attendance",
+  "summary": "today",
+  "module": "attendance",
+  "files": [
+   "src/features/attendance/AttendancePage.tsx",
+   "src/features/dashboard/DashboardPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "attendance.of",
+  "fn": "of",
+  "method": "GET",
+  "path": "/api/v1/attendance/employees/{employeeId}",
+  "service": "attendance",
+  "tag": "Attendance",
+  "summary": "of",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "attendance.daily",
+  "fn": "daily",
+  "method": "GET",
+  "path": "/api/v1/attendance/daily",
+  "service": "attendance",
+  "tag": "Attendance",
+  "summary": "Daily attendance of the team (manager) or everybody (HR)",
+  "module": "attendance",
+  "files": [
+   "src/features/attendance/AttendancePage.tsx",
+   "src/features/dashboard/DashboardPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('MANAGER','HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "attendance.pendingCorrections",
+  "fn": "pendingCorrections",
+  "method": "GET",
+  "path": "/api/v1/attendance/corrections/pending",
+  "service": "attendance",
+  "tag": "Attendance Requests and Shifts",
+  "summary": "pendingCorrections",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/attendance/AttendancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_ATTENDANCE_APPROVE')",
+  "public": false
+ },
+ {
+  "id": "attendance.myCorrections",
+  "fn": "myCorrections",
+  "method": "GET",
+  "path": "/api/v1/attendance/corrections/me",
+  "service": "attendance",
+  "tag": "Attendance Requests and Shifts",
+  "summary": "myCorrections",
+  "module": "attendance",
+  "files": [
+   "src/features/attendance/AttendancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "attendance.myCalendar",
+  "fn": "myCalendar",
+  "method": "GET",
+  "path": "/api/v1/attendance/calendar",
+  "service": "attendance",
+  "tag": "Attendance",
+  "summary": "My attendance calendar of a month (record, holiday, weekly off, leave)",
+  "module": "attendance",
+  "files": [
+   "src/features/attendance/AttendancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "attendance.calendarOf",
+  "fn": "calendarOf",
+  "method": "GET",
+  "path": "/api/v1/attendance/calendar/{employeeId}",
+  "service": "attendance",
+  "tag": "Attendance",
+  "summary": "calendarOf",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "attendance.searchAudit",
+  "fn": "searchAudit",
+  "method": "GET",
+  "path": "/api/v1/attendance/audit",
+  "service": "attendance",
+  "tag": "Audit History",
+  "summary": "search",
+  "module": "administration",
+  "files": [
+   "src/features/administration/AuditPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "holiday.get",
+  "fn": "get",
+  "method": "GET",
+  "path": "/api/v1/holidays/{id}",
+  "service": "holiday",
+  "tag": "Holidays",
+  "summary": "get",
+  "module": "holidays",
+  "files": [
+   "src/features/holidays/HolidaysPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "holiday.update",
+  "fn": "update",
+  "method": "PUT",
+  "path": "/api/v1/holidays/{id}",
+  "service": "holiday",
+  "tag": "Holidays",
+  "summary": "update",
+  "module": "holidays",
+  "files": [
+   "src/features/holidays/HolidaysPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_HOLIDAY_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "holiday.delete",
+  "fn": "delete",
+  "method": "DELETE",
+  "path": "/api/v1/holidays/{id}",
+  "service": "holiday",
+  "tag": "Holidays",
+  "summary": "delete",
+  "module": "holidays",
+  "files": [
+   "src/features/holidays/HolidaysPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_HOLIDAY_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "holiday.updateHolidayYears",
+  "fn": "updateHolidayYears",
+  "method": "PUT",
+  "path": "/api/v1/holidays/years/{id}",
+  "service": "holiday",
+  "tag": "Holiday Years",
+  "summary": "update_1",
+  "module": "holidays",
+  "files": [
+   "src/features/holidays/HolidaysPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_HOLIDAY_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "holiday.byYear",
+  "fn": "byYear",
+  "method": "GET",
+  "path": "/api/v1/holidays",
+  "service": "holiday",
+  "tag": "Holidays",
+  "summary": "Holidays of a year, optionally for one location / department",
+  "module": "holidays",
+  "files": [
+   "src/features/holidays/HolidaysPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "holiday.create",
+  "fn": "create",
+  "method": "POST",
+  "path": "/api/v1/holidays",
+  "service": "holiday",
+  "tag": "Holidays",
+  "summary": "create",
+  "module": "holidays",
+  "files": [
+   "src/features/holidays/HolidaysPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_HOLIDAY_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "holiday.list",
+  "fn": "list",
+  "method": "GET",
+  "path": "/api/v1/holidays/years",
+  "service": "holiday",
+  "tag": "Holiday Years",
+  "summary": "list",
+  "module": "holidays",
+  "files": [
+   "src/features/holidays/HolidaysPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "holiday.createHolidayYears",
+  "fn": "createHolidayYears",
+  "method": "POST",
+  "path": "/api/v1/holidays/years",
+  "service": "holiday",
+  "tag": "Holiday Years",
+  "summary": "create_1",
+  "module": "holidays",
+  "files": [
+   "src/features/holidays/HolidaysPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_HOLIDAY_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "holiday.ping",
+  "fn": "ping",
+  "method": "GET",
+  "path": "/ping",
+  "service": "holiday",
+  "tag": "ping-controller",
+  "summary": "ping",
+  "module": "administration",
+  "files": [
+   "src/features/administration/ApiExplorerPage.tsx"
+  ],
+  "status": "infrastructure",
+  "authorize": null,
+  "public": true
+ },
+ {
+  "id": "holiday.upcoming",
+  "fn": "upcoming",
+  "method": "GET",
+  "path": "/api/v1/holidays/upcoming",
+  "service": "holiday",
+  "tag": "Holidays",
+  "summary": "upcoming",
+  "module": "dashboard",
+  "files": [
+   "src/features/dashboard/DashboardPage.tsx",
+   "src/features/holidays/HolidaysPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "holiday.range",
+  "fn": "range",
+  "method": "GET",
+  "path": "/api/v1/holidays/range",
+  "service": "holiday",
+  "tag": "Holidays",
+  "summary": "Holidays inside a date range (used by the Attendance and Leave services)",
+  "module": "holidays",
+  "files": [
+   "src/features/holidays/HolidaysPage.tsx",
+   "src/features/leaves/LeavePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "holiday.calendar",
+  "fn": "calendar",
+  "method": "GET",
+  "path": "/api/v1/holidays/calendar/{year}",
+  "service": "holiday",
+  "tag": "Holidays",
+  "summary": "Calendar of a year grouped by month",
+  "module": "holidays",
+  "files": [
+   "src/features/holidays/HolidaysPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "holiday.searchAudit",
+  "fn": "searchAudit",
+  "method": "GET",
+  "path": "/api/v1/holidays/audit",
+  "service": "holiday",
+  "tag": "Audit History",
+  "summary": "search",
+  "module": "administration",
+  "files": [
+   "src/features/administration/AuditPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "payroll.structure",
+  "fn": "structure",
+  "method": "GET",
+  "path": "/api/v1/payroll/structures/{id}",
+  "service": "payroll",
+  "tag": "Salary Setup",
+  "summary": "structure",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('PAYROLL_ADMIN','FINANCE_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "payroll.updateStructure",
+  "fn": "updateStructure",
+  "method": "PUT",
+  "path": "/api/v1/payroll/structures/{id}",
+  "service": "payroll",
+  "tag": "Salary Setup",
+  "summary": "updateStructure",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_SALARY_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "payroll.deleteStructure",
+  "fn": "deleteStructure",
+  "method": "DELETE",
+  "path": "/api/v1/payroll/structures/{id}",
+  "service": "payroll",
+  "tag": "Salary Setup",
+  "summary": "deleteStructure",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_SALARY_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "payroll.updateConfig",
+  "fn": "updateConfig",
+  "method": "PUT",
+  "path": "/api/v1/payroll/config/{key}",
+  "service": "payroll",
+  "tag": "Salary Setup",
+  "summary": "updateConfig",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('FINANCE_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "payroll.updateComponent",
+  "fn": "updateComponent",
+  "method": "PUT",
+  "path": "/api/v1/payroll/components/{id}",
+  "service": "payroll",
+  "tag": "Salary Setup",
+  "summary": "updateComponent",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_SALARY_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "payroll.structures",
+  "fn": "structures",
+  "method": "GET",
+  "path": "/api/v1/payroll/structures",
+  "service": "payroll",
+  "tag": "Salary Setup",
+  "summary": "structures",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('PAYROLL_ADMIN','FINANCE_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "payroll.createStructure",
+  "fn": "createStructure",
+  "method": "POST",
+  "path": "/api/v1/payroll/structures",
+  "service": "payroll",
+  "tag": "Salary Setup",
+  "summary": "createStructure",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_SALARY_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "payroll.list",
+  "fn": "list",
+  "method": "GET",
+  "path": "/api/v1/payroll/runs",
+  "service": "payroll",
+  "tag": "Payroll Processing",
+  "summary": "list",
+  "module": "dashboard",
+  "files": [
+   "src/features/dashboard/DashboardPage.tsx",
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PAYROLL_VIEW')",
+  "public": false
+ },
+ {
+  "id": "payroll.create",
+  "fn": "create",
+  "method": "POST",
+  "path": "/api/v1/payroll/runs",
+  "service": "payroll",
+  "tag": "Payroll Processing",
+  "summary": "create",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PAYROLL_PROCESS')",
+  "public": false
+ },
+ {
+  "id": "payroll.process",
+  "fn": "process",
+  "method": "POST",
+  "path": "/api/v1/payroll/runs/{id}/process",
+  "service": "payroll",
+  "tag": "Payroll Processing",
+  "summary": "Calculate payroll for the month (concurrent data gathering, engine, stored procedure)",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PAYROLL_PROCESS')",
+  "public": false
+ },
+ {
+  "id": "payroll.regenerate",
+  "fn": "regenerate",
+  "method": "POST",
+  "path": "/api/v1/payroll/runs/{id}/payslips/generate",
+  "service": "payroll",
+  "tag": "Payroll Processing",
+  "summary": "regenerate",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PAYROLL_PROCESS')",
+  "public": false
+ },
+ {
+  "id": "payroll.finalizeRun",
+  "fn": "finalizeRun",
+  "method": "POST",
+  "path": "/api/v1/payroll/runs/{id}/finalize",
+  "service": "payroll",
+  "tag": "Payroll Processing",
+  "summary": "Finalize an approved run: publishes payroll.processed and generates the PDF payslips",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PAYROLL_PROCESS')",
+  "public": false
+ },
+ {
+  "id": "payroll.approve",
+  "fn": "approve",
+  "method": "POST",
+  "path": "/api/v1/payroll/runs/{id}/approve",
+  "service": "payroll",
+  "tag": "Payroll Processing",
+  "summary": "Approve a processed run (finance; not the person who processed it)",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PAYROLL_APPROVE')",
+  "public": false
+ },
+ {
+  "id": "payroll.rejectRevision",
+  "fn": "rejectRevision",
+  "method": "POST",
+  "path": "/api/v1/payroll/revisions/{id}/reject",
+  "service": "payroll",
+  "tag": "Salary Setup",
+  "summary": "rejectRevision",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PAYROLL_APPROVE')",
+  "public": false
+ },
+ {
+  "id": "payroll.approveRevision",
+  "fn": "approveRevision",
+  "method": "POST",
+  "path": "/api/v1/payroll/revisions/{id}/approve",
+  "service": "payroll",
+  "tag": "Salary Setup",
+  "summary": "approveRevision",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PAYROLL_APPROVE')",
+  "public": false
+ },
+ {
+  "id": "payroll.addLoan",
+  "fn": "addLoan",
+  "method": "POST",
+  "path": "/api/v1/payroll/loans",
+  "service": "payroll",
+  "tag": "Payroll Processing",
+  "summary": "addLoan",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx",
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PAYROLL_PROCESS')",
+  "public": false
+ },
+ {
+  "id": "payroll.salary",
+  "fn": "salary",
+  "method": "GET",
+  "path": "/api/v1/payroll/employees/{employeeId}/salary",
+  "service": "payroll",
+  "tag": "Salary Setup",
+  "summary": "Current salary: the employee, payroll, finance and super admin only",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx",
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "payroll.assign",
+  "fn": "assign",
+  "method": "POST",
+  "path": "/api/v1/payroll/employees/{employeeId}/salary",
+  "service": "payroll",
+  "tag": "Salary Setup",
+  "summary": "Assign the first salary of an employee",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_SALARY_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "payroll.propose",
+  "fn": "propose",
+  "method": "POST",
+  "path": "/api/v1/payroll/employees/{employeeId}/revisions",
+  "service": "payroll",
+  "tag": "Salary Setup",
+  "summary": "propose",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_SALARY_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "payroll.components",
+  "fn": "components",
+  "method": "GET",
+  "path": "/api/v1/payroll/components",
+  "service": "payroll",
+  "tag": "Salary Setup",
+  "summary": "components",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('PAYROLL_ADMIN','FINANCE_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "payroll.createComponent",
+  "fn": "createComponent",
+  "method": "POST",
+  "path": "/api/v1/payroll/components",
+  "service": "payroll",
+  "tag": "Salary Setup",
+  "summary": "createComponent",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_SALARY_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "payroll.adjustments",
+  "fn": "adjustments",
+  "method": "GET",
+  "path": "/api/v1/payroll/adjustments",
+  "service": "payroll",
+  "tag": "Payroll Processing",
+  "summary": "adjustments",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "payroll.addAdjustment",
+  "fn": "addAdjustment",
+  "method": "POST",
+  "path": "/api/v1/payroll/adjustments",
+  "service": "payroll",
+  "tag": "Payroll Processing",
+  "summary": "addAdjustment",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PAYROLL_PROCESS')",
+  "public": false
+ },
+ {
+  "id": "payroll.closeLoan",
+  "fn": "closeLoan",
+  "method": "PATCH",
+  "path": "/api/v1/payroll/loans/{id}/close",
+  "service": "payroll",
+  "tag": "Payroll Processing",
+  "summary": "closeLoan",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PAYROLL_PROCESS')",
+  "public": false
+ },
+ {
+  "id": "payroll.ping",
+  "fn": "ping",
+  "method": "GET",
+  "path": "/ping",
+  "service": "payroll",
+  "tag": "ping-controller",
+  "summary": "ping",
+  "module": "administration",
+  "files": [
+   "src/features/administration/ApiExplorerPage.tsx"
+  ],
+  "status": "infrastructure",
+  "authorize": null,
+  "public": true
+ },
+ {
+  "id": "payroll.get",
+  "fn": "get",
+  "method": "GET",
+  "path": "/api/v1/payroll/runs/{id}",
+  "service": "payroll",
+  "tag": "Payroll Processing",
+  "summary": "get",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PAYROLL_VIEW')",
+  "public": false
+ },
+ {
+  "id": "payroll.delete",
+  "fn": "delete",
+  "method": "DELETE",
+  "path": "/api/v1/payroll/runs/{id}",
+  "service": "payroll",
+  "tag": "Payroll Processing",
+  "summary": "delete",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PAYROLL_PROCESS')",
+  "public": false
+ },
+ {
+  "id": "payroll.entries",
+  "fn": "entries",
+  "method": "GET",
+  "path": "/api/v1/payroll/runs/{id}/entries",
+  "service": "payroll",
+  "tag": "Payroll Processing",
+  "summary": "entries",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PAYROLL_VIEW')",
+  "public": false
+ },
+ {
+  "id": "payroll.revisions",
+  "fn": "revisions",
+  "method": "GET",
+  "path": "/api/v1/payroll/revisions",
+  "service": "payroll",
+  "tag": "Salary Setup",
+  "summary": "revisions",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('PAYROLL_ADMIN','FINANCE_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "payroll.monthly",
+  "fn": "monthly",
+  "method": "GET",
+  "path": "/api/v1/payroll/reports/monthly",
+  "service": "payroll",
+  "tag": "Payroll Processing",
+  "summary": "monthly",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PAYROLL_VIEW')",
+  "public": false
+ },
+ {
+  "id": "payroll.departments",
+  "fn": "departments",
+  "method": "GET",
+  "path": "/api/v1/payroll/reports/departments",
+  "service": "payroll",
+  "tag": "Payroll Processing",
+  "summary": "departments",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PAYROLL_VIEW')",
+  "public": false
+ },
+ {
+  "id": "payroll.componentsPayrollProcessing",
+  "fn": "componentsPayrollProcessing",
+  "method": "GET",
+  "path": "/api/v1/payroll/reports/components",
+  "service": "payroll",
+  "tag": "Payroll Processing",
+  "summary": "Earnings and deductions grouped by salary component",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PAYROLL_VIEW')",
+  "public": false
+ },
+ {
+  "id": "payroll.download",
+  "fn": "download",
+  "method": "GET",
+  "path": "/api/v1/payroll/payslips/{id}/download",
+  "service": "payroll",
+  "tag": "Payroll Processing",
+  "summary": "Download a payslip PDF (own payslips, or PAYSLIP_VIEW_ALL)",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "payroll.myPayslips",
+  "fn": "myPayslips",
+  "method": "GET",
+  "path": "/api/v1/payroll/payslips/me",
+  "service": "payroll",
+  "tag": "Payroll Processing",
+  "summary": "My payslips",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "payroll.payslipsOf",
+  "fn": "payslipsOf",
+  "method": "GET",
+  "path": "/api/v1/payroll/payslips/employee/{employeeId}",
+  "service": "payroll",
+  "tag": "Payroll Processing",
+  "summary": "payslipsOf",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx",
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "payroll.loans",
+  "fn": "loans",
+  "method": "GET",
+  "path": "/api/v1/payroll/loans/employee/{employeeId}",
+  "service": "payroll",
+  "tag": "Payroll Processing",
+  "summary": "loans",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx",
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "payroll.entry",
+  "fn": "entry",
+  "method": "GET",
+  "path": "/api/v1/payroll/entries/{entryId}",
+  "service": "payroll",
+  "tag": "Payroll Processing",
+  "summary": "entry",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PAYROLL_VIEW')",
+  "public": false
+ },
+ {
+  "id": "payroll.salaryHistory",
+  "fn": "salaryHistory",
+  "method": "GET",
+  "path": "/api/v1/payroll/employees/{employeeId}/salary/history",
+  "service": "payroll",
+  "tag": "Salary Setup",
+  "summary": "Salary revision history (written by MySQL triggers)",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx",
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "payroll.summary",
+  "fn": "summary",
+  "method": "GET",
+  "path": "/api/v1/payroll/employees/{employeeId}/salary-summary",
+  "service": "payroll",
+  "tag": "Salary Setup",
+  "summary": "Employee salary summary: current CTC and financial-year-to-date payroll figures (used by Tax and Exit)",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx",
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "payroll.config",
+  "fn": "config",
+  "method": "GET",
+  "path": "/api/v1/payroll/config",
+  "service": "payroll",
+  "tag": "Salary Setup",
+  "summary": "Payroll / statutory configuration (sample values - verify before production use)",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('PAYROLL_ADMIN','FINANCE_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "payroll.searchAudit",
+  "fn": "searchAudit",
+  "method": "GET",
+  "path": "/api/v1/payroll/audit",
+  "service": "payroll",
+  "tag": "Audit History",
+  "summary": "search",
+  "module": "administration",
+  "files": [
+   "src/features/administration/AuditPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "payroll.cancelAdjustment",
+  "fn": "cancelAdjustment",
+  "method": "DELETE",
+  "path": "/api/v1/payroll/adjustments/{id}",
+  "service": "payroll",
+  "tag": "Payroll Processing",
+  "summary": "cancelAdjustment",
+  "module": "payroll",
+  "files": [
+   "src/features/payroll/PayrollPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PAYROLL_PROCESS')",
+  "public": false
+ },
+ {
+  "id": "tax.updateRule",
+  "fn": "updateRule",
+  "method": "PUT",
+  "path": "/api/v1/tax/rules/{id}",
+  "service": "tax",
+  "tag": "Tax",
+  "summary": "updateRule",
+  "module": "tax",
+  "files": [
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_TAX_CONFIG')",
+  "public": false
+ },
+ {
+  "id": "tax.save",
+  "fn": "save",
+  "method": "PUT",
+  "path": "/api/v1/tax/declarations",
+  "service": "tax",
+  "tag": "Tax",
+  "summary": "Create / replace my declaration for a financial year (while DRAFT or after a rejection)",
+  "module": "tax",
+  "files": [
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "tax.rules",
+  "fn": "rules",
+  "method": "GET",
+  "path": "/api/v1/tax/rules",
+  "service": "tax",
+  "tag": "Tax",
+  "summary": "Tax rules of a financial year (sample values - verify before production use)",
+  "module": "tax",
+  "files": [
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "tax.createRule",
+  "fn": "createRule",
+  "method": "POST",
+  "path": "/api/v1/tax/rules",
+  "service": "tax",
+  "tag": "Tax",
+  "summary": "createRule",
+  "module": "tax",
+  "files": [
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_TAX_CONFIG')",
+  "public": false
+ },
+ {
+  "id": "tax.reminders",
+  "fn": "reminders",
+  "method": "POST",
+  "path": "/api/v1/tax/reminders/run",
+  "service": "tax",
+  "tag": "Tax",
+  "summary": "reminders",
+  "module": "tax",
+  "files": [
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_TAX_REVIEW')",
+  "public": false
+ },
+ {
+  "id": "tax.verify",
+  "fn": "verify",
+  "method": "POST",
+  "path": "/api/v1/tax/proofs/{proofId}/verify",
+  "service": "tax",
+  "tag": "Tax",
+  "summary": "verify",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_TAX_REVIEW')",
+  "public": false
+ },
+ {
+  "id": "tax.rejectProof",
+  "fn": "rejectProof",
+  "method": "POST",
+  "path": "/api/v1/tax/proofs/{proofId}/reject",
+  "service": "tax",
+  "tag": "Tax",
+  "summary": "rejectProof",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_TAX_REVIEW')",
+  "public": false
+ },
+ {
+  "id": "tax.documents",
+  "fn": "documents",
+  "method": "GET",
+  "path": "/api/v1/tax/documents",
+  "service": "tax",
+  "tag": "Tax",
+  "summary": "documents",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx",
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "tax.addDocument",
+  "fn": "addDocument",
+  "method": "POST",
+  "path": "/api/v1/tax/documents",
+  "service": "tax",
+  "tag": "Tax",
+  "summary": "Register an employee tax document (Form 16 ...) stored in the Document service",
+  "module": "tax",
+  "files": [
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('FINANCE_ADMIN','HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "tax.submit",
+  "fn": "submit",
+  "method": "POST",
+  "path": "/api/v1/tax/declarations/{id}/submit",
+  "service": "tax",
+  "tag": "Tax",
+  "summary": "submit",
+  "module": "tax",
+  "files": [
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "tax.startReview",
+  "fn": "startReview",
+  "method": "POST",
+  "path": "/api/v1/tax/declarations/{id}/start-review",
+  "service": "tax",
+  "tag": "Tax",
+  "summary": "startReview",
+  "module": "tax",
+  "files": [
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_TAX_REVIEW')",
+  "public": false
+ },
+ {
+  "id": "tax.reject",
+  "fn": "reject",
+  "method": "POST",
+  "path": "/api/v1/tax/declarations/{id}/reject",
+  "service": "tax",
+  "tag": "Tax",
+  "summary": "reject",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_TAX_REVIEW')",
+  "public": false
+ },
+ {
+  "id": "tax.addProof",
+  "fn": "addProof",
+  "method": "POST",
+  "path": "/api/v1/tax/declarations/{id}/investments/{investmentId}/proofs",
+  "service": "tax",
+  "tag": "Tax",
+  "summary": "Attach a supporting proof (document id from the Document service) to an investment; also used to resubmit a rejected proof",
+  "module": "tax",
+  "files": [
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "tax.approve",
+  "fn": "approve",
+  "method": "POST",
+  "path": "/api/v1/tax/declarations/{id}/approve",
+  "service": "tax",
+  "tag": "Tax",
+  "summary": "approve",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_TAX_REVIEW')",
+  "public": false
+ },
+ {
+  "id": "tax.ping",
+  "fn": "ping",
+  "method": "GET",
+  "path": "/ping",
+  "service": "tax",
+  "tag": "ping-controller",
+  "summary": "ping",
+  "module": "administration",
+  "files": [
+   "src/features/administration/ApiExplorerPage.tsx"
+  ],
+  "status": "infrastructure",
+  "authorize": null,
+  "public": true
+ },
+ {
+  "id": "tax.statement",
+  "fn": "statement",
+  "method": "GET",
+  "path": "/api/v1/tax/statement",
+  "service": "tax",
+  "tag": "Tax",
+  "summary": "Income tax statement / annual tax summary with the month-wise TDS table",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx",
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "tax.status",
+  "fn": "status",
+  "method": "GET",
+  "path": "/api/v1/tax/reports/status",
+  "service": "tax",
+  "tag": "Tax",
+  "summary": "status",
+  "module": "tax",
+  "files": [
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','FINANCE_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "tax.proofsPending",
+  "fn": "proofsPending",
+  "method": "GET",
+  "path": "/api/v1/tax/proofs/pending",
+  "service": "tax",
+  "tag": "Tax",
+  "summary": "proofsPending",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_TAX_REVIEW')",
+  "public": false
+ },
+ {
+  "id": "tax.monthlyTds",
+  "fn": "monthlyTds",
+  "method": "GET",
+  "path": "/api/v1/tax/monthly-tds",
+  "service": "tax",
+  "tag": "Tax",
+  "summary": "Monthly TDS for payroll: (annual tax - TDS of earlier months) / months remaining",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx",
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "tax.get",
+  "fn": "get",
+  "method": "GET",
+  "path": "/api/v1/tax/declarations/{id}",
+  "service": "tax",
+  "tag": "Tax",
+  "summary": "get",
+  "module": "tax",
+  "files": [
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "tax.history",
+  "fn": "history",
+  "method": "GET",
+  "path": "/api/v1/tax/declarations/{id}/history",
+  "service": "tax",
+  "tag": "Tax",
+  "summary": "history",
+  "module": "tax",
+  "files": [
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "tax.pending",
+  "fn": "pending",
+  "method": "GET",
+  "path": "/api/v1/tax/declarations/pending-review",
+  "service": "tax",
+  "tag": "Tax",
+  "summary": "pending",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_TAX_REVIEW')",
+  "public": false
+ },
+ {
+  "id": "tax.mine",
+  "fn": "mine",
+  "method": "GET",
+  "path": "/api/v1/tax/declarations/me",
+  "service": "tax",
+  "tag": "Tax",
+  "summary": "mine",
+  "module": "tax",
+  "files": [
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "tax.compute",
+  "fn": "compute",
+  "method": "GET",
+  "path": "/api/v1/tax/computation",
+  "service": "tax",
+  "tag": "Tax",
+  "summary": "Annual tax computation of an employee (self / finance)",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx",
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "tax.searchAudit",
+  "fn": "searchAudit",
+  "method": "GET",
+  "path": "/api/v1/tax/audit",
+  "service": "tax",
+  "tag": "Audit History",
+  "summary": "search",
+  "module": "administration",
+  "files": [
+   "src/features/administration/AuditPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "performance.saveSelf",
+  "fn": "saveSelf",
+  "method": "PUT",
+  "path": "/api/v1/performance/reviews/{id}/self",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "Self evaluation: save a draft",
+  "module": "performance",
+  "files": [
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "performance.saveManager",
+  "fn": "saveManager",
+  "method": "PUT",
+  "path": "/api/v1/performance/reviews/{id}/manager",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "Manager evaluation: save a draft",
+  "module": "performance",
+  "files": [
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PERFORMANCE_REVIEW')",
+  "public": false
+ },
+ {
+  "id": "performance.updateGoal",
+  "fn": "updateGoal",
+  "method": "PUT",
+  "path": "/api/v1/performance/goals/{id}",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "updateGoal",
+  "module": "performance",
+  "files": [
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "performance.deleteGoal",
+  "fn": "deleteGoal",
+  "method": "DELETE",
+  "path": "/api/v1/performance/goals/{id}",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "deleteGoal",
+  "module": "performance",
+  "files": [
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "performance.form",
+  "fn": "form",
+  "method": "GET",
+  "path": "/api/v1/performance/forms/{id}",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "form",
+  "module": "performance",
+  "files": [
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "performance.updateForm",
+  "fn": "updateForm",
+  "method": "PUT",
+  "path": "/api/v1/performance/forms/{id}",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "updateForm",
+  "module": "performance",
+  "files": [
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PERFORMANCE_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "performance.submitSelf",
+  "fn": "submitSelf",
+  "method": "POST",
+  "path": "/api/v1/performance/reviews/{id}/self/submit",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "submitSelf",
+  "module": "performance",
+  "files": [
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "performance.returnReview",
+  "fn": "returnReview",
+  "method": "POST",
+  "path": "/api/v1/performance/reviews/{id}/return",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "returnReview",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PERFORMANCE_REVIEW')",
+  "public": false
+ },
+ {
+  "id": "performance.submitManager",
+  "fn": "submitManager",
+  "method": "POST",
+  "path": "/api/v1/performance/reviews/{id}/manager/submit",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "submitManager",
+  "module": "performance",
+  "files": [
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PERFORMANCE_REVIEW')",
+  "public": false
+ },
+ {
+  "id": "performance.approve",
+  "fn": "approve",
+  "method": "POST",
+  "path": "/api/v1/performance/reviews/{id}/approve",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "approve",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PERFORMANCE_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "performance.runReminders",
+  "fn": "runReminders",
+  "method": "POST",
+  "path": "/api/v1/performance/reminders/run",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "runReminders",
+  "module": "performance",
+  "files": [
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PERFORMANCE_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "performance.createGoal",
+  "fn": "createGoal",
+  "method": "POST",
+  "path": "/api/v1/performance/goals",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "createGoal",
+  "module": "performance",
+  "files": [
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "performance.forms",
+  "fn": "forms",
+  "method": "GET",
+  "path": "/api/v1/performance/forms",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "forms",
+  "module": "performance",
+  "files": [
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "performance.createForm",
+  "fn": "createForm",
+  "method": "POST",
+  "path": "/api/v1/performance/forms",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "createForm",
+  "module": "performance",
+  "files": [
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PERFORMANCE_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "performance.give",
+  "fn": "give",
+  "method": "POST",
+  "path": "/api/v1/performance/feedback",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "give",
+  "module": "performance",
+  "files": [
+   "src/components/layout/Topbar.tsx",
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "performance.cycles",
+  "fn": "cycles",
+  "method": "GET",
+  "path": "/api/v1/performance/cycles",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "cycles",
+  "module": "dashboard",
+  "files": [
+   "src/features/dashboard/DashboardPage.tsx",
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "performance.createCycle",
+  "fn": "createCycle",
+  "method": "POST",
+  "path": "/api/v1/performance/cycles",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "createCycle",
+  "module": "performance",
+  "files": [
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PERFORMANCE_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "performance.close",
+  "fn": "close",
+  "method": "POST",
+  "path": "/api/v1/performance/cycles/{id}/close",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "close",
+  "module": "performance",
+  "files": [
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PERFORMANCE_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "performance.activate",
+  "fn": "activate",
+  "method": "POST",
+  "path": "/api/v1/performance/cycles/{id}/activate",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "Activate a cycle: one review per active employee is created and employees are notified",
+  "module": "performance",
+  "files": [
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PERFORMANCE_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "performance.progress",
+  "fn": "progress",
+  "method": "PATCH",
+  "path": "/api/v1/performance/goals/{id}/progress",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "progress",
+  "module": "performance",
+  "files": [
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "performance.keyResult",
+  "fn": "keyResult",
+  "method": "PATCH",
+  "path": "/api/v1/performance/goals/{id}/key-results/{keyResultId}",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "keyResult",
+  "module": "performance",
+  "files": [
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "performance.ping",
+  "fn": "ping",
+  "method": "GET",
+  "path": "/ping",
+  "service": "performance",
+  "tag": "ping-controller",
+  "summary": "ping",
+  "module": "administration",
+  "files": [
+   "src/features/administration/ApiExplorerPage.tsx"
+  ],
+  "status": "infrastructure",
+  "authorize": null,
+  "public": true
+ },
+ {
+  "id": "performance.review",
+  "fn": "review",
+  "method": "GET",
+  "path": "/api/v1/performance/reviews/{id}",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "review",
+  "module": "performance",
+  "files": [
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "performance.trail",
+  "fn": "trail",
+  "method": "GET",
+  "path": "/api/v1/performance/reviews/{id}/history",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "trail",
+  "module": "performance",
+  "files": [
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "performance.pending",
+  "fn": "pending",
+  "method": "GET",
+  "path": "/api/v1/performance/reviews/pending",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "pending",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/dashboard/DashboardPage.tsx",
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PERFORMANCE_REVIEW')",
+  "public": false
+ },
+ {
+  "id": "performance.myReviews",
+  "fn": "myReviews",
+  "method": "GET",
+  "path": "/api/v1/performance/reviews/me",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "myReviews",
+  "module": "performance",
+  "files": [
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "performance.history",
+  "fn": "history",
+  "method": "GET",
+  "path": "/api/v1/performance/reviews/employee/{employeeId}",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "history",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx",
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "performance.myGoals",
+  "fn": "myGoals",
+  "method": "GET",
+  "path": "/api/v1/performance/goals/me",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "myGoals",
+  "module": "performance",
+  "files": [
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "performance.goalsOf",
+  "fn": "goalsOf",
+  "method": "GET",
+  "path": "/api/v1/performance/goals/employee/{employeeId}",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "goalsOf",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx",
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "performance.aboutMe",
+  "fn": "aboutMe",
+  "method": "GET",
+  "path": "/api/v1/performance/feedback/me",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "aboutMe",
+  "module": "performance",
+  "files": [
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "performance.about",
+  "fn": "about",
+  "method": "GET",
+  "path": "/api/v1/performance/feedback/employee/{employeeId}",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "about",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx",
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "performance.summary",
+  "fn": "summary",
+  "method": "GET",
+  "path": "/api/v1/performance/cycles/{id}/summary",
+  "service": "performance",
+  "tag": "Performance",
+  "summary": "Cycle report: status counts, average ratings, final-rating distribution",
+  "module": "performance",
+  "files": [
+   "src/features/performance/PerformancePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "performance.searchAudit",
+  "fn": "searchAudit",
+  "method": "GET",
+  "path": "/api/v1/performance/audit",
+  "service": "performance",
+  "tag": "Audit History",
+  "summary": "search",
+  "module": "administration",
+  "files": [
+   "src/features/administration/AuditPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "project.get",
+  "fn": "get",
+  "method": "GET",
+  "path": "/api/v1/projects/{id}",
+  "service": "project",
+  "tag": "Projects",
+  "summary": "get",
+  "module": "projects",
+  "files": [
+   "src/features/projects/ProjectDetailPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "project.update",
+  "fn": "update",
+  "method": "PUT",
+  "path": "/api/v1/projects/{id}",
+  "service": "project",
+  "tag": "Projects",
+  "summary": "update",
+  "module": "projects",
+  "files": [
+   "src/features/projects/ProjectDetailPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('PROJECT_MANAGER','HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "project.updateAllocation",
+  "fn": "updateAllocation",
+  "method": "PUT",
+  "path": "/api/v1/projects/{id}/allocations/{allocationId}",
+  "service": "project",
+  "tag": "Projects",
+  "summary": "updateAllocation",
+  "module": "projects",
+  "files": [
+   "src/features/projects/ProjectDetailPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('PROJECT_MANAGER','HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "project.endAllocation",
+  "fn": "endAllocation",
+  "method": "DELETE",
+  "path": "/api/v1/projects/{id}/allocations/{allocationId}",
+  "service": "project",
+  "tag": "Projects",
+  "summary": "endAllocation",
+  "module": "projects",
+  "files": [
+   "src/features/projects/ProjectDetailPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('PROJECT_MANAGER','HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "project.getCustomers",
+  "fn": "getCustomers",
+  "method": "GET",
+  "path": "/api/v1/customers/{id}",
+  "service": "project",
+  "tag": "Customers",
+  "summary": "get_1",
+  "module": "customers",
+  "files": [
+   "src/features/customers/CustomerDetailPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('PROJECT_MANAGER','HR_ADMIN','SUPER_ADMIN','FINANCE_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "project.updateCustomers",
+  "fn": "updateCustomers",
+  "method": "PUT",
+  "path": "/api/v1/customers/{id}",
+  "service": "project",
+  "tag": "Customers",
+  "summary": "update_1",
+  "module": "customers",
+  "files": [
+   "src/features/customers/CustomerDetailPage.tsx",
+   "src/features/customers/CustomersPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PROJECT_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "project.delete",
+  "fn": "delete",
+  "method": "DELETE",
+  "path": "/api/v1/customers/{id}",
+  "service": "project",
+  "tag": "Customers",
+  "summary": "delete",
+  "module": "customers",
+  "files": [
+   "src/features/customers/CustomerDetailPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PROJECT_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "project.updateContact",
+  "fn": "updateContact",
+  "method": "PUT",
+  "path": "/api/v1/customers/{id}/contacts/{contactId}",
+  "service": "project",
+  "tag": "Customers",
+  "summary": "updateContact",
+  "module": "customers",
+  "files": [
+   "src/features/customers/CustomerDetailPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PROJECT_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "project.deleteContact",
+  "fn": "deleteContact",
+  "method": "DELETE",
+  "path": "/api/v1/customers/{id}/contacts/{contactId}",
+  "service": "project",
+  "tag": "Customers",
+  "summary": "deleteContact",
+  "module": "customers",
+  "files": [
+   "src/features/customers/CustomerDetailPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PROJECT_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "project.list",
+  "fn": "list",
+  "method": "GET",
+  "path": "/api/v1/projects",
+  "service": "project",
+  "tag": "Projects",
+  "summary": "list",
+  "module": "customers",
+  "files": [
+   "src/components/layout/GlobalSearch.tsx",
+   "src/features/customers/CustomerDetailPage.tsx",
+   "src/features/projects/ProjectsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('PROJECT_MANAGER','HR_ADMIN','SUPER_ADMIN','FINANCE_ADMIN','MANAGER')",
+  "public": false
+ },
+ {
+  "id": "project.create",
+  "fn": "create",
+  "method": "POST",
+  "path": "/api/v1/projects",
+  "service": "project",
+  "tag": "Projects",
+  "summary": "create",
+  "module": "projects",
+  "files": [
+   "src/features/projects/ProjectsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PROJECT_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "project.team",
+  "fn": "team",
+  "method": "GET",
+  "path": "/api/v1/projects/{id}/allocations",
+  "service": "project",
+  "tag": "Projects",
+  "summary": "team",
+  "module": "projects",
+  "files": [
+   "src/features/projects/ProjectDetailPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('PROJECT_MANAGER','HR_ADMIN','SUPER_ADMIN','FINANCE_ADMIN','MANAGER')",
+  "public": false
+ },
+ {
+  "id": "project.allocate",
+  "fn": "allocate",
+  "method": "POST",
+  "path": "/api/v1/projects/{id}/allocations",
+  "service": "project",
+  "tag": "Projects",
+  "summary": "Allocate an employee (a percentage of their time) to the project; rejects more than 100 % on any day",
+  "module": "projects",
+  "files": [
+   "src/features/projects/ProjectDetailPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('PROJECT_MANAGER','HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "project.listCustomers",
+  "fn": "listCustomers",
+  "method": "GET",
+  "path": "/api/v1/customers",
+  "service": "project",
+  "tag": "Customers",
+  "summary": "list_1",
+  "module": "customers",
+  "files": [
+   "src/components/layout/GlobalSearch.tsx",
+   "src/features/customers/CustomersPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('PROJECT_MANAGER','HR_ADMIN','SUPER_ADMIN','FINANCE_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "project.createCustomers",
+  "fn": "createCustomers",
+  "method": "POST",
+  "path": "/api/v1/customers",
+  "service": "project",
+  "tag": "Customers",
+  "summary": "create_1",
+  "module": "customers",
+  "files": [
+   "src/features/customers/CustomersPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PROJECT_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "project.contacts",
+  "fn": "contacts",
+  "method": "GET",
+  "path": "/api/v1/customers/{id}/contacts",
+  "service": "project",
+  "tag": "Customers",
+  "summary": "contacts",
+  "module": "customers",
+  "files": [
+   "src/features/customers/CustomerDetailPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('PROJECT_MANAGER','HR_ADMIN','SUPER_ADMIN','FINANCE_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "project.addContact",
+  "fn": "addContact",
+  "method": "POST",
+  "path": "/api/v1/customers/{id}/contacts",
+  "service": "project",
+  "tag": "Customers",
+  "summary": "addContact",
+  "module": "customers",
+  "files": [
+   "src/features/customers/CustomerDetailPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PROJECT_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "project.status",
+  "fn": "status",
+  "method": "PATCH",
+  "path": "/api/v1/projects/{id}/status",
+  "service": "project",
+  "tag": "Projects",
+  "summary": "status",
+  "module": "projects",
+  "files": [
+   "src/features/projects/ProjectDetailPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('PROJECT_MANAGER','HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "project.manager",
+  "fn": "manager",
+  "method": "PATCH",
+  "path": "/api/v1/projects/{id}/manager",
+  "service": "project",
+  "tag": "Projects",
+  "summary": "manager",
+  "module": "projects",
+  "files": [
+   "src/features/projects/ProjectDetailPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "project.ping",
+  "fn": "ping",
+  "method": "GET",
+  "path": "/ping",
+  "service": "project",
+  "tag": "ping-controller",
+  "summary": "ping",
+  "module": "administration",
+  "files": [
+   "src/features/administration/ApiExplorerPage.tsx"
+  ],
+  "status": "infrastructure",
+  "authorize": null,
+  "public": true
+ },
+ {
+  "id": "project.history",
+  "fn": "history",
+  "method": "GET",
+  "path": "/api/v1/projects/{id}/history",
+  "service": "project",
+  "tag": "Projects",
+  "summary": "history",
+  "module": "projects",
+  "files": [
+   "src/features/projects/ProjectDetailPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('PROJECT_MANAGER','HR_ADMIN','SUPER_ADMIN','FINANCE_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "project.check",
+  "fn": "check",
+  "method": "GET",
+  "path": "/api/v1/projects/{id}/allocation-check",
+  "service": "project",
+  "tag": "Projects",
+  "summary": "Is the employee allocated to the project on a date? (used by the Timesheet service)",
+  "module": "projects",
+  "files": [
+   "src/features/projects/ProjectDetailPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "project.employeeProjects",
+  "fn": "employeeProjects",
+  "method": "GET",
+  "path": "/api/v1/projects/employees/{employeeId}",
+  "service": "project",
+  "tag": "Projects",
+  "summary": "Projects of an employee",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx",
+   "src/features/timesheets/WeeklyGrid.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "project.allocationSummary",
+  "fn": "allocationSummary",
+  "method": "GET",
+  "path": "/api/v1/projects/employees/{employeeId}/allocation-summary",
+  "service": "project",
+  "tag": "Projects",
+  "summary": "Allocation summary of an employee on a date (stored procedure sp_employee_allocation_summary)",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "project.searchAudit",
+  "fn": "searchAudit",
+  "method": "GET",
+  "path": "/api/v1/projects/audit",
+  "service": "project",
+  "tag": "Audit History",
+  "summary": "search",
+  "module": "administration",
+  "files": [
+   "src/features/administration/AuditPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "timesheet.updateTask",
+  "fn": "updateTask",
+  "method": "PUT",
+  "path": "/api/v1/timesheets/tasks/{id}",
+  "service": "timesheet",
+  "tag": "Timesheet Reports and Tasks",
+  "summary": "updateTask",
+  "module": "timesheets",
+  "files": [
+   "src/features/timesheets/TimesheetsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PROJECT_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "timesheet.saveDay",
+  "fn": "saveDay",
+  "method": "POST",
+  "path": "/api/v1/timesheets/me/entries",
+  "service": "timesheet",
+  "tag": "Timesheets",
+  "summary": "Daily entry: books / replaces one line (project, optional task, day)",
+  "module": "timesheets",
+  "files": [
+   "src/features/timesheets/WeeklyGrid.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "timesheet.saveWeek",
+  "fn": "saveWeek",
+  "method": "PUT",
+  "path": "/api/v1/timesheets/me/entries",
+  "service": "timesheet",
+  "tag": "Timesheets",
+  "summary": "Weekly entry: replaces the lines of a week (validates allocation, daily totals, duplicates)",
+  "module": "timesheets",
+  "files": [
+   "src/features/timesheets/WeeklyGrid.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "timesheet.reopen",
+  "fn": "reopen",
+  "method": "POST",
+  "path": "/api/v1/timesheets/{id}/reopen",
+  "service": "timesheet",
+  "tag": "Timesheets",
+  "summary": "Timesheet correction: reopen an approved sheet",
+  "module": "timesheets",
+  "files": [
+   "src/features/timesheets/TimesheetsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_TIMESHEET_APPROVE')",
+  "public": false
+ },
+ {
+  "id": "timesheet.reject",
+  "fn": "reject",
+  "method": "POST",
+  "path": "/api/v1/timesheets/{id}/reject",
+  "service": "timesheet",
+  "tag": "Timesheets",
+  "summary": "reject",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/timesheets/TimesheetsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_TIMESHEET_APPROVE')",
+  "public": false
+ },
+ {
+  "id": "timesheet.approve",
+  "fn": "approve",
+  "method": "POST",
+  "path": "/api/v1/timesheets/{id}/approve",
+  "service": "timesheet",
+  "tag": "Timesheets",
+  "summary": "approve",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/timesheets/TimesheetsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_TIMESHEET_APPROVE')",
+  "public": false
+ },
+ {
+  "id": "timesheet.tasks",
+  "fn": "tasks",
+  "method": "GET",
+  "path": "/api/v1/timesheets/tasks",
+  "service": "timesheet",
+  "tag": "Timesheet Reports and Tasks",
+  "summary": "tasks",
+  "module": "timesheets",
+  "files": [
+   "src/features/timesheets/TimesheetsPage.tsx",
+   "src/features/timesheets/WeeklyGrid.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "timesheet.createTask",
+  "fn": "createTask",
+  "method": "POST",
+  "path": "/api/v1/timesheets/tasks",
+  "service": "timesheet",
+  "tag": "Timesheet Reports and Tasks",
+  "summary": "createTask",
+  "module": "timesheets",
+  "files": [
+   "src/features/timesheets/TimesheetsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_PROJECT_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "timesheet.submit",
+  "fn": "submit",
+  "method": "POST",
+  "path": "/api/v1/timesheets/me/week/{weekStart}/submit",
+  "service": "timesheet",
+  "tag": "Timesheets",
+  "summary": "Submit a week for approval (first submission or resubmission after a rejection)",
+  "module": "timesheets",
+  "files": [
+   "src/features/timesheets/WeeklyGrid.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "timesheet.ping",
+  "fn": "ping",
+  "method": "GET",
+  "path": "/ping",
+  "service": "timesheet",
+  "tag": "ping-controller",
+  "summary": "ping",
+  "module": "administration",
+  "files": [
+   "src/features/administration/ApiExplorerPage.tsx"
+  ],
+  "status": "infrastructure",
+  "authorize": null,
+  "public": true
+ },
+ {
+  "id": "timesheet.get",
+  "fn": "get",
+  "method": "GET",
+  "path": "/api/v1/timesheets/{id}",
+  "service": "timesheet",
+  "tag": "Timesheets",
+  "summary": "get",
+  "module": "timesheets",
+  "files": [
+   "src/features/timesheets/TimesheetsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "timesheet.history",
+  "fn": "history",
+  "method": "GET",
+  "path": "/api/v1/timesheets/{id}/history",
+  "service": "timesheet",
+  "tag": "Timesheets",
+  "summary": "history",
+  "module": "timesheets",
+  "files": [
+   "src/features/timesheets/TimesheetsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "timesheet.project",
+  "fn": "project",
+  "method": "GET",
+  "path": "/api/v1/timesheets/reports/project/{projectId}",
+  "service": "timesheet",
+  "tag": "Timesheet Reports and Tasks",
+  "summary": "Project work-hour summary per employee",
+  "module": "projects",
+  "files": [
+   "src/features/projects/ProjectDetailPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('PROJECT_MANAGER','HR_ADMIN','SUPER_ADMIN','FINANCE_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "timesheet.employee",
+  "fn": "employee",
+  "method": "GET",
+  "path": "/api/v1/timesheets/reports/employee/{employeeId}",
+  "service": "timesheet",
+  "tag": "Timesheet Reports and Tasks",
+  "summary": "Employee work-hour summary (approved hours, billable vs non-billable, per project) - stored procedure",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx",
+   "src/features/timesheets/TimesheetsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "timesheet.mine",
+  "fn": "mine",
+  "method": "GET",
+  "path": "/api/v1/timesheets/me",
+  "service": "timesheet",
+  "tag": "Timesheets",
+  "summary": "mine",
+  "module": "timesheets",
+  "files": [
+   "src/features/timesheets/TimesheetsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "timesheet.week",
+  "fn": "week",
+  "method": "GET",
+  "path": "/api/v1/timesheets/me/week/{weekStart}",
+  "service": "timesheet",
+  "tag": "Timesheets",
+  "summary": "week",
+  "module": "timesheets",
+  "files": [
+   "src/features/timesheets/WeeklyGrid.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "timesheet.totals",
+  "fn": "totals",
+  "method": "GET",
+  "path": "/api/v1/timesheets/me/week/{weekStart}/totals",
+  "service": "timesheet",
+  "tag": "Timesheets",
+  "summary": "totals",
+  "module": "timesheets",
+  "files": [
+   "src/features/timesheets/WeeklyGrid.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "timesheet.forEmployee",
+  "fn": "forEmployee",
+  "method": "GET",
+  "path": "/api/v1/timesheets/employee/{employeeId}",
+  "service": "timesheet",
+  "tag": "Timesheets",
+  "summary": "forEmployee",
+  "module": "employees",
+  "files": [
+   "src/features/employees/EmployeeProfilePage.tsx",
+   "src/features/timesheets/TimesheetsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "timesheet.searchAudit",
+  "fn": "searchAudit",
+  "method": "GET",
+  "path": "/api/v1/timesheets/audit",
+  "service": "timesheet",
+  "tag": "Audit History",
+  "summary": "search",
+  "module": "administration",
+  "files": [
+   "src/features/administration/AuditPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "timesheet.pending",
+  "fn": "pending",
+  "method": "GET",
+  "path": "/api/v1/timesheets/approvals/pending",
+  "service": "timesheet",
+  "tag": "Timesheets",
+  "summary": "pending",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/dashboard/DashboardPage.tsx",
+   "src/features/timesheets/TimesheetsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_TIMESHEET_APPROVE')",
+  "public": false
+ },
+ {
+  "id": "exit.schedule",
+  "fn": "schedule",
+  "method": "PUT",
+  "path": "/api/v1/exit/resignations/{id}/interview/schedule",
+  "service": "exit",
+  "tag": "Exit Management",
+  "summary": "schedule",
+  "module": "exit-interviews",
+  "files": [
+   "src/features/exit-interviews/ExitPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_EXIT_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "exit.policy",
+  "fn": "policy",
+  "method": "GET",
+  "path": "/api/v1/exit/policy",
+  "service": "exit",
+  "tag": "Exit Management",
+  "summary": "policy",
+  "module": "exit-interviews",
+  "files": [
+   "src/features/exit-interviews/ExitPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "exit.updatePolicy",
+  "fn": "updatePolicy",
+  "method": "PUT",
+  "path": "/api/v1/exit/policy",
+  "service": "exit",
+  "tag": "Exit Management",
+  "summary": "updatePolicy",
+  "module": "exit-interviews",
+  "files": [
+   "src/features/exit-interviews/ExitPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "exit.complete",
+  "fn": "complete",
+  "method": "POST",
+  "path": "/api/v1/exit/tasks/{taskId}/complete",
+  "service": "exit",
+  "tag": "Exit Management",
+  "summary": "Steps 4-5: complete a checklist item / clearance / knowledge transfer / asset return / access revocation",
+  "module": "exit-interviews",
+  "files": [
+   "src/features/exit-interviews/ExitPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "exit.list",
+  "fn": "list",
+  "method": "GET",
+  "path": "/api/v1/exit/resignations",
+  "service": "exit",
+  "tag": "Exit Management",
+  "summary": "list",
+  "module": "exit-interviews",
+  "files": [
+   "src/features/exit-interviews/ExitPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_EXIT_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "exit.submit",
+  "fn": "submit",
+  "method": "POST",
+  "path": "/api/v1/exit/resignations",
+  "service": "exit",
+  "tag": "Exit Management",
+  "summary": "Step 1: employee submits a resignation (notice period is calculated from the employee record)",
+  "module": "exit-interviews",
+  "files": [
+   "src/features/exit-interviews/ExitPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "exit.withdraw",
+  "fn": "withdraw",
+  "method": "POST",
+  "path": "/api/v1/exit/resignations/{id}/withdraw",
+  "service": "exit",
+  "tag": "Exit Management",
+  "summary": "withdraw",
+  "module": "exit-interviews",
+  "files": [
+   "src/features/exit-interviews/ExitPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "exit.tasks",
+  "fn": "tasks",
+  "method": "GET",
+  "path": "/api/v1/exit/resignations/{id}/tasks",
+  "service": "exit",
+  "tag": "Exit Management",
+  "summary": "tasks",
+  "module": "exit-interviews",
+  "files": [
+   "src/features/exit-interviews/ExitPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "exit.addTask",
+  "fn": "addTask",
+  "method": "POST",
+  "path": "/api/v1/exit/resignations/{id}/tasks",
+  "service": "exit",
+  "tag": "Exit Management",
+  "summary": "addTask",
+  "module": "exit-interviews",
+  "files": [
+   "src/features/exit-interviews/ExitPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_EXIT_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "exit.process",
+  "fn": "process",
+  "method": "POST",
+  "path": "/api/v1/exit/resignations/{id}/settlement/process",
+  "service": "exit",
+  "tag": "Exit Management",
+  "summary": "Step 7b: payroll processes (pays) the settlement - publishes settlement.processed",
+  "module": "exit-interviews",
+  "files": [
+   "src/features/exit-interviews/ExitPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('PAYROLL_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "exit.calculate",
+  "fn": "calculate",
+  "method": "POST",
+  "path": "/api/v1/exit/resignations/{id}/settlement/calculate",
+  "service": "exit",
+  "tag": "Exit Management",
+  "summary": "Step 7a: payroll calculates the full and final settlement (salary, leave encashment, notice and loan recovery)",
+  "module": "exit-interviews",
+  "files": [
+   "src/features/exit-interviews/ExitPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('PAYROLL_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "exit.managerDecision",
+  "fn": "managerDecision",
+  "method": "POST",
+  "path": "/api/v1/exit/resignations/{id}/manager-decision",
+  "service": "exit",
+  "tag": "Exit Management",
+  "summary": "Step 2: manager approves or rejects",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/exit-interviews/ExitPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_EXIT_APPROVE')",
+  "public": false
+ },
+ {
+  "id": "exit.completeInterview",
+  "fn": "completeInterview",
+  "method": "POST",
+  "path": "/api/v1/exit/resignations/{id}/interview/complete",
+  "service": "exit",
+  "tag": "Exit Management",
+  "summary": "Step 6: HR records the exit interview (answers + feedback)",
+  "module": "exit-interviews",
+  "files": [
+   "src/features/exit-interviews/InterviewDialog.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_EXIT_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "exit.confirm",
+  "fn": "confirm",
+  "method": "POST",
+  "path": "/api/v1/exit/resignations/{id}/confirm",
+  "service": "exit",
+  "tag": "Exit Management",
+  "summary": "Step 3: HR confirms the last working day (notice waiver allowed) and the exit checklist is generated",
+  "module": "exit-interviews",
+  "files": [
+   "src/features/exit-interviews/ExitPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_EXIT_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "exit.completeExit",
+  "fn": "completeExit",
+  "method": "POST",
+  "path": "/api/v1/exit/resignations/{id}/complete",
+  "service": "exit",
+  "tag": "Exit Management",
+  "summary": "Step 8: HR completes the exit - publishes employee.exited (employee status, account, org chart ... are updated by their services)",
+  "module": "exit-interviews",
+  "files": [
+   "src/features/exit-interviews/ExitPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_EXIT_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "exit.ping",
+  "fn": "ping",
+  "method": "GET",
+  "path": "/ping",
+  "service": "exit",
+  "tag": "ping-controller",
+  "summary": "ping",
+  "module": "administration",
+  "files": [
+   "src/features/administration/ApiExplorerPage.tsx"
+  ],
+  "status": "infrastructure",
+  "authorize": null,
+  "public": true
+ },
+ {
+  "id": "exit.get",
+  "fn": "get",
+  "method": "GET",
+  "path": "/api/v1/exit/resignations/{id}",
+  "service": "exit",
+  "tag": "Exit Management",
+  "summary": "get",
+  "module": "exit-interviews",
+  "files": [
+   "src/features/exit-interviews/ExitPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "exit.settlement",
+  "fn": "settlement",
+  "method": "GET",
+  "path": "/api/v1/exit/resignations/{id}/settlement",
+  "service": "exit",
+  "tag": "Exit Management",
+  "summary": "settlement",
+  "module": "exit-interviews",
+  "files": [
+   "src/features/exit-interviews/ExitPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "exit.interview",
+  "fn": "interview",
+  "method": "GET",
+  "path": "/api/v1/exit/resignations/{id}/interview",
+  "service": "exit",
+  "tag": "Exit Management",
+  "summary": "interview",
+  "module": "exit-interviews",
+  "files": [
+   "src/features/exit-interviews/ExitPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "exit.history",
+  "fn": "history",
+  "method": "GET",
+  "path": "/api/v1/exit/resignations/{id}/history",
+  "service": "exit",
+  "tag": "Exit Management",
+  "summary": "history",
+  "module": "exit-interviews",
+  "files": [
+   "src/features/exit-interviews/ExitPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "exit.pending",
+  "fn": "pending",
+  "method": "GET",
+  "path": "/api/v1/exit/resignations/pending",
+  "service": "exit",
+  "tag": "Exit Management",
+  "summary": "pending",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/exit-interviews/ExitPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_EXIT_APPROVE')",
+  "public": false
+ },
+ {
+  "id": "exit.mine",
+  "fn": "mine",
+  "method": "GET",
+  "path": "/api/v1/exit/resignations/me",
+  "service": "exit",
+  "tag": "Exit Management",
+  "summary": "mine",
+  "module": "exit-interviews",
+  "files": [
+   "src/features/exit-interviews/ExitPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "exit.summary",
+  "fn": "summary",
+  "method": "GET",
+  "path": "/api/v1/exit/reports/summary",
+  "service": "exit",
+  "tag": "Exit Management",
+  "summary": "summary",
+  "module": "dashboard",
+  "files": [
+   "src/features/dashboard/DashboardPage.tsx",
+   "src/features/exit-interviews/ExitPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "exit.form",
+  "fn": "form",
+  "method": "GET",
+  "path": "/api/v1/exit/interview-form",
+  "service": "exit",
+  "tag": "Exit Management",
+  "summary": "form",
+  "module": "exit-interviews",
+  "files": [
+   "src/features/exit-interviews/InterviewDialog.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "exit.searchAudit",
+  "fn": "searchAudit",
+  "method": "GET",
+  "path": "/api/v1/exit/audit",
+  "service": "exit",
+  "tag": "Audit History",
+  "summary": "search",
+  "module": "administration",
+  "files": [
+   "src/features/administration/AuditPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "document.updateCategory",
+  "fn": "updateCategory",
+  "method": "PUT",
+  "path": "/api/v1/documents/categories/{id}",
+  "service": "document",
+  "tag": "Documents",
+  "summary": "updateCategory",
+  "module": "documents",
+  "files": [
+   "src/features/documents/DocumentsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "document.upload",
+  "fn": "upload",
+  "method": "POST",
+  "path": "/api/v1/documents",
+  "service": "document",
+  "tag": "Documents",
+  "summary": "Upload a document (multipart): allow-listed types, content sniffing, versioning by title + category",
+  "module": "documents",
+  "files": [
+   "src/features/documents/DocumentsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "document.verify",
+  "fn": "verify",
+  "method": "POST",
+  "path": "/api/v1/documents/{id}/verify",
+  "service": "document",
+  "tag": "Documents",
+  "summary": "verify",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/documents/DocumentsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_DOCUMENT_VERIFY')",
+  "public": false
+ },
+ {
+  "id": "document.reject",
+  "fn": "reject",
+  "method": "POST",
+  "path": "/api/v1/documents/{id}/reject",
+  "service": "document",
+  "tag": "Documents",
+  "summary": "reject",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/documents/DocumentsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_DOCUMENT_VERIFY')",
+  "public": false
+ },
+ {
+  "id": "document.permissions",
+  "fn": "permissions",
+  "method": "GET",
+  "path": "/api/v1/documents/{id}/permissions",
+  "service": "document",
+  "tag": "Documents",
+  "summary": "permissions",
+  "module": "documents",
+  "files": [
+   "src/features/documents/DocumentsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "document.grant",
+  "fn": "grant",
+  "method": "POST",
+  "path": "/api/v1/documents/{id}/permissions",
+  "service": "document",
+  "tag": "Documents",
+  "summary": "grant",
+  "module": "documents",
+  "files": [
+   "src/features/documents/DocumentsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "document.approve",
+  "fn": "approve",
+  "method": "POST",
+  "path": "/api/v1/documents/{id}/approve",
+  "service": "document",
+  "tag": "Documents",
+  "summary": "approve",
+  "module": "documents",
+  "files": [
+   "src/features/documents/DocumentsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_DOCUMENT_VERIFY')",
+  "public": false
+ },
+ {
+  "id": "document.categories",
+  "fn": "categories",
+  "method": "GET",
+  "path": "/api/v1/documents/categories",
+  "service": "document",
+  "tag": "Documents",
+  "summary": "categories",
+  "module": "documents",
+  "files": [
+   "src/features/documents/DocumentsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "document.createCategory",
+  "fn": "createCategory",
+  "method": "POST",
+  "path": "/api/v1/documents/categories",
+  "service": "document",
+  "tag": "Documents",
+  "summary": "createCategory",
+  "module": "documents",
+  "files": [
+   "src/features/documents/DocumentsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "document.ping",
+  "fn": "ping",
+  "method": "GET",
+  "path": "/ping",
+  "service": "document",
+  "tag": "ping-controller",
+  "summary": "ping",
+  "module": "administration",
+  "files": [
+   "src/features/administration/ApiExplorerPage.tsx"
+  ],
+  "status": "infrastructure",
+  "authorize": null,
+  "public": true
+ },
+ {
+  "id": "document.get",
+  "fn": "get",
+  "method": "GET",
+  "path": "/api/v1/documents/{id}",
+  "service": "document",
+  "tag": "Documents",
+  "summary": "get",
+  "module": "documents",
+  "files": [
+   "src/features/documents/DocumentsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "document.versions",
+  "fn": "versions",
+  "method": "GET",
+  "path": "/api/v1/documents/{id}/versions",
+  "service": "document",
+  "tag": "Documents",
+  "summary": "versions",
+  "module": "documents",
+  "files": [
+   "src/features/documents/DocumentsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "document.history",
+  "fn": "history",
+  "method": "GET",
+  "path": "/api/v1/documents/{id}/history",
+  "service": "document",
+  "tag": "Documents",
+  "summary": "history",
+  "module": "documents",
+  "files": [
+   "src/features/documents/DocumentsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "document.download",
+  "fn": "download",
+  "method": "GET",
+  "path": "/api/v1/documents/{id}/download",
+  "service": "document",
+  "tag": "Documents",
+  "summary": "Download: owner, category read roles, or an explicit permission; every download is recorded",
+  "module": "documents",
+  "files": [
+   "src/features/documents/DocumentsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "document.pending",
+  "fn": "pending",
+  "method": "GET",
+  "path": "/api/v1/documents/pending-verification",
+  "service": "document",
+  "tag": "Documents",
+  "summary": "pending",
+  "module": "approvals",
+  "files": [
+   "src/features/approvals/ApprovalsPage.tsx",
+   "src/features/documents/DocumentsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_DOCUMENT_VERIFY')",
+  "public": false
+ },
+ {
+  "id": "document.mine",
+  "fn": "mine",
+  "method": "GET",
+  "path": "/api/v1/documents/me",
+  "service": "document",
+  "tag": "Documents",
+  "summary": "mine",
+  "module": "documents",
+  "files": [
+   "src/features/documents/DocumentsPage.tsx",
+   "src/features/tax/TaxPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "document.expiring",
+  "fn": "expiring",
+  "method": "GET",
+  "path": "/api/v1/documents/expiring",
+  "service": "document",
+  "tag": "Documents",
+  "summary": "expiring",
+  "module": "documents",
+  "files": [
+   "src/features/documents/DocumentsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_DOCUMENT_VERIFY')",
+  "public": false
+ },
+ {
+  "id": "document.forEmployee",
+  "fn": "forEmployee",
+  "method": "GET",
+  "path": "/api/v1/documents/employee/{employeeId}",
+  "service": "document",
+  "tag": "Documents",
+  "summary": "Documents of an employee that the caller is allowed to see",
+  "module": "documents",
+  "files": [
+   "src/features/documents/DocumentsPage.tsx",
+   "src/features/employees/EmployeeProfilePage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "document.searchAudit",
+  "fn": "searchAudit",
+  "method": "GET",
+  "path": "/api/v1/documents/audit",
+  "service": "document",
+  "tag": "Audit History",
+  "summary": "search",
+  "module": "administration",
+  "files": [
+   "src/features/administration/AuditPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "document.revoke",
+  "fn": "revoke",
+  "method": "DELETE",
+  "path": "/api/v1/documents/{id}/permissions/{permissionId}",
+  "service": "document",
+  "tag": "Documents",
+  "summary": "revoke",
+  "module": "documents",
+  "files": [
+   "src/features/documents/DocumentsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "notification.updateTemplate",
+  "fn": "updateTemplate",
+  "method": "PUT",
+  "path": "/api/v1/notifications/templates/{id}",
+  "service": "notification",
+  "tag": "Notifications",
+  "summary": "updateTemplate",
+  "module": "administration",
+  "files": [
+   "src/features/administration/NotificationAdminPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_NOTIFICATION_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "notification.emailSettings",
+  "fn": "emailSettings",
+  "method": "GET",
+  "path": "/api/v1/notifications/settings/email",
+  "service": "notification",
+  "tag": "Notifications",
+  "summary": "E-mail settings (host, port, user, mode LOG / SMTP); the SMTP password comes from the environment",
+  "module": "administration",
+  "files": [
+   "src/features/administration/NotificationAdminPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_NOTIFICATION_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "notification.updateEmailSettings",
+  "fn": "updateEmailSettings",
+  "method": "PUT",
+  "path": "/api/v1/notifications/settings/email",
+  "service": "notification",
+  "tag": "Notifications",
+  "summary": "updateEmailSettings",
+  "module": "administration",
+  "files": [
+   "src/features/administration/NotificationAdminPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_NOTIFICATION_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "notification.templates",
+  "fn": "templates",
+  "method": "GET",
+  "path": "/api/v1/notifications/templates",
+  "service": "notification",
+  "tag": "Notifications",
+  "summary": "templates",
+  "module": "administration",
+  "files": [
+   "src/features/administration/NotificationAdminPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_NOTIFICATION_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "notification.createTemplate",
+  "fn": "createTemplate",
+  "method": "POST",
+  "path": "/api/v1/notifications/templates",
+  "service": "notification",
+  "tag": "Notifications",
+  "summary": "createTemplate",
+  "module": "administration",
+  "files": [
+   "src/features/administration/NotificationAdminPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_NOTIFICATION_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "notification.send",
+  "fn": "send",
+  "method": "POST",
+  "path": "/api/v1/notifications/send",
+  "service": "notification",
+  "tag": "Notifications",
+  "summary": "send",
+  "module": "administration",
+  "files": [
+   "src/features/administration/NotificationAdminPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_NOTIFICATION_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "notification.readAll",
+  "fn": "readAll",
+  "method": "POST",
+  "path": "/api/v1/notifications/read-all",
+  "service": "notification",
+  "tag": "Notifications",
+  "summary": "readAll",
+  "module": "notifications",
+  "files": [
+   "src/components/layout/NotificationCenter.tsx",
+   "src/features/notifications/NotificationsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "notification.read",
+  "fn": "read",
+  "method": "PATCH",
+  "path": "/api/v1/notifications/{id}/read",
+  "service": "notification",
+  "tag": "Notifications",
+  "summary": "read",
+  "module": "notifications",
+  "files": [
+   "src/components/layout/NotificationCenter.tsx",
+   "src/features/notifications/NotificationsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "notification.ping",
+  "fn": "ping",
+  "method": "GET",
+  "path": "/ping",
+  "service": "notification",
+  "tag": "ping-controller",
+  "summary": "ping",
+  "module": "administration",
+  "files": [
+   "src/features/administration/ApiExplorerPage.tsx"
+  ],
+  "status": "infrastructure",
+  "authorize": null,
+  "public": true
+ },
+ {
+  "id": "notification.inbox",
+  "fn": "inbox",
+  "method": "GET",
+  "path": "/api/v1/notifications/me",
+  "service": "notification",
+  "tag": "Notifications",
+  "summary": "My in-app notifications (newest first; unreadOnly filter)",
+  "module": "notifications",
+  "files": [
+   "src/components/layout/NotificationCenter.tsx",
+   "src/features/notifications/NotificationsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "notification.unread",
+  "fn": "unread",
+  "method": "GET",
+  "path": "/api/v1/notifications/me/unread-count",
+  "service": "notification",
+  "tag": "Notifications",
+  "summary": "unread",
+  "module": "layout",
+  "files": [
+   "src/components/layout/NotificationCenter.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "notification.topics",
+  "fn": "topics",
+  "method": "GET",
+  "path": "/api/v1/notifications/kafka/topics",
+  "service": "notification",
+  "tag": "Notifications",
+  "summary": "Kafka topics with partitions and message counts, including retry and dead-letter topics",
+  "module": "administration",
+  "files": [
+   "src/features/administration/NotificationAdminPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "notification.history",
+  "fn": "history",
+  "method": "GET",
+  "path": "/api/v1/notifications/history",
+  "service": "notification",
+  "tag": "Notifications",
+  "summary": "Notification history of everybody (filter by employee / type / delivery status)",
+  "module": "administration",
+  "files": [
+   "src/features/administration/NotificationAdminPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_NOTIFICATION_MANAGE')",
+  "public": false
+ },
+ {
+  "id": "notification.eventHistory",
+  "fn": "eventHistory",
+  "method": "GET",
+  "path": "/api/v1/notifications/events/history",
+  "service": "notification",
+  "tag": "Notifications",
+  "summary": "Business event history of all services (who published what, when, partition / offset)",
+  "module": "administration",
+  "files": [
+   "src/features/administration/NotificationAdminPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "notification.searchAudit",
+  "fn": "searchAudit",
+  "method": "GET",
+  "path": "/api/v1/notifications/audit",
+  "service": "notification",
+  "tag": "Audit History",
+  "summary": "search",
+  "module": "administration",
+  "files": [
+   "src/features/administration/AuditPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "reporting.ping",
+  "fn": "ping",
+  "method": "GET",
+  "path": "/ping",
+  "service": "reporting",
+  "tag": "ping-controller",
+  "summary": "ping",
+  "module": "administration",
+  "files": [
+   "src/features/administration/ApiExplorerPage.tsx"
+  ],
+  "status": "infrastructure",
+  "authorize": null,
+  "public": true
+ },
+ {
+  "id": "reporting.timesheets",
+  "fn": "timesheets",
+  "method": "GET",
+  "path": "/api/v1/reports/timesheets",
+  "service": "reporting",
+  "tag": "Reports",
+  "summary": "timesheets",
+  "module": "dashboard",
+  "files": [
+   "src/features/dashboard/DashboardPage.tsx",
+   "src/features/reports/ReportsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_REPORT_VIEW')",
+  "public": false
+ },
+ {
+  "id": "reporting.tax",
+  "fn": "tax",
+  "method": "GET",
+  "path": "/api/v1/reports/tax",
+  "service": "reporting",
+  "tag": "Reports",
+  "summary": "tax",
+  "module": "reports",
+  "files": [
+   "src/features/reports/ReportsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('FINANCE_ADMIN','HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "reporting.allocation",
+  "fn": "allocation",
+  "method": "GET",
+  "path": "/api/v1/reports/project-allocation",
+  "service": "reporting",
+  "tag": "Reports",
+  "summary": "allocation",
+  "module": "dashboard",
+  "files": [
+   "src/features/dashboard/DashboardPage.tsx",
+   "src/features/reports/ReportsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_REPORT_VIEW')",
+  "public": false
+ },
+ {
+  "id": "reporting.performance",
+  "fn": "performance",
+  "method": "GET",
+  "path": "/api/v1/reports/performance",
+  "service": "reporting",
+  "tag": "Reports",
+  "summary": "performance",
+  "module": "dashboard",
+  "files": [
+   "src/features/dashboard/DashboardPage.tsx",
+   "src/features/reports/ReportsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "reporting.payroll",
+  "fn": "payroll",
+  "method": "GET",
+  "path": "/api/v1/reports/payroll",
+  "service": "reporting",
+  "tag": "Reports",
+  "summary": "Payroll report (payroll, finance and super admin only: it contains salary totals)",
+  "module": "reports",
+  "files": [
+   "src/features/reports/ReportsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('PAYROLL_ADMIN','FINANCE_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "reporting.leave",
+  "fn": "leave",
+  "method": "GET",
+  "path": "/api/v1/reports/leave",
+  "service": "reporting",
+  "tag": "Reports",
+  "summary": "leave",
+  "module": "dashboard",
+  "files": [
+   "src/features/dashboard/DashboardPage.tsx",
+   "src/features/reports/ReportsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_REPORT_VIEW')",
+  "public": false
+ },
+ {
+  "id": "reporting.exits",
+  "fn": "exits",
+  "method": "GET",
+  "path": "/api/v1/reports/exits",
+  "service": "reporting",
+  "tag": "Reports",
+  "summary": "exits",
+  "module": "reports",
+  "files": [
+   "src/features/reports/ReportsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "reporting.executive",
+  "fn": "executive",
+  "method": "GET",
+  "path": "/api/v1/reports/executive-summary",
+  "service": "reporting",
+  "tag": "Reports",
+  "summary": "Executive summary: independent sections computed asynchronously (CompletableFuture) and merged",
+  "module": "reports",
+  "files": [
+   "src/features/reports/ReportsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "reporting.joiningExit",
+  "fn": "joiningExit",
+  "method": "GET",
+  "path": "/api/v1/reports/employees/joining-exit",
+  "service": "reporting",
+  "tag": "Reports",
+  "summary": "Employee joining and exit summary of a year, by month",
+  "module": "dashboard",
+  "files": [
+   "src/features/dashboard/DashboardPage.tsx",
+   "src/features/reports/ReportsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_REPORT_VIEW')",
+  "public": false
+ },
+ {
+  "id": "reporting.headcount",
+  "fn": "headcount",
+  "method": "GET",
+  "path": "/api/v1/reports/employees/headcount",
+  "service": "reporting",
+  "tag": "Reports",
+  "summary": "Employee headcount grouped by department | location | designation | status",
+  "module": "dashboard",
+  "files": [
+   "src/features/dashboard/DashboardPage.tsx",
+   "src/features/reports/ReportsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_REPORT_VIEW')",
+  "public": false
+ },
+ {
+  "id": "reporting.departments",
+  "fn": "departments",
+  "method": "GET",
+  "path": "/api/v1/reports/departments",
+  "service": "reporting",
+  "tag": "Reports",
+  "summary": "Department report: headcount per department (names resolved through the Organization service)",
+  "module": "reports",
+  "files": [
+   "src/features/reports/ReportsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_REPORT_VIEW')",
+  "public": false
+ },
+ {
+  "id": "reporting.searchAudit",
+  "fn": "searchAudit",
+  "method": "GET",
+  "path": "/api/v1/reports/audit",
+  "service": "reporting",
+  "tag": "Audit History",
+  "summary": "search",
+  "module": "administration",
+  "files": [
+   "src/features/administration/AuditPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ },
+ {
+  "id": "reporting.attendance",
+  "fn": "attendance",
+  "method": "GET",
+  "path": "/api/v1/reports/attendance",
+  "service": "reporting",
+  "tag": "Reports",
+  "summary": "attendance",
+  "module": "dashboard",
+  "files": [
+   "src/features/dashboard/DashboardPage.tsx",
+   "src/features/reports/ReportsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAuthority('PERM_REPORT_VIEW')",
+  "public": false
+ },
+ {
+  "id": "reporting.workforce",
+  "fn": "workforce",
+  "method": "GET",
+  "path": "/api/v1/reports/analytics/workforce",
+  "service": "reporting",
+  "tag": "Reports",
+  "summary": "Workforce analytics computed with Java Streams / Collectors (see docs/202611251532-java-streams-guide.md)",
+  "module": "reports",
+  "files": [
+   "src/features/reports/ReportsPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "reporting.manager",
+  "fn": "manager",
+  "method": "GET",
+  "path": "/api/v1/dashboard/manager",
+  "service": "reporting",
+  "tag": "Dashboards",
+  "summary": "Manager dashboard: team, pending leave / timesheet approvals, team attendance, upcoming reviews, team project allocation",
+  "module": "dashboard",
+  "files": [
+   "src/features/dashboard/DashboardPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": "hasAnyRole('MANAGER','HR_ADMIN','SUPER_ADMIN')",
+  "public": false
+ },
+ {
+  "id": "reporting.employee",
+  "fn": "employee",
+  "method": "GET",
+  "path": "/api/v1/dashboard/employee",
+  "service": "reporting",
+  "tag": "Dashboards",
+  "summary": "Employee dashboard: profile, leave balance, holidays, attendance, timesheets, payslip, pending items, review status, events (9 services concurrently)",
+  "module": "dashboard",
+  "files": [
+   "src/features/dashboard/DashboardPage.tsx"
+  ],
+  "status": "integrated",
+  "authorize": null,
+  "public": false
+ }
+]

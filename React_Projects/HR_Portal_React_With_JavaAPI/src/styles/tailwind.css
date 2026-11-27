@@ -1,0 +1,5 @@
+/* Tailwind (preflight disabled in tailwind.config.js: Bootstrap reboot + MUI CssBaseline own the resets).
+   Loaded AFTER global.scss and configured with `important: true`, so a Tailwind utility always beats a same-named Bootstrap utility. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

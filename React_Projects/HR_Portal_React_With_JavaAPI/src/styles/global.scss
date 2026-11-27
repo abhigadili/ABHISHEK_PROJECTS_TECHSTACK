@@ -1,0 +1,81 @@
+// Bootstrap: reboot, grid, helpers and utilities only (no component CSS) - avoids clashing with MUI / shadcn components.
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/variables-dark';
+@import 'bootstrap/scss/maps';
+@import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/utilities';
+@import 'bootstrap/scss/root';
+@import 'bootstrap/scss/reboot';
+@import 'bootstrap/scss/containers';
+@import 'bootstrap/scss/grid';
+@import 'bootstrap/scss/helpers';
+@import 'bootstrap/scss/utilities/api';
+
+// Design tokens (single source for Tailwind, shadcn components, custom SCSS; MUI reads the same palette in muiTheme.ts)
+:root {
+  // RGB channels (space separated) so Tailwind opacity modifiers work; the plain --hr-* colours below derive from them.
+  --hr-bg-rgb: 245 246 250; --hr-surface-rgb: 255 255 255; --hr-surface-2-rgb: 240 242 248; --hr-border-rgb: 228 231 238; --hr-text-rgb: 27 33 51; --hr-muted-rgb: 102 112 133;
+  --hr-primary-rgb: 79 70 229; --hr-primary-soft-rgb: 238 240 255;
+  --hr-success-rgb: 22 163 74; --hr-warning-rgb: 217 119 6; --hr-danger-rgb: 220 38 38; --hr-info-rgb: 2 132 199;
+  --hr-shadow: 0 1px 2px rgba(16, 24, 40, .06), 0 1px 3px rgba(16, 24, 40, .08);
+  --hr-sidebar: 264px; --hr-sidebar-collapsed: 72px; --hr-topbar: 64px;
+}
+[data-theme='dark'] {
+  --hr-bg-rgb: 15 19 32; --hr-surface-rgb: 23 28 46; --hr-surface-2-rgb: 31 37 64; --hr-border-rgb: 42 49 80; --hr-text-rgb: 230 233 245; --hr-muted-rgb: 154 164 192;
+  --hr-primary-rgb: 129 140 248; --hr-primary-soft-rgb: 35 42 82;
+  --hr-shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 1px 3px rgba(0, 0, 0, .4);
+}
+:root, [data-theme='dark'] {
+  --hr-bg: rgb(var(--hr-bg-rgb)); --hr-surface: rgb(var(--hr-surface-rgb)); --hr-surface-2: rgb(var(--hr-surface-2-rgb)); --hr-border: rgb(var(--hr-border-rgb));
+  --hr-text: rgb(var(--hr-text-rgb)); --hr-muted: rgb(var(--hr-muted-rgb)); --hr-primary: rgb(var(--hr-primary-rgb)); --hr-primary-soft: rgb(var(--hr-primary-soft-rgb));
+  --hr-success: rgb(var(--hr-success-rgb)); --hr-warning: rgb(var(--hr-warning-rgb)); --hr-danger: rgb(var(--hr-danger-rgb)); --hr-info: rgb(var(--hr-info-rgb));
+  // keep Bootstrap's own variables on the same palette (reboot, grid gutters, .form-control, utilities)
+  --bs-body-bg: var(--hr-bg); --bs-body-color: var(--hr-text); --bs-border-color: var(--hr-border);
+  --bs-primary-rgb: var(--hr-primary-rgb); --bs-success-rgb: var(--hr-success-rgb); --bs-warning-rgb: var(--hr-warning-rgb); --bs-danger-rgb: var(--hr-danger-rgb); --bs-info-rgb: var(--hr-info-rgb);
+  --bs-secondary-color: var(--hr-muted); --bs-secondary-bg: var(--hr-surface-2); --bs-tertiary-bg: var(--hr-surface-2); --bs-emphasis-color: var(--hr-text);
+  --bs-body-font-family: Inter, 'Noto Sans Telugu', 'Noto Sans Devanagari', system-ui, sans-serif;
+}
+// Tailwind's preflight is off: restore its border defaults so `border-b border-border` etc. render a line.
+*, ::before, ::after { border-width: 0; border-style: solid; border-color: var(--hr-border); }
+.form-control, .form-select { background-color: var(--hr-surface); color: var(--hr-text); border: 1px solid var(--hr-border); }
+
+html, body, #root { min-height: 100%; }
+body { background: var(--hr-bg); color: var(--hr-text); font-size: 14px; overflow-x: hidden; }
+// Tailwind preflight is off, so restate the resets Bootstrap reboot doesn't give for the utility-built UI
+img, svg { vertical-align: middle; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--hr-primary); outline-offset: 2px; }
+::selection { background: var(--hr-primary-soft); }
+a { color: var(--hr-primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1, h2, h3, h4, h5, h6 { font-weight: 600; letter-spacing: -.01em; }
+.page-title { font-size: 1.5rem; margin: 0; }
+
+// Custom component styles (Sass)
+.hr-card { background: var(--hr-surface); border: 1px solid var(--hr-border); border-radius: 12px; box-shadow: var(--hr-shadow); }
+.hr-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px;
+  th { position: sticky; top: 0; z-index: 1; background: var(--hr-surface-2); text-align: left; font-weight: 600; padding: 10px 12px; border-bottom: 1px solid var(--hr-border); white-space: nowrap; user-select: none; }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--hr-border); vertical-align: middle; }
+  tbody tr:hover td { background: var(--hr-surface-2); }
+  tr.selected td { background: var(--hr-primary-soft); }
+}
+.table-wrap { overflow: auto; max-height: 68vh; border-radius: 12px; }
+.skeleton { background: linear-gradient(90deg, var(--hr-surface-2) 25%, var(--hr-border) 37%, var(--hr-surface-2) 63%); background-size: 400% 100%; animation: sk 1.3s ease infinite; border-radius: 6px; }
+@keyframes sk { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+.field-label { font-size: 12px; font-weight: 600; color: var(--hr-muted); margin-bottom: 4px; display: block; }
+.field-error { color: var(--hr-danger); font-size: 12px; margin-top: 3px; }
+.rich-html { img { max-width: 100%; } table { border-collapse: collapse; td, th { border: 1px solid var(--hr-border); padding: 4px 8px; } } p { margin-bottom: .5rem; } ul, ol { padding-left: 1.4rem; } }
+.org-tree { ul { list-style: none; padding-left: 22px; margin: 0; border-left: 1px dashed var(--hr-border); } li { margin: 6px 0; } }
+@media print { .no-print { display: none !important; } body { background: #fff; } }
+@media (max-width: 767px) { .table-wrap { max-height: none; } }
+
+.app-main { min-height: 100vh; transition: margin-left .2s; }
+@media (min-width: 992px) { .app-main { margin-left: var(--sw, 264px); } }
+
+// Radix modals set pointer-events:none on <body>; MUI portals (autocomplete / menus) must stay clickable above them
+.MuiPopper-root, .MuiPopover-root, .MuiMenu-root, .MuiAutocomplete-popper, .Toastify { pointer-events: auto; }
+
+// Grid / flex children must be allowed to shrink below their content, otherwise a wide table stretches the whole page.
+.d-grid > *, .row > *, .hr-card, main, .app-main { min-width: 0; }
+.table-wrap { max-width: 100%; }
