@@ -1,0 +1,17 @@
+spring:
+  config:
+    import: classpath:hospital-common.yml
+  application:
+    name: patient-service
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/PatientDB?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+
+server:
+  port: ${SERVER_PORT:18101}
+
+hospital:
+  cache:
+    enabled: true
+    ttl:
+      patients: 10m
+      patientSummaries: 10m

@@ -1,0 +1,18 @@
+spring:
+  config:
+    import: classpath:hospital-common.yml
+  application:
+    name: pharmacy-service
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/PharmacyDB?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+
+server:
+  port: ${SERVER_PORT:18109}
+
+hospital:
+  pharmacy:
+    alert-email: ${PHARMACY_ALERT_EMAIL:pharmacy.admin@hospital.local}
+    alert-interval-hours: ${LOW_STOCK_ALERT_INTERVAL_HOURS:24}
+  scheduler:
+    low-stock:
+      fixed-delay-ms: ${LOW_STOCK_FIXED_DELAY_MS:600000}

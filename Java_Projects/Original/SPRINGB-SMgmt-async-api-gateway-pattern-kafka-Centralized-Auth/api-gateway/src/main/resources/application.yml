@@ -1,0 +1,51 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      # No path rewriting anywhere below — every backend controller already
+      # exposes these exact /api/... paths, so the gateway forwards as-is.
+      routes:
+        - id: student-service
+          uri: ${SERVICE_STUDENT_URL:http://localhost:8081}
+          predicates:
+            - Path=/api/students/**,/api/student-addresses/**,/api/student-documents/**,/api/student-logins/**
+
+        - id: course-service
+          uri: ${SERVICE_COURSE_URL:http://localhost:8082}
+          predicates:
+            - Path=/api/courses/**,/api/course-categories/**,/api/course-schedules/**,/api/course-faculty/**
+
+        - id: enrollment-service
+          uri: ${SERVICE_ENROLLMENT_URL:http://localhost:8083}
+          predicates:
+            - Path=/api/enrollments/**,/api/enrollment-statuses/**,/api/payments/**
+
+        - id: notification-service
+          uri: ${SERVICE_NOTIFICATION_URL:http://localhost:8084}
+          predicates:
+            - Path=/api/notifications/**,/api/email-logs/**,/api/sms-logs/**
+
+# The one deliberate synchronous HTTP call in this whole system: the gateway
+# asks student-service to verify login credentials during POST /auth/login.
+# Reuses the same env var as the student-service route above, so it always
+# points at the same place.
+services:
+  student:
+    url: ${SERVICE_STUDENT_URL:http://localhost:8081}
+
+# Shared-secret JWT — the ONLY copy of this secret in the whole system. Every
+# proxied request must carry a token signed with it; student-service and the
+# other backends never see or validate this secret themselves, they just
+# trust the X-Authenticated-User header GatewayAuthFilter injects.
+app:
+  jwt:
+    secret: ${JWT_SECRET:centralized-gateway-auth-shared-jwt-secret-key-2026-please-rotate-me}
+    expiration-ms: 3600000
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO

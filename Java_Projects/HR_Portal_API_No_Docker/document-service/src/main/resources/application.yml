@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: hr-document-service
+  config:
+    import: classpath:hr-common.yml
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/hr_document_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+  kafka:
+    consumer:
+      group-id: hr-document-service
+
+server:
+  port: ${DOCUMENT_SERVICE_PORT:9113}
+
+hr:
+  audit:
+    base-path: /api/v1/documents

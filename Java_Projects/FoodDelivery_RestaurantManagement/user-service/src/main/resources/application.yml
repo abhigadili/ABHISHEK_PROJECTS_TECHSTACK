@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: user-service
+  config:
+    import: classpath:food-common.yml
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/food_user_db${DB_SUFFIX:}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=utf8
+server:
+  port: 9101
+food:
+  security:
+    public-paths:
+      - /api/auth/register
+      - /api/auth/login
+      - /api/auth/refresh
+      - /api/auth/forgot-password
+      - /api/auth/reset-password
+  auth:
+    expose-reset-token: ${EXPOSE_RESET_TOKEN:true}   # local sandbox only: no real e-mail provider; never enable in production
+    bootstrap-admin-email: ${BOOTSTRAP_ADMIN_EMAIL:}
+    bootstrap-admin-password: ${BOOTSTRAP_ADMIN_PASSWORD:}

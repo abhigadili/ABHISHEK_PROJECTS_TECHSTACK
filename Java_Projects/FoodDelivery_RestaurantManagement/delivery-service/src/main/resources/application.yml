@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: delivery-service
+  config:
+    import: classpath:food-common.yml
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/food_delivery_db${DB_SUFFIX:}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=utf8
+server:
+  port: 9108
+food:
+  delivery:
+    offer-ttl: 2m          # a partner must accept an offer within this time or it moves to the next partner

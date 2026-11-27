@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Log4j2 for the service registry and gateway. Console = readable text; JSON file = shipped by Logstash to Elasticsearch.
+     Spring Boot picks this file up from the food-common jar on each service's classpath. -->
+<Configuration status="WARN" monitorInterval="0">
+  <Properties>
+    <Property name="LOG_DIR">${env:LOG_DIR:-./logs}</Property>
+    <Property name="SERVICE">${spring:spring.application.name:-app}</Property>
+    <Property name="ENVIRONMENT">${env:APP_ENV:-dev}</Property>
+  </Properties>
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [${SERVICE}] [cid=%X{correlationId}] [trace=%X{traceId}] %c{1.} - %m%n%throwable"/>
+    </Console>
+    <RollingFile name="JsonFile" fileName="${LOG_DIR}/${SERVICE}.json.log"
+                 filePattern="${LOG_DIR}/archive/${SERVICE}-%d{yyyy-MM-dd}-%i.json.log.gz">
+      <JsonTemplateLayout eventTemplateUri="classpath:FoodLogTemplate.json">
+        <EventTemplateAdditionalField key="service" value="${SERVICE}"/>
+        <EventTemplateAdditionalField key="environment" value="${ENVIRONMENT}"/>
+      </JsonTemplateLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy/>
+        <SizeBasedTriggeringPolicy size="25MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="10"/>
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Logger name="org.apache.kafka" level="warn"/>
+    <Logger name="org.hibernate.SQL" level="warn"/>
+    <Logger name="com.zaxxer.hikari" level="warn"/>
+    <Logger name="com.netflix" level="warn"/>
+    <Logger name="com.fooddelivery" level="info"/>
+    <Root level="info">
+      <AppenderRef ref="Console"/>
+      <AppenderRef ref="JsonFile"/>
+    </Root>
+  </Loggers>
+</Configuration>

@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: event-audit-service
+  config:
+    import: classpath:food-common.yml
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/food_event_audit_db${DB_SUFFIX:}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=utf8
+server:
+  port: 9115
+food:
+  audit:
+    retention-days: ${AUDIT_RETENTION_DAYS:14}
+    max-payload-chars: 6000
+    publishable-topics: notification.requested      # comma separated: test events may only go to these topics
+    max-replays: 3
+  logging:
+    elasticsearch-url: ${ELASTICSEARCH_URL:http://localhost:9400}
+    kibana-url: ${KIBANA_URL:http://localhost:5601}
+    index-pattern: food-logs-*

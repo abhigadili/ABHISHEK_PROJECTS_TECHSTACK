@@ -1,0 +1,111 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      httpclient:
+        connect-timeout: 2000
+        response-timeout: 15s
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:4200,http://localhost:5173}
+            allowedMethods: [GET, POST, PUT, PATCH, DELETE, OPTIONS]
+            allowedHeaders: "*"
+            exposedHeaders: [X-Correlation-Id]
+            maxAge: 3600
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
+      routes:
+        - id: student-service
+          uri: lb://student-service
+          predicates: ["Path=/api/students/**,/api/auth/**"]
+          filters:
+            - name: CircuitBreaker
+              args: { name: studentCB, fallbackUri: "forward:/fallback/student-service" }
+        - id: course-service
+          uri: lb://course-service
+          predicates: ["Path=/api/courses/**"]
+          filters:
+            - name: CircuitBreaker
+              args: { name: courseCB, fallbackUri: "forward:/fallback/course-service" }
+        - id: enrollment-service
+          uri: lb://enrollment-service
+          predicates: ["Path=/api/enrollments/**"]
+          filters:
+            - name: CircuitBreaker
+              args: { name: enrollmentCB, fallbackUri: "forward:/fallback/enrollment-service" }
+        - id: notification-service
+          uri: lb://notification-service
+          predicates: ["Path=/api/notifications/**"]
+          filters:
+            - name: CircuitBreaker
+              args: { name: notificationCB, fallbackUri: "forward:/fallback/notification-service" }
+        # Swagger: each service's OpenAPI document is reachable through the gateway
+        - id: docs-student
+          uri: lb://student-service
+          predicates: ["Path=/docs/student/v3/api-docs"]
+          filters: ["RewritePath=/docs/student/(?<p>.*), /$\\{p}"]
+        - id: docs-course
+          uri: lb://course-service
+          predicates: ["Path=/docs/course/v3/api-docs"]
+          filters: ["RewritePath=/docs/course/(?<p>.*), /$\\{p}"]
+        - id: docs-enrollment
+          uri: lb://enrollment-service
+          predicates: ["Path=/docs/enrollment/v3/api-docs"]
+          filters: ["RewritePath=/docs/enrollment/(?<p>.*), /$\\{p}"]
+        - id: docs-notification
+          uri: lb://notification-service
+          predicates: ["Path=/docs/notification/v3/api-docs"]
+          filters: ["RewritePath=/docs/notification/(?<p>.*), /$\\{p}"]
+
+springdoc:
+  swagger-ui:
+    urls:
+      - { name: student-service, url: /docs/student/v3/api-docs }
+      - { name: course-service, url: /docs/course/v3/api-docs }
+      - { name: enrollment-service, url: /docs/enrollment/v3/api-docs }
+      - { name: notification-service, url: /docs/notification/v3/api-docs }
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        sliding-window-size: 20
+        minimum-number-of-calls: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 20s
+
+app:
+  security:
+    jwt:
+      secret: ${JWT_SECRET:change-me-change-me-change-me-change-me-0123}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints.web.exposure.include: health,info,prometheus,metrics,gateway
+  endpoint.health:
+    probes.enabled: true
+    show-details: always
+  tracing.sampling.probability: 1.0
+  otlp.tracing.endpoint: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:http://localhost:4318/v1/traces}
+  metrics.tags.application: ${spring.application.name}
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{traceId:-},%X{spanId:-}]"
+  level:
+    com.example: INFO

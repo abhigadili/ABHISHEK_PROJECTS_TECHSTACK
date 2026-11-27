@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: restaurant-service
+  config:
+    import: classpath:food-common.yml
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/food_restaurant_db${DB_SUFFIX:}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=utf8
+server:
+  port: 9103
+food:
+  security:
+    # anonymous browsing; owner/admin GETs (/mine, /admin/*, inbox, sales) are still protected by @PreAuthorize
+    public-get-paths:
+      - /api/restaurants
+      - /api/restaurants/*
+  cache:
+    ttls:
+      restaurant: 10m
+      restaurant-list: 2m
+      restaurant-cuisines: 30m

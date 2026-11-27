@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SLF4J + Logback. Every line carries the correlation id and user id (MDC). Passwords / tokens / secrets in a
+     message are masked by the %replace converter; request bodies are never logged anywhere. -->
+<configuration>
+  <springProperty scope="context" name="APP" source="spring.application.name" defaultValue="hr-service"/>
+  <property name="LOG_DIR" value="${LOG_DIR:-./logs}"/>
+  <property name="PATTERN"
+            value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [${APP}] [cid=%X{correlationId:-}] [uid=%X{userId:-}] %logger{36} - %replace(%msg){'(?i)(password|passwd|token|secret|authorization|iban|accountnumber|pan)(&quot;?\s*[:=]\s*&quot;?)[^&quot;,\s&amp;]+','$1$2***'}%n%ex{20}"/>
+
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder><pattern>${PATTERN}</pattern></encoder>
+  </appender>
+
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOG_DIR}/${APP}.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>${LOG_DIR}/${APP}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+      <maxFileSize>20MB</maxFileSize>
+      <maxHistory>14</maxHistory>
+      <totalSizeCap>500MB</totalSizeCap>
+    </rollingPolicy>
+    <encoder><pattern>${PATTERN}</pattern></encoder>
+  </appender>
+
+  <logger name="org.apache.kafka" level="WARN"/>
+  <logger name="org.springframework.kafka" level="INFO"/>
+  <logger name="org.hibernate.SQL" level="WARN"/>
+  <logger name="com.zaxxer.hikari" level="WARN"/>
+  <logger name="org.flywaydb" level="INFO"/>
+
+  <root level="INFO">
+    <appender-ref ref="CONSOLE"/>
+    <appender-ref ref="FILE"/>
+  </root>
+</configuration>

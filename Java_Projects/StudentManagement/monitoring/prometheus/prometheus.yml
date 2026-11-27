@@ -1,0 +1,10 @@
+# Scrape config used inside docker compose (targets = container DNS names on the compose network).
+global:
+  scrape_interval: 10s
+  evaluation_interval: 10s
+
+scrape_configs:
+  - job_name: spring-services
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['api-gateway:8080', 'student-service:8081', 'course-service:8082', 'enrollment-service:8083', 'notification-service:8084', 'eureka-server:8761']

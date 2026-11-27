@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.studentmgmt</groupId>
+    <artifactId>springb-student-mgmt-sync-repository-openfeign</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <name>Student Management Microservices (Synchronous, Repository Pattern, OpenFeign)</name>
+    <description>
+        Four independent Spring Boot microservices (student, course, enrollment,
+        notification), each owning its own MySQL database. Identical business logic
+        to the RestTemplate variant of this system, but enrollment-service reaches
+        its peers with declarative Spring Cloud OpenFeign clients instead.
+    </description>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.4.2</version>
+        <relativePath/>
+    </parent>
+
+    <properties>
+        <java.version>21</java.version>
+    </properties>
+
+    <modules>
+        <module>student-service</module>
+        <module>course-service</module>
+        <module>notification-service</module>
+        <module>enrollment-service</module>
+    </modules>
+</project>

@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: search-service
+  config:
+    import: classpath:food-common.yml
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/food_search_db${DB_SUFFIX:}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=utf8
+server:
+  port: 9113
+food:
+  security:
+    public-get-paths:
+      - /api/search/**
+  cache:
+    ttls:
+      search: 10s            # short on purpose: a slow in-flight search can re-cache pre-commit data after an eviction; 10 s bounds that window
+      search-reference: 15m

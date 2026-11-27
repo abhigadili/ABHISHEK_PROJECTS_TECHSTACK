@@ -1,0 +1,20 @@
+spring:
+  config:
+    import: classpath:hospital-common.yml
+  application:
+    name: doctor-service
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/DoctorDB?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+
+server:
+  port: ${SERVER_PORT:18102}
+
+hospital:
+  clients:
+    hospital:
+      enabled: true
+  cache:
+    enabled: true
+    ttl:
+      doctors: 15m
+      doctorSlots: 5m

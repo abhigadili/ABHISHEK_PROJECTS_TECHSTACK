@@ -1,0 +1,22 @@
+# MySQL is NOT deployed to the cluster. This selector-less Service + Endpoints gives the existing MySQL server a stable in-cluster name.
+# Set the address to your MySQL host/VM (it must accept remote connections for the application user).
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-external
+  namespace: student-management
+spec:
+  ports:
+    - port: 3306
+      targetPort: 3306
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: mysql-external
+  namespace: student-management
+subsets:
+  - addresses:
+      - ip: 192.168.1.10   # <-- CHANGE ME: IP of the existing MySQL server
+    ports:
+      - port: 3306

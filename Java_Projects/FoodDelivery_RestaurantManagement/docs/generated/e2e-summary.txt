@@ -1,0 +1,1 @@
+166 checks (API, Kafka sagas, caching, security, ELK) plus 29 real-browser UI checks (Playwright + Chrome) all pass on a clean cold start; `scripts/e2e.py` prints `166 checks passed, 0 failed`

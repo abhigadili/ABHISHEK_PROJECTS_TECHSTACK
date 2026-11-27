@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.studentmgmt</groupId>
+    <artifactId>springb-student-mgmt-circuitbreaker-retry-saga-kafka</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <name>Student Management Microservices (Circuit Breaker, Retry, Saga, Kafka)</name>
+    <description>
+        Five independent Spring Boot microservices (api-gateway, student, course,
+        enrollment, notification), each backend owning its own MySQL database.
+        Cross-service validation for a new enrollment is coordinated with a
+        choreography-based Saga over Kafka. Two resilience patterns from the
+        Resilience4j library protect the places most likely to fail in real
+        systems: Retry around every Kafka publish, and Circuit Breaker around
+        the two places this system makes a plain synchronous HTTP call
+        (enrollment-service's cross-service detail lookup, and
+        notification-service's simulated external email/SMS gateway).
+    </description>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.4.2</version>
+        <relativePath/>
+    </parent>
+
+    <properties>
+        <java.version>21</java.version>
+        <spring-cloud.version>2024.0.0</spring-cloud.version>
+        <jjwt.version>0.12.6</jjwt.version>
+        <resilience4j.version>2.2.0</resilience4j.version>
+    </properties>
+
+    <modules>
+        <module>student-service</module>
+        <module>course-service</module>
+        <module>enrollment-service</module>
+        <module>notification-service</module>
+        <module>api-gateway</module>
+    </modules>
+</project>

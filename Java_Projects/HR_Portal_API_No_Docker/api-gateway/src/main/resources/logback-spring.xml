@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <property name="LOG_DIR" value="${LOG_DIR:-./logs}"/>
+  <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [hr-api-gateway] %logger{36} - %replace(%msg){'(?i)(password|token|secret|authorization)(&quot;?\s*[:=]\s*&quot;?)[^&quot;,\s&amp;]+','$1$2***'}%n%ex{20}"/>
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender"><encoder><pattern>${PATTERN}</pattern></encoder></appender>
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOG_DIR}/hr-api-gateway.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>${LOG_DIR}/hr-api-gateway.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+      <maxFileSize>20MB</maxFileSize><maxHistory>14</maxHistory><totalSizeCap>500MB</totalSizeCap>
+    </rollingPolicy>
+    <encoder><pattern>${PATTERN}</pattern></encoder>
+  </appender>
+  <root level="INFO"><appender-ref ref="CONSOLE"/><appender-ref ref="FILE"/></root>
+</configuration>

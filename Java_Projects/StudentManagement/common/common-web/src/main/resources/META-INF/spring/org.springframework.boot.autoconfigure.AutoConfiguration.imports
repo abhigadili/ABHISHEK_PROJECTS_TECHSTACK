@@ -1,0 +1,2 @@
+com.example.common.CommonAutoConfiguration
+com.example.common.KafkaHealthAutoConfiguration

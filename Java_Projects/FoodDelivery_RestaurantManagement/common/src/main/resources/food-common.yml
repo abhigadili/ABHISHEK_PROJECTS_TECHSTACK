@@ -1,0 +1,212 @@
+# Configuration shared by every Spring MVC microservice (imported via spring.config.import in each application.yml).
+# Keys here are disjoint from the per-service application.yml (service name, port, datasource URL, extras).
+server:
+  shutdown: graceful
+  error:
+    include-message: never
+    include-stacktrace: never
+  tomcat:
+    threads:
+      max: 100
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  main:
+    allow-bean-definition-overriding: false
+  datasource:
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 10000
+      max-lifetime: 1500000
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: ${DDL_AUTO:validate}
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+          batch_size: 25
+        default_batch_fetch_size: 16
+        order_inserts: true
+        order_updates: true
+  flyway:
+    enabled: ${FLYWAY_ENABLED:true}
+    locations: classpath:db/migration
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6390}
+      timeout: 2s
+  cache:
+    type: redis
+  jackson:
+    default-property-inclusion: non_null
+    deserialization:
+      fail-on-unknown-properties: false
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 3MB
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9392}
+    producer:
+      acks: all
+      retries: 5
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        enable.idempotence: true
+        max.in.flight.requests.per.connection: 5
+        delivery.timeout.ms: 12000
+        request.timeout.ms: 5000
+        max.block.ms: 5000
+    consumer:
+      group-id: ${spring.application.name}-group
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        max.poll.interval.ms: 300000
+    listener:
+      ack-mode: record
+      missing-topics-fatal: false
+      observation-enabled: true
+    template:
+      observation-enabled: true
+  cloud:
+    loadbalancer:
+      cache:
+        ttl: 5s
+    openfeign:
+      client:
+        config:
+          default:
+            connect-timeout: 2000
+            read-timeout: 5000
+            logger-level: basic
+      circuitbreaker:
+        enabled: false     # circuit breakers are applied with Resilience4j annotations on the client wrappers
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:9761/eureka}
+    registry-fetch-interval-seconds: 5
+  instance:
+    prefer-ip-address: true
+    ip-address: ${EUREKA_INSTANCE_IP:127.0.0.1}   # single-host setup: immune to VPN/Wi-Fi address changes; set to the host IP for multi-host
+    instance-id: ${spring.application.name}:${server.port}
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 15
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: when-authorized
+      show-components: when-authorized
+      roles: ADMIN,SUPER_ADMIN,SERVICE
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+  tracing:
+    sampling:
+      probability: 1.0
+  info:
+    env:
+      enabled: true
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 3
+        record-exceptions:
+          - com.fooddelivery.common.exception.RemoteServiceException
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+        ignore-exceptions:
+          - com.fooddelivery.common.exception.BusinessException
+    instances:
+      customer: {base-config: default}
+      restaurant: {base-config: default}
+      menu: {base-config: default}
+      coupon: {base-config: default}
+      cart: {base-config: default}
+      inventory: {base-config: default}
+      order: {base-config: default}
+      user: {base-config: default}
+      payment: {base-config: default}
+      delivery: {base-config: default}
+  retry:
+    configs:
+      default:
+        max-attempts: 3
+        wait-duration: 200ms
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
+        retry-exceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+        ignore-exceptions:
+          - com.fooddelivery.common.exception.BusinessException
+    instances:
+      # Only for idempotent GET lookups. Payments / order creation are never wrapped in @Retry.
+      customer: {base-config: default}
+      restaurant: {base-config: default}
+      menu: {base-config: default}
+      coupon: {base-config: default}
+      user: {base-config: default}
+      order: {base-config: default}
+      cart: {base-config: default}
+  bulkhead:
+    configs:
+      default:
+        max-concurrent-calls: 25
+        max-wait-duration: 100ms
+    instances:
+      customer: {base-config: default}
+      restaurant: {base-config: default}
+      menu: {base-config: default}
+      coupon: {base-config: default}
+      inventory: {base-config: default}
+  ratelimiter:
+    instances:
+      admin-aggregate:
+        limit-for-period: 20
+        limit-refresh-period: 1s
+        timeout-duration: 0
+  timelimiter:
+    instances:
+      admin-aggregate:
+        timeout-duration: 4s
+food:
+  jwt:
+    secret: ${JWT_SECRET}
+    issuer: food-delivery
+    access-ttl: 30m
+    refresh-ttl: 7d
+  storage:
+    root: ${UPLOAD_DIR:./uploads}
+  outbox:
+    poll-ms: 500
+  cache:
+    default-ttl: 10m

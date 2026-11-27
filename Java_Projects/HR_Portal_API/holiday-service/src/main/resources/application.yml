@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: hr-holiday-service
+  config:
+    import: classpath:hr-common.yml
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/hr_holiday_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+  kafka:
+    consumer:
+      group-id: hr-holiday-service
+
+server:
+  port: ${HOLIDAY_SERVICE_PORT:9106}
+
+hr:
+  audit:
+    base-path: /api/v1/holidays
+  cache:
+    ttl:
+      holidayCalendar: 1h

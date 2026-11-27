@@ -1,0 +1,141 @@
+# Shared defaults imported by every service via `spring.config.import: classpath:hr-common.yml`.
+# Services only add what is specific (port, database, TTLs, downstream URLs).
+# NO secrets live here: every credential is read from environment variables (see .env.example).
+spring:
+  datasource:
+    username: ${MYSQL_APP_USER}
+    password: ${MYSQL_APP_PASSWORD}
+    hikari:
+      maximum-pool-size: 4          # 16 JVMs share one MySQL server (max_connections = 151)
+      minimum-idle: 1
+      connection-timeout: 10000
+  flyway:
+    # Migrations run with the privileged migration login (CREATE TRIGGER / FUNCTION need SUPER while binlog is on);
+    # at runtime the application connects with the least-privilege MYSQL_APP_USER (DML + EXECUTE only).
+    user: ${MYSQL_MIGRATION_USER}
+    password: ${MYSQL_MIGRATION_PASSWORD}
+    baseline-on-migrate: false
+    out-of-order: false
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate.jdbc.time_zone: UTC
+      hibernate.jdbc.batch_size: 25
+      hibernate.order_inserts: true
+      hibernate.order_updates: true
+      hibernate.query.fail_on_pagination_over_collection_fetch: true
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+    time-zone: UTC
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 12MB
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9192}
+    producer:
+      acks: all
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        enable.idempotence: true
+        max.block.ms: 5000
+        delivery.timeout.ms: 10000
+        request.timeout.ms: 5000
+    consumer:
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      ack-mode: record
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:9379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 1s
+      connect-timeout: 1s
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connect-timeout: 2000
+            read-timeout: 8000
+            logger-level: basic
+  cache:
+    type: redis
+
+server:
+  shutdown: graceful
+  error:
+    include-message: never
+    include-stacktrace: never
+    include-binding-errors: never
+  tomcat:
+    max-http-form-post-size: 2MB
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+
+hr:
+  security:
+    jwt:
+      secret: ${JWT_SECRET}
+      access-token-minutes: ${JWT_ACCESS_MINUTES:30}
+      refresh-token-days: ${JWT_REFRESH_DAYS:7}
+    data-encryption-key: ${HR_DATA_ENCRYPTION_KEY}
+  services:
+    auth:
+      url: ${AUTH_SERVICE_URL:http://localhost:9101}
+    employee:
+      url: ${EMPLOYEE_SERVICE_URL:http://localhost:9102}
+    organization:
+      url: ${ORGANIZATION_SERVICE_URL:http://localhost:9103}
+    leave:
+      url: ${LEAVE_SERVICE_URL:http://localhost:9104}
+    attendance:
+      url: ${ATTENDANCE_SERVICE_URL:http://localhost:9105}
+    holiday:
+      url: ${HOLIDAY_SERVICE_URL:http://localhost:9106}
+    payroll:
+      url: ${PAYROLL_SERVICE_URL:http://localhost:9107}
+    tax:
+      url: ${TAX_SERVICE_URL:http://localhost:9108}
+    performance:
+      url: ${PERFORMANCE_SERVICE_URL:http://localhost:9109}
+    project:
+      url: ${PROJECT_SERVICE_URL:http://localhost:9110}
+    timesheet:
+      url: ${TIMESHEET_SERVICE_URL:http://localhost:9111}
+    exit:
+      url: ${EXIT_SERVICE_URL:http://localhost:9112}
+    document:
+      url: ${DOCUMENT_SERVICE_URL:http://localhost:9113}
+    notification:
+      url: ${NOTIFICATION_SERVICE_URL:http://localhost:9114}
+    reporting:
+      url: ${REPORTING_SERVICE_URL:http://localhost:9115}
+  webclient:
+    connect-timeout-ms: 2000
+    response-timeout-ms: 6000
+  outbox:
+    relay-delay-ms: 10000
+    min-age-seconds: 15
+  storage:
+    root: ${HR_STORAGE_ROOT:./storage}
+  flyway:
+    # Operational switch: Flyway repair (removes FAILED migration entries only) before migrating. Off by default.
+    repair-on-start: ${HR_FLYWAY_REPAIR:false}
+    reset-on-start: ${HR_FLYWAY_RESET:false}   # development only: Flyway clean + migrate

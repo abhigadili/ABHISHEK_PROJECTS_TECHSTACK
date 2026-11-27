@@ -1,0 +1,275 @@
+-- Baseline schema of hr_payroll_db (tables, keys, indexes). Generated from the JPA model, then owned by Flyway.
+SET FOREIGN_KEY_CHECKS = 0;
+CREATE TABLE `audit_history` (
+  `id` varchar(36) NOT NULL,
+  `action` varchar(60) NOT NULL,
+  `correlation_id` varchar(64) DEFAULT NULL,
+  `created_at` datetime(6) NOT NULL,
+  `entity_id` varchar(64) NOT NULL,
+  `entity_type` varchar(80) NOT NULL,
+  `new_value` mediumtext,
+  `previous_value` mediumtext,
+  `user_id` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_audit_entity` (`entity_type`,`entity_id`),
+  KEY `idx_audit_created` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `employee_salaries` (
+  `id` varchar(36) NOT NULL,
+  `created_at` datetime(6) NOT NULL,
+  `created_by` varchar(100) DEFAULT NULL,
+  `updated_at` datetime(6) NOT NULL,
+  `updated_by` varchar(100) DEFAULT NULL,
+  `annual_ctc` decimal(14,2) NOT NULL,
+  `currency` varchar(3) NOT NULL,
+  `effective_from` date NOT NULL,
+  `effective_to` date DEFAULT NULL,
+  `employee_id` varchar(36) NOT NULL,
+  `status` enum('ACTIVE','SUPERSEDED') NOT NULL,
+  `structure_id` varchar(36) NOT NULL,
+  `version` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_salary_employee` (`employee_id`,`status`,`effective_from`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `loan_deductions` (
+  `id` varchar(36) NOT NULL,
+  `created_at` datetime(6) NOT NULL,
+  `created_by` varchar(100) DEFAULT NULL,
+  `updated_at` datetime(6) NOT NULL,
+  `updated_by` varchar(100) DEFAULT NULL,
+  `amount` decimal(14,2) NOT NULL,
+  `employee_id` varchar(36) NOT NULL,
+  `loan_id` varchar(36) NOT NULL,
+  `run_id` varchar(36) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_loan_ded_run` (`run_id`),
+  KEY `idx_loan_ded_loan` (`loan_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `loans` (
+  `id` varchar(36) NOT NULL,
+  `created_at` datetime(6) NOT NULL,
+  `created_by` varchar(100) DEFAULT NULL,
+  `updated_at` datetime(6) NOT NULL,
+  `updated_by` varchar(100) DEFAULT NULL,
+  `description` varchar(120) NOT NULL,
+  `emi` decimal(14,2) NOT NULL,
+  `employee_id` varchar(36) NOT NULL,
+  `outstanding` decimal(14,2) NOT NULL,
+  `principal` decimal(14,2) NOT NULL,
+  `start_month` varchar(7) NOT NULL,
+  `status` enum('ACTIVE','CLOSED') NOT NULL,
+  `version` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_loan_employee` (`employee_id`,`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `outbox_events` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `attempts` int NOT NULL,
+  `created_at` datetime(6) NOT NULL,
+  `event_key` varchar(100) DEFAULT NULL,
+  `payload` mediumtext NOT NULL,
+  `sent_at` datetime(6) DEFAULT NULL,
+  `topic` varchar(150) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_outbox_unsent` (`sent_at`,`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `payroll_adjustments` (
+  `id` varchar(36) NOT NULL,
+  `created_at` datetime(6) NOT NULL,
+  `created_by` varchar(100) DEFAULT NULL,
+  `updated_at` datetime(6) NOT NULL,
+  `updated_by` varchar(100) DEFAULT NULL,
+  `amount` decimal(14,2) NOT NULL,
+  `applied_run_id` varchar(36) DEFAULT NULL,
+  `description` varchar(300) DEFAULT NULL,
+  `employee_id` varchar(36) NOT NULL,
+  `payroll_month` varchar(7) NOT NULL,
+  `reference_id` varchar(36) DEFAULT NULL,
+  `status` enum('APPLIED','CANCELLED','PENDING') NOT NULL,
+  `type` enum('ALLOWANCE','ARREARS','BONUS','FINAL_SETTLEMENT','OTHER_DEDUCTION','REIMBURSEMENT') NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_adjustment_employee_month` (`employee_id`,`payroll_month`,`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `payroll_config` (
+  `id` varchar(36) NOT NULL,
+  `created_at` datetime(6) NOT NULL,
+  `created_by` varchar(100) DEFAULT NULL,
+  `updated_at` datetime(6) NOT NULL,
+  `updated_by` varchar(100) DEFAULT NULL,
+  `config_key` varchar(80) NOT NULL,
+  `config_value` varchar(2000) NOT NULL,
+  `description` varchar(300) DEFAULT NULL,
+  `effective_from` datetime(6) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_payroll_config_key` (`config_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `payroll_entries` (
+  `id` varchar(36) NOT NULL,
+  `created_at` datetime(6) NOT NULL,
+  `created_by` varchar(100) DEFAULT NULL,
+  `updated_at` datetime(6) NOT NULL,
+  `updated_by` varchar(100) DEFAULT NULL,
+  `deductions` decimal(14,2) NOT NULL,
+  `department_id` varchar(36) DEFAULT NULL,
+  `employee_code` varchar(30) DEFAULT NULL,
+  `employee_id` varchar(36) NOT NULL,
+  `employee_name` varchar(200) DEFAULT NULL,
+  `gross` decimal(14,2) NOT NULL,
+  `lop_days` decimal(5,1) NOT NULL,
+  `net` decimal(14,2) NOT NULL,
+  `overtime_minutes` int NOT NULL,
+  `paid_days` decimal(5,1) NOT NULL,
+  `payroll_month` varchar(7) NOT NULL,
+  `run_id` varchar(36) NOT NULL,
+  `salary_id` varchar(36) NOT NULL,
+  `working_days` decimal(5,1) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_entry_run_employee` (`run_id`,`employee_id`),
+  KEY `idx_entry_employee` (`employee_id`),
+  KEY `idx_entry_run` (`run_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `payroll_entry_lines` (
+  `id` varchar(36) NOT NULL,
+  `created_at` datetime(6) NOT NULL,
+  `created_by` varchar(100) DEFAULT NULL,
+  `updated_at` datetime(6) NOT NULL,
+  `updated_by` varchar(100) DEFAULT NULL,
+  `amount` decimal(14,2) NOT NULL,
+  `component_code` varchar(40) NOT NULL,
+  `component_name` varchar(100) NOT NULL,
+  `entry_id` varchar(36) NOT NULL,
+  `note` varchar(200) DEFAULT NULL,
+  `type` enum('DEDUCTION','EARNING') NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_line_entry` (`entry_id`),
+  KEY `idx_line_component` (`component_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `payroll_runs` (
+  `id` varchar(36) NOT NULL,
+  `created_at` datetime(6) NOT NULL,
+  `created_by` varchar(100) DEFAULT NULL,
+  `updated_at` datetime(6) NOT NULL,
+  `updated_by` varchar(100) DEFAULT NULL,
+  `approved_at` datetime(6) DEFAULT NULL,
+  `approved_by` varchar(100) DEFAULT NULL,
+  `employee_count` int NOT NULL,
+  `finalized_at` datetime(6) DEFAULT NULL,
+  `finalized_by` varchar(100) DEFAULT NULL,
+  `note` varchar(300) DEFAULT NULL,
+  `payroll_month` varchar(7) NOT NULL,
+  `processed_at` datetime(6) DEFAULT NULL,
+  `processed_by` varchar(100) DEFAULT NULL,
+  `status` enum('APPROVED','DRAFT','FINALIZED','PROCESSED') NOT NULL,
+  `total_deductions` decimal(16,2) NOT NULL,
+  `total_gross` decimal(16,2) NOT NULL,
+  `total_net` decimal(16,2) NOT NULL,
+  `version` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_payroll_run_month` (`payroll_month`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `payslips` (
+  `id` varchar(36) NOT NULL,
+  `created_at` datetime(6) NOT NULL,
+  `created_by` varchar(100) DEFAULT NULL,
+  `updated_at` datetime(6) NOT NULL,
+  `updated_by` varchar(100) DEFAULT NULL,
+  `employee_id` varchar(36) NOT NULL,
+  `entry_id` varchar(36) NOT NULL,
+  `file_name` varchar(150) NOT NULL,
+  `generated_at` datetime(6) NOT NULL,
+  `payroll_month` varchar(7) NOT NULL,
+  `run_id` varchar(36) NOT NULL,
+  `sha256` varchar(64) NOT NULL,
+  `size_bytes` bigint NOT NULL,
+  `storage_path` varchar(300) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_payslip_entry` (`entry_id`),
+  KEY `idx_payslip_employee` (`employee_id`,`payroll_month`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `processed_events` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `consumer` varchar(120) NOT NULL,
+  `event_id` varchar(64) NOT NULL,
+  `processed_at` datetime(6) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_processed_event_consumer` (`event_id`,`consumer`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `salary_components` (
+  `id` varchar(36) NOT NULL,
+  `created_at` datetime(6) NOT NULL,
+  `created_by` varchar(100) DEFAULT NULL,
+  `updated_at` datetime(6) NOT NULL,
+  `updated_by` varchar(100) DEFAULT NULL,
+  `deleted` bit(1) NOT NULL,
+  `deleted_at` datetime(6) DEFAULT NULL,
+  `active` bit(1) NOT NULL,
+  `calc_type` enum('BALANCE','FIXED','PERCENT_OF_BASIC','PERCENT_OF_CTC','SLAB_PT','STATUTORY_PF','TAX_TDS','VARIABLE') NOT NULL,
+  `code` varchar(40) NOT NULL,
+  `display_order` int NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `taxable` bit(1) NOT NULL,
+  `type` enum('DEDUCTION','EARNING') NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_component_code` (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `salary_revision_history` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `action` varchar(10) NOT NULL,
+  `changed_at` datetime(6) NOT NULL,
+  `changed_by` varchar(100) DEFAULT NULL,
+  `effective_from` date DEFAULT NULL,
+  `employee_id` varchar(36) NOT NULL,
+  `new_ctc` decimal(14,2) DEFAULT NULL,
+  `new_status` varchar(12) DEFAULT NULL,
+  `old_ctc` decimal(14,2) DEFAULT NULL,
+  `old_status` varchar(12) DEFAULT NULL,
+  `salary_id` varchar(36) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_salary_hist_employee` (`employee_id`,`changed_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `salary_revisions` (
+  `id` varchar(36) NOT NULL,
+  `created_at` datetime(6) NOT NULL,
+  `created_by` varchar(100) DEFAULT NULL,
+  `updated_at` datetime(6) NOT NULL,
+  `updated_by` varchar(100) DEFAULT NULL,
+  `decided_at` datetime(6) DEFAULT NULL,
+  `decided_by` varchar(100) DEFAULT NULL,
+  `decision_comment` varchar(300) DEFAULT NULL,
+  `effective_from` date NOT NULL,
+  `employee_id` varchar(36) NOT NULL,
+  `new_ctc` decimal(14,2) NOT NULL,
+  `new_structure_id` varchar(36) DEFAULT NULL,
+  `old_ctc` decimal(14,2) NOT NULL,
+  `reason` varchar(300) NOT NULL,
+  `status` enum('APPROVED','PENDING','REJECTED') NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_revision_status` (`status`,`employee_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `salary_structure_components` (
+  `id` varchar(36) NOT NULL,
+  `created_at` datetime(6) NOT NULL,
+  `created_by` varchar(100) DEFAULT NULL,
+  `updated_at` datetime(6) NOT NULL,
+  `updated_by` varchar(100) DEFAULT NULL,
+  `component_id` varchar(36) NOT NULL,
+  `structure_id` varchar(36) NOT NULL,
+  `value` decimal(14,3) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_structure_component` (`structure_id`,`component_id`),
+  KEY `idx_ssc_structure` (`structure_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `salary_structures` (
+  `id` varchar(36) NOT NULL,
+  `created_at` datetime(6) NOT NULL,
+  `created_by` varchar(100) DEFAULT NULL,
+  `updated_at` datetime(6) NOT NULL,
+  `updated_by` varchar(100) DEFAULT NULL,
+  `deleted` bit(1) NOT NULL,
+  `deleted_at` datetime(6) DEFAULT NULL,
+  `active` bit(1) NOT NULL,
+  `description` varchar(300) DEFAULT NULL,
+  `name` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+SET FOREIGN_KEY_CHECKS = 1;

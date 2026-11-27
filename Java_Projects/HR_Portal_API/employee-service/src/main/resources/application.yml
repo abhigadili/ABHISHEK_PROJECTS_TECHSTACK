@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: hr-employee-service
+  config:
+    import: classpath:hr-common.yml
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/hr_employee_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+  kafka:
+    consumer:
+      group-id: hr-employee-service
+
+server:
+  port: ${EMPLOYEE_SERVICE_PORT:9102}
+
+hr:
+  audit:
+    base-path: /api/v1/employees
+  cache:
+    ttl:
+      employeeProfile: 10m
+      employeeDirectory: 5m

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.fooddelivery</groupId>
+    <artifactId>spring-boot-food-delivery-async-repository-pattern</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <name>Food Delivery Microservices (Asynchronous, Repository Pattern)</name>
+    <description>
+        Four independent Spring Boot microservices (restaurant, order, payment,
+        delivery), each owning its own MySQL database, accessed via Spring Data
+        R2DBC (non-blocking, no JPA/Hibernate/JDBC). order-service, payment-service
+        and delivery-service coordinate with each other exclusively through RabbitMQ
+        events — no synchronous REST calls exist between any of the services.
+    </description>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.4.2</version>
+        <relativePath/>
+    </parent>
+
+    <properties>
+        <java.version>21</java.version>
+        <r2dbc-mysql.version>1.3.1</r2dbc-mysql.version>
+    </properties>
+
+    <modules>
+        <module>restaurant-service</module>
+        <module>payment-service</module>
+        <module>delivery-service</module>
+        <module>order-service</module>
+    </modules>
+</project>

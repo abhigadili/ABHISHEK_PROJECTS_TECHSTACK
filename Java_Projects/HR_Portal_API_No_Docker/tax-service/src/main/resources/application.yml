@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: hr-tax-service
+  config:
+    import: classpath:hr-common.yml
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/hr_tax_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+  kafka:
+    consumer:
+      group-id: hr-tax-service
+
+server:
+  port: ${TAX_SERVICE_PORT:9108}
+
+hr:
+  audit:
+    base-path: /api/v1/tax

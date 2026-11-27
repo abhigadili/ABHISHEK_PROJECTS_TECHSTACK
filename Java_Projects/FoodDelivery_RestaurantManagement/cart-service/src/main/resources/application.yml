@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: cart-service
+  config:
+    import: classpath:food-common.yml
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/food_cart_db${DB_SUFFIX:}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=utf8
+server:
+  port: 9105
+food:
+  pricing:
+    tax-rate: 0.05
+  cache:
+    ttls:
+      cart: 1m

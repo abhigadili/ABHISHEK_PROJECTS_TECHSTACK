@@ -1,0 +1,15 @@
+spring:
+  config:
+    import: classpath:hospital-common.yml
+  application:
+    name: notification-service
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/NotificationDB?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: com.hospital.notification.config.HmsTablePrefixNamingStrategy
+
+server:
+  port: ${SERVER_PORT:18110}
+

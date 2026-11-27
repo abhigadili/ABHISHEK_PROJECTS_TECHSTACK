@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: review-service
+  config:
+    import: classpath:food-common.yml
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/food_review_db${DB_SUFFIX:}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=utf8
+server:
+  port: 9110
+food:
+  security:
+    public-get-paths:
+      - /api/reviews/restaurant/**
+      - /api/reviews/summary/**
+  review:
+    window-days: 7        # a delivered order can be reviewed for 7 days
+  cache:
+    ttls:
+      review-summary: 5m

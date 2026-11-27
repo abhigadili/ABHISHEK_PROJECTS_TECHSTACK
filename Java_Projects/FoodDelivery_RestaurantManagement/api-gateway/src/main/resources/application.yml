@@ -1,0 +1,93 @@
+spring:
+  application:
+    name: api-gateway
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6390}
+  cloud:
+    loadbalancer:
+      cache:
+        ttl: 5s              # pick up restarted/new instances quickly
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - http://localhost:4500
+              - http://127.0.0.1:4500
+            allowedMethods: [GET, POST, PUT, PATCH, DELETE, OPTIONS]
+            allowedHeaders: "*"
+            exposedHeaders: [X-Correlation-Id]
+            maxAge: 3600
+      default-filters:
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter.replenishRate: ${RATE_LIMIT_RATE:50}
+            redis-rate-limiter.burstCapacity: ${RATE_LIMIT_BURST:100}
+            key-resolver: "#{@clientKeyResolver}"
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
+      httpclient:
+        connect-timeout: 2000
+        response-timeout: 20s
+server:
+  port: 9080
+  shutdown: graceful
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:9761/eureka}
+    registry-fetch-interval-seconds: 5
+  instance:
+    prefer-ip-address: true
+    ip-address: ${EUREKA_INSTANCE_IP:127.0.0.1}   # single-host setup: immune to VPN/Wi-Fi address changes; set to the host IP for multi-host
+    instance-id: ${spring.application.name}:${server.port}
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 15
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  tracing:
+    sampling:
+      probability: 1.0
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        sliding-window-size: 20
+        minimum-number-of-calls: 10
+        failure-rate-threshold: 60
+        wait-duration-in-open-state: 10s
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 20s
+food:
+  jwt:
+    secret: ${JWT_SECRET}
+    issuer: food-delivery
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    urls:
+      - {name: user-service, url: /docs/user/v3/api-docs}
+      - {name: customer-service, url: /docs/customer/v3/api-docs}
+      - {name: restaurant-service, url: /docs/restaurant/v3/api-docs}
+      - {name: menu-service, url: /docs/menu/v3/api-docs}
+      - {name: cart-service, url: /docs/cart/v3/api-docs}
+      - {name: order-service, url: /docs/order/v3/api-docs}
+      - {name: payment-service, url: /docs/payment/v3/api-docs}
+      - {name: delivery-service, url: /docs/delivery/v3/api-docs}
+      - {name: notification-service, url: /docs/notification/v3/api-docs}
+      - {name: review-service, url: /docs/review/v3/api-docs}
+      - {name: coupon-service, url: /docs/coupon/v3/api-docs}
+      - {name: inventory-service, url: /docs/inventory/v3/api-docs}
+      - {name: search-service, url: /docs/search/v3/api-docs}
+      - {name: admin-service, url: /docs/admin/v3/api-docs}
+      - {name: event-audit-service, url: /docs/event-audit/v3/api-docs}

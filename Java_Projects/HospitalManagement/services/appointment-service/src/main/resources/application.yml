@@ -1,0 +1,28 @@
+spring:
+  config:
+    import: classpath:hospital-common.yml
+  application:
+    name: appointment-service
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/AppointmentDB?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+
+server:
+  port: ${SERVER_PORT:18103}
+
+hospital:
+  clients:
+    patient:
+      enabled: true
+    doctor:
+      enabled: true
+  cache:
+    enabled: true
+    ttl:
+      appointments: 5m
+      appointmentAvailability: 60s
+  scheduler:
+    reminder:
+      fixed-delay-ms: ${REMINDER_FIXED_DELAY_MS:60000}
+      lead-hours: ${REMINDER_LEAD_HOURS:24}
+    missed:
+      fixed-delay-ms: ${MISSED_FIXED_DELAY_MS:300000}

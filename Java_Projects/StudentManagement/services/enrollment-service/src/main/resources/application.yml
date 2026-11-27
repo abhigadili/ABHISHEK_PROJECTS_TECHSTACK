@@ -1,0 +1,136 @@
+server:
+  forward-headers-strategy: framework   # honour X-Forwarded-* from the gateway (Swagger server URL)
+  port: ${SERVER_PORT:8083}
+
+spring:
+  application:
+    name: enrollment-service
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/EnrollmentDB?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${MYSQL_USER:abhig}
+    password: ${MYSQL_PASSWORD:Pass@123}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.jdbc.time_zone: UTC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
+    clean-disabled: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    template:
+      observation-enabled: true
+    producer:
+      acks: all
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer   # outbox stores the JSON payload as text
+      properties:
+        enable.idempotence: true
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connect-timeout: 2000
+            read-timeout: 3000
+            logger-level: basic
+
+app:
+  security:
+    jwt:
+      secret: ${JWT_SECRET:change-me-change-me-change-me-change-me-0123}
+
+enrollment:
+  saga:
+    recovery-interval-ms: 15000
+    stale-after-seconds: 30
+    max-recovery-attempts: 20
+  outbox:
+    interval-ms: 1000
+    batch-size: 50
+    send-timeout-seconds: 5
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
+
+# ---- Resilience4j: applied to every Enrollment -> Student/Course call (see client/*Gateway) ----
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+        register-health-indicator: true
+        # business answers (404/409/4xx) are NOT failures of the dependency
+        ignore-exceptions:
+          - com.example.enrollment.client.RemoteExceptions$RemoteNotFoundException
+          - com.example.enrollment.client.RemoteExceptions$RemoteConflictException
+          - com.example.enrollment.client.RemoteExceptions$RemoteRejectedException
+    instances:
+      studentService: { base-config: default }
+      courseService: { base-config: default }
+  retry:
+    configs:
+      default:
+        max-attempts: 3
+        wait-duration: 300ms
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
+        ignore-exceptions:
+          - com.example.enrollment.client.RemoteExceptions$RemoteNotFoundException
+          - com.example.enrollment.client.RemoteExceptions$RemoteConflictException
+          - com.example.enrollment.client.RemoteExceptions$RemoteRejectedException
+    instances:
+      studentService: { base-config: default }
+      courseService: { base-config: default }
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 4s
+        cancel-running-future: true
+    instances:
+      studentService: { base-config: default }
+      courseService: { base-config: default }
+  thread-pool-bulkhead:
+    configs:
+      default:
+        max-thread-pool-size: 20
+        core-thread-pool-size: 10
+        queue-capacity: 50
+        context-propagators: com.example.enrollment.client.TracingContextPropagator
+    instances:
+      studentService: { base-config: default }
+      courseService: { base-config: default }
+
+management:
+  endpoints.web.exposure.include: health,info,prometheus,metrics,circuitbreakers,retries,bulkheads
+  endpoint.health:
+    probes.enabled: true
+    show-details: always
+    group:
+      readiness.include: readinessState,db,kafka
+  health.circuitbreakers.enabled: true
+  tracing.sampling.probability: 1.0
+  otlp.tracing.endpoint: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:http://localhost:4318/v1/traces}
+  metrics.tags.application: ${spring.application.name}
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{traceId:-},%X{spanId:-},%X{correlationId:-}]"
+  level:
+    com.example: INFO

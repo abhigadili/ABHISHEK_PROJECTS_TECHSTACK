@@ -1,0 +1,117 @@
+# Shared defaults imported by every service via `spring.config.import: classpath:hospital-common.yml`.
+# Per-service files only add what is specific (port, database, enabled clients, cache TTLs, job intervals).
+spring:
+  datasource:
+    username: ${MYSQL_USER:abhig}
+    password: ${MYSQL_PASSWORD}
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 10000
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: ${DDL_AUTO:validate}
+    properties:
+      hibernate.jdbc.time_zone: UTC
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:19092}
+    producer:
+      acks: all
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        enable.idempotence: true
+        max.block.ms: 5000
+        delivery.timeout.ms: 10000
+        request.timeout.ms: 5000
+    consumer:
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      ack-mode: record
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:16379}
+      timeout: 1s
+      connect-timeout: 1s
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connect-timeout: 2000
+            read-timeout: 5000
+            logger-level: basic
+      circuitbreaker:
+        enabled: false   # circuit breakers are applied with Resilience4j annotations on the gateway classes
+
+server:
+  shutdown: graceful
+  error:
+    include-message: never
+    include-stacktrace: never
+
+hospital:
+  security:
+    jwt:
+      # HS256 signing key shared by the identity service (signs) and every other component (verifies).
+      # Override with JWT_SECRET in any real environment.
+      secret: ${JWT_SECRET:hospital-mgmt-local-dev-secret-key-change-me-0123456789}
+      expiry-minutes: ${JWT_EXPIRY_MINUTES:120}
+  services:
+    hospital:
+      url: ${HOSPITAL_SERVICE_URL:http://localhost:18104}
+    patient:
+      url: ${PATIENT_SERVICE_URL:http://localhost:18101}
+    doctor:
+      url: ${DOCTOR_SERVICE_URL:http://localhost:18102}
+    appointment:
+      url: ${APPOINTMENT_SERVICE_URL:http://localhost:18103}
+    prescription:
+      url: ${PRESCRIPTION_SERVICE_URL:http://localhost:18106}
+  webclient:
+    connect-timeout-ms: 2000
+    response-timeout-ms: 5000
+  outbox:
+    relay-delay-ms: 10000
+    min-age-seconds: 15
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        slowCallDurationThreshold: 4s
+        slowCallRateThreshold: 80
+        waitDurationInOpenState: 15s
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        # Business answers (404/409/400...) are not downstream failures
+        ignoreExceptions:
+          - com.hospital.common.web.ResourceNotFoundException
+          - com.hospital.common.web.BadRequestException
+          - com.hospital.common.web.ConflictException
+          - com.hospital.common.web.DownstreamClientException
+    instances:
+      patientService:
+        baseConfig: default
+      doctorService:
+        baseConfig: default
+      hospitalService:
+        baseConfig: default
+      appointmentService:
+        baseConfig: default
+      prescriptionService:
+        baseConfig: default

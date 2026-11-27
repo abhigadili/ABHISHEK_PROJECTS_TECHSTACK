@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: payment-service
+  config:
+    import: classpath:food-common.yml
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/food_payment_db${DB_SUFFIX:}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=utf8
+server:
+  port: 9107
+food:
+  security:
+    public-paths:
+      - /api/payments/callback        # authenticated by HMAC signature instead of a JWT
+  payment:
+    provider: ${PAYMENT_PROVIDER:sandbox}
+    pending-ttl: 10m                  # unpaid payments time out and fail the order
+    webhook-secret: ${PAYMENT_WEBHOOK_SECRET:${JWT_SECRET}}

@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: hr-performance-service
+  config:
+    import: classpath:hr-common.yml
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/hr_performance_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+  kafka:
+    consumer:
+      group-id: hr-performance-service
+
+server:
+  port: ${PERFORMANCE_SERVICE_PORT:9109}
+
+hr:
+  audit:
+    base-path: /api/v1/performance

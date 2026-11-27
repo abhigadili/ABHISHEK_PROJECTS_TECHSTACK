@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: hr-attendance-service
+  config:
+    import: classpath:hr-common.yml
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/hr_attendance_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+  kafka:
+    consumer:
+      group-id: hr-attendance-service
+
+server:
+  port: ${ATTENDANCE_SERVICE_PORT:9105}
+
+hr:
+  audit:
+    base-path: /api/v1/attendance
+  attendance:
+    zone: ${HR_ZONE:Asia/Kolkata}
+    escalation-hours: 48
+    punch-queue-capacity: 5000

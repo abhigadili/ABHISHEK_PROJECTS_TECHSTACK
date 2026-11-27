@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: notification-service
+  config:
+    import: classpath:food-common.yml
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/food_notification_db${DB_SUFFIX:}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=utf8
+server:
+  port: 9109
+food:
+  notification:
+    email-enabled: true        # sandbox adapter: logs + records, nothing is actually e-mailed
+    sms-enabled: true          # sandbox adapter: logs + records, nothing is actually texted

@@ -1,0 +1,10 @@
+# Variant for services started on the HOST with scripts/start-local.sh while Prometheus runs in docker:
+#   docker run -p 9090:9090 --add-host host.docker.internal:host-gateway -v $PWD/monitoring/prometheus/prometheus-host.yml:/etc/prometheus/prometheus.yml prom/prometheus:v2.55.1
+global:
+  scrape_interval: 10s
+
+scrape_configs:
+  - job_name: spring-services
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['host.docker.internal:8080', 'host.docker.internal:8081', 'host.docker.internal:8082', 'host.docker.internal:8083', 'host.docker.internal:8084', 'host.docker.internal:8761']

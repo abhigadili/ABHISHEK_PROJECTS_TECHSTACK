@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: hr-organization-service
+  config:
+    import: classpath:hr-common.yml
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/hr_organization_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+  kafka:
+    consumer:
+      group-id: hr-organization-service
+
+server:
+  port: ${ORGANIZATION_SERVICE_PORT:9103}
+
+hr:
+  audit:
+    base-path: /api/v1/organization
+  cache:
+    ttl:
+      departments: 30m
+      designations: 30m
+      locations: 30m
+      departmentTree: 10m
+      orgChart: 10m

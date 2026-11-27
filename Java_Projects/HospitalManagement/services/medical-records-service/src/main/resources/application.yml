@@ -1,0 +1,15 @@
+spring:
+  config:
+    import: classpath:hospital-common.yml
+  application:
+    name: medical-records-service
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/MedicalRecordsDB?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+
+server:
+  port: ${SERVER_PORT:18105}
+
+hospital:
+  clients:
+    patient:
+      enabled: true

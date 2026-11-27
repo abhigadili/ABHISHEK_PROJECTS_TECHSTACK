@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.studentmgmt</groupId>
+    <artifactId>springb-student-mgmt-async-api-gateway-pattern-kafka</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <name>Student Management Microservices (Asynchronous, API Gateway Pattern, Kafka)</name>
+    <description>
+        Four independent Spring Boot microservices (student, course, enrollment,
+        notification), each owning its own MySQL database and using standard
+        Spring Data JPA for persistence. All cross-service communication is
+        asynchronous over Kafka instead of WebClient/RestClient/OpenFeign. A
+        fifth module, api-gateway (Spring Cloud Gateway), is the single
+        client-facing entry point that path-routes to the four backend services.
+    </description>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.4.2</version>
+        <relativePath/>
+    </parent>
+
+    <properties>
+        <java.version>21</java.version>
+        <spring-cloud.version>2024.0.0</spring-cloud.version>
+        <jjwt.version>0.12.6</jjwt.version>
+    </properties>
+
+    <modules>
+        <module>student-service</module>
+        <module>course-service</module>
+        <module>notification-service</module>
+        <module>enrollment-service</module>
+        <module>api-gateway</module>
+    </modules>
+</project>

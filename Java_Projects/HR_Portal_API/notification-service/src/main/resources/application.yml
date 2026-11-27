@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: hr-notification-service
+  config:
+    import: classpath:hr-common.yml
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/hr_notification_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+  kafka:
+    consumer:
+      group-id: hr-notification-service
+
+server:
+  port: ${NOTIFICATION_SERVICE_PORT:9114}
+
+hr:
+  audit:
+    base-path: /api/v1/notifications
+  notification:
+    smtp-password: ${SMTP_PASSWORD:}
+    email-queue-capacity: 500
+    email-workers: 2

@@ -1,0 +1,22 @@
+spring:
+  config:
+    import: classpath:hospital-common.yml
+  application:
+    name: prescription-service
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/PrescriptionDB?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+
+server:
+  port: ${SERVER_PORT:18106}
+
+hospital:
+  clients:
+    patient:
+      enabled: true
+    doctor:
+      enabled: true
+  prescription:
+    default-validity-days: 30
+  scheduler:
+    expiry:
+      fixed-delay-ms: ${PRESCRIPTION_EXPIRY_FIXED_DELAY_MS:600000}

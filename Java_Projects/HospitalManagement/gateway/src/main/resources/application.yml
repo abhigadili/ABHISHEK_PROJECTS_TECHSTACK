@@ -1,0 +1,61 @@
+server:
+  port: ${SERVER_PORT:18080}
+  shutdown: graceful
+
+spring:
+  application:
+    name: api-gateway
+  jackson:
+    default-property-inclusion: non_null
+  cloud:
+    gateway:
+      httpclient:
+        connect-timeout: 2000
+        response-timeout: 15s
+      routes:
+        # ---- identity + hospital master data -> Hospital Service
+        - id: hospital-service
+          uri: ${HOSPITAL_SERVICE_URL:http://localhost:18104}
+          predicates:
+            - Path=/api/auth/**,/api/users/**,/api/hospitals/**,/api/departments/**
+        - id: patient-service
+          uri: ${PATIENT_SERVICE_URL:http://localhost:18101}
+          predicates:
+            - Path=/api/patients/**
+        - id: doctor-service
+          uri: ${DOCTOR_SERVICE_URL:http://localhost:18102}
+          predicates:
+            - Path=/api/doctors/**
+        - id: appointment-service
+          uri: ${APPOINTMENT_SERVICE_URL:http://localhost:18103}
+          predicates:
+            - Path=/api/appointments/**
+        - id: medical-records-service
+          uri: ${MEDICAL_RECORDS_SERVICE_URL:http://localhost:18105}
+          predicates:
+            - Path=/api/records/**
+        - id: prescription-service
+          uri: ${PRESCRIPTION_SERVICE_URL:http://localhost:18106}
+          predicates:
+            - Path=/api/prescriptions/**
+        - id: laboratory-service
+          uri: ${LABORATORY_SERVICE_URL:http://localhost:18107}
+          predicates:
+            - Path=/api/lab/**
+        - id: billing-service
+          uri: ${BILLING_SERVICE_URL:http://localhost:18108}
+          predicates:
+            - Path=/api/bills/**,/api/payments/**
+        - id: pharmacy-service
+          uri: ${PHARMACY_SERVICE_URL:http://localhost:18109}
+          predicates:
+            - Path=/api/pharmacy/**
+        - id: notification-service
+          uri: ${NOTIFICATION_SERVICE_URL:http://localhost:18110}
+          predicates:
+            - Path=/api/notifications/**
+
+hospital:
+  security:
+    jwt:
+      secret: ${JWT_SECRET:hospital-mgmt-local-dev-secret-key-change-me-0123456789}

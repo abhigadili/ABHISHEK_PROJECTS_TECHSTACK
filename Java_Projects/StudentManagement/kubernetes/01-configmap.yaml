@@ -1,0 +1,15 @@
+# Non-secret configuration shared by all services. MYSQL_HOST points at the in-cluster alias of the EXISTING external MySQL (02-mysql-external.yaml).
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sms-config
+  namespace: student-management
+data:
+  MYSQL_HOST: mysql-external
+  MYSQL_PORT: "3306"
+  EUREKA_URL: http://eureka-server:8761/eureka
+  REDIS_HOST: redis
+  KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+  OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://jaeger:4318/v1/traces
+  LOGGING_STRUCTURED_FORMAT_CONSOLE: logstash
+  CORS_ALLOWED_ORIGINS: http://localhost:3000,http://localhost:4200,http://localhost:5173

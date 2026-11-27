@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.studentmgmt</groupId>
+    <artifactId>springb-student-mgmt-async-cqrs-pattern-kafka</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <name>Student Management Microservices (Asynchronous, CQRS Pattern, Kafka)</name>
+    <description>
+        Four independent Spring Boot microservices (student, course, enrollment,
+        notification), each owning its own MySQL database. Each service's primary
+        aggregate (Student/Course/Enrollment/Notification) is split into a command
+        side (writes) and a query side (reads from a separate, denormalized table),
+        kept in sync via Kafka projection events — CQRS with eventual consistency.
+        All cross-service communication (the enrollment saga) is also asynchronous
+        over Kafka. A shared-secret JWT, issued by student-service and validated
+        independently by all four services, provides single sign-on without a
+        gateway.
+    </description>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.4.2</version>
+        <relativePath/>
+    </parent>
+
+    <properties>
+        <java.version>21</java.version>
+        <jjwt.version>0.12.6</jjwt.version>
+    </properties>
+
+    <modules>
+        <module>student-service</module>
+        <module>course-service</module>
+        <module>notification-service</module>
+        <module>enrollment-service</module>
+    </modules>
+</project>

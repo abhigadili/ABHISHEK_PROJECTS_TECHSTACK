@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: student-service
+  namespace: student-management
+  labels: {app: student-service}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: student-service}
+  template:
+    metadata:
+      labels: {app: student-service}
+    spec:
+      containers:
+        - name: student-service
+          image: sms/student-service:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - {containerPort: 8081, name: http}
+          envFrom:
+            - configMapRef: {name: sms-config}
+            - secretRef: {name: sms-secrets}
+          env:
+            - {name: SERVER_PORT, value: "8081"}
+            - {name: JAVA_OPTS, value: "-XX:MaxRAMPercentage=75 -XX:+ExitOnOutOfMemoryError"}
+          startupProbe:
+            httpGet: {path: /actuator/health/liveness, port: http}
+            periodSeconds: 5
+            failureThreshold: 36
+          livenessProbe:
+            httpGet: {path: /actuator/health/liveness, port: http}
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet: {path: /actuator/health/readiness, port: http}
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          resources:
+            requests: {cpu: 200m, memory: 384Mi}
+            limits: {cpu: "1", memory: 768Mi}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: student-service
+  namespace: student-management
+  labels: {app: student-service}
+spec:
+  type: ClusterIP
+  selector: {app: student-service}
+  ports:
+    - name: http
+      port: 8081
+      targetPort: http

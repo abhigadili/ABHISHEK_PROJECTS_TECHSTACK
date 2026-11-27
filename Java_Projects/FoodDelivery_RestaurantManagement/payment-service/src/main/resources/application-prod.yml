@@ -1,0 +1,13 @@
+# Production profile: quiet logs, Swagger UI off, actuator details limited, no schema auto-changes.
+logging:
+  level:
+    com.fooddelivery: info
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate

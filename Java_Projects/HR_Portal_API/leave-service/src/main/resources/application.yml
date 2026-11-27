@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: hr-leave-service
+  config:
+    import: classpath:hr-common.yml
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/hr_leave_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+  kafka:
+    consumer:
+      group-id: hr-leave-service
+
+server:
+  port: ${LEAVE_SERVICE_PORT:9104}
+
+hr:
+  audit:
+    base-path: /api/v1/leaves
+  leave:
+    max-backdate-days: 7
+  cache:
+    ttl:
+      leaveBalance: 15m
+      leaveTypes: 30m
+      leavePolicy: 30m

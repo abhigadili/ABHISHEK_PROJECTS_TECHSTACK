@@ -1,0 +1,297 @@
+server:
+  port: ${GATEWAY_PORT:9080}
+  shutdown: graceful
+
+spring:
+  application:
+    name: hr-api-gateway
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:9379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 1s
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
+        - RemoveRequestHeader=Cookie
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter.replenishRate: ${HR_RATE_LIMIT_PER_SECOND:20}
+            redis-rate-limiter.burstCapacity: ${HR_RATE_LIMIT_BURST:40}
+            redis-rate-limiter.requestedTokens: 1
+            key-resolver: "#{@userOrIpKeyResolver}"
+            deny-empty-key: false
+      httpclient:
+        connect-timeout: 2000
+        response-timeout: 30s
+      routes:
+        - id: auth
+          uri: ${AUTH_SERVICE_URL:http://localhost:9101}
+          predicates:
+            - Path=/api/v1/auth/**
+        - id: employees
+          uri: ${EMPLOYEE_SERVICE_URL:http://localhost:9102}
+          predicates:
+            - Path=/api/v1/employees/**
+        - id: organization
+          uri: ${ORGANIZATION_SERVICE_URL:http://localhost:9103}
+          predicates:
+            - Path=/api/v1/organization/**
+        - id: leaves
+          uri: ${LEAVE_SERVICE_URL:http://localhost:9104}
+          predicates:
+            - Path=/api/v1/leaves/**
+        - id: attendance
+          uri: ${ATTENDANCE_SERVICE_URL:http://localhost:9105}
+          predicates:
+            - Path=/api/v1/attendance/**
+        - id: holidays
+          uri: ${HOLIDAY_SERVICE_URL:http://localhost:9106}
+          predicates:
+            - Path=/api/v1/holidays/**
+        - id: payroll
+          uri: ${PAYROLL_SERVICE_URL:http://localhost:9107}
+          predicates:
+            - Path=/api/v1/payroll/**
+        - id: tax
+          uri: ${TAX_SERVICE_URL:http://localhost:9108}
+          predicates:
+            - Path=/api/v1/tax/**
+        - id: performance
+          uri: ${PERFORMANCE_SERVICE_URL:http://localhost:9109}
+          predicates:
+            - Path=/api/v1/performance/**
+        - id: projects
+          uri: ${PROJECT_SERVICE_URL:http://localhost:9110}
+          predicates:
+            - Path=/api/v1/projects/**,/api/v1/customers/**
+        - id: timesheets
+          uri: ${TIMESHEET_SERVICE_URL:http://localhost:9111}
+          predicates:
+            - Path=/api/v1/timesheets/**
+        - id: exit
+          uri: ${EXIT_SERVICE_URL:http://localhost:9112}
+          predicates:
+            - Path=/api/v1/exit/**
+        - id: documents
+          uri: ${DOCUMENT_SERVICE_URL:http://localhost:9113}
+          predicates:
+            - Path=/api/v1/documents/**
+        - id: notifications
+          uri: ${NOTIFICATION_SERVICE_URL:http://localhost:9114}
+          predicates:
+            - Path=/api/v1/notifications/**
+        - id: reporting
+          uri: ${REPORTING_SERVICE_URL:http://localhost:9115}
+          predicates:
+            - Path=/api/v1/reports/**,/api/v1/dashboard/**
+        - id: docs-auth
+          uri: ${AUTH_SERVICE_URL:http://localhost:9101}
+          predicates:
+            - Path=/docs/auth/v3/api-docs
+          filters:
+            - RewritePath=/docs/auth/v3/api-docs, /v3/api-docs
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@userOrIpKeyResolver}"
+        - id: docs-employees
+          uri: ${EMPLOYEE_SERVICE_URL:http://localhost:9102}
+          predicates:
+            - Path=/docs/employees/v3/api-docs
+          filters:
+            - RewritePath=/docs/employees/v3/api-docs, /v3/api-docs
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@userOrIpKeyResolver}"
+        - id: docs-organization
+          uri: ${ORGANIZATION_SERVICE_URL:http://localhost:9103}
+          predicates:
+            - Path=/docs/organization/v3/api-docs
+          filters:
+            - RewritePath=/docs/organization/v3/api-docs, /v3/api-docs
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@userOrIpKeyResolver}"
+        - id: docs-leaves
+          uri: ${LEAVE_SERVICE_URL:http://localhost:9104}
+          predicates:
+            - Path=/docs/leaves/v3/api-docs
+          filters:
+            - RewritePath=/docs/leaves/v3/api-docs, /v3/api-docs
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@userOrIpKeyResolver}"
+        - id: docs-attendance
+          uri: ${ATTENDANCE_SERVICE_URL:http://localhost:9105}
+          predicates:
+            - Path=/docs/attendance/v3/api-docs
+          filters:
+            - RewritePath=/docs/attendance/v3/api-docs, /v3/api-docs
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@userOrIpKeyResolver}"
+        - id: docs-holidays
+          uri: ${HOLIDAY_SERVICE_URL:http://localhost:9106}
+          predicates:
+            - Path=/docs/holidays/v3/api-docs
+          filters:
+            - RewritePath=/docs/holidays/v3/api-docs, /v3/api-docs
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@userOrIpKeyResolver}"
+        - id: docs-payroll
+          uri: ${PAYROLL_SERVICE_URL:http://localhost:9107}
+          predicates:
+            - Path=/docs/payroll/v3/api-docs
+          filters:
+            - RewritePath=/docs/payroll/v3/api-docs, /v3/api-docs
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@userOrIpKeyResolver}"
+        - id: docs-tax
+          uri: ${TAX_SERVICE_URL:http://localhost:9108}
+          predicates:
+            - Path=/docs/tax/v3/api-docs
+          filters:
+            - RewritePath=/docs/tax/v3/api-docs, /v3/api-docs
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@userOrIpKeyResolver}"
+        - id: docs-performance
+          uri: ${PERFORMANCE_SERVICE_URL:http://localhost:9109}
+          predicates:
+            - Path=/docs/performance/v3/api-docs
+          filters:
+            - RewritePath=/docs/performance/v3/api-docs, /v3/api-docs
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@userOrIpKeyResolver}"
+        - id: docs-projects
+          uri: ${PROJECT_SERVICE_URL:http://localhost:9110}
+          predicates:
+            - Path=/docs/projects/v3/api-docs
+          filters:
+            - RewritePath=/docs/projects/v3/api-docs, /v3/api-docs
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@userOrIpKeyResolver}"
+        - id: docs-timesheets
+          uri: ${TIMESHEET_SERVICE_URL:http://localhost:9111}
+          predicates:
+            - Path=/docs/timesheets/v3/api-docs
+          filters:
+            - RewritePath=/docs/timesheets/v3/api-docs, /v3/api-docs
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@userOrIpKeyResolver}"
+        - id: docs-exit
+          uri: ${EXIT_SERVICE_URL:http://localhost:9112}
+          predicates:
+            - Path=/docs/exit/v3/api-docs
+          filters:
+            - RewritePath=/docs/exit/v3/api-docs, /v3/api-docs
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@userOrIpKeyResolver}"
+        - id: docs-documents
+          uri: ${DOCUMENT_SERVICE_URL:http://localhost:9113}
+          predicates:
+            - Path=/docs/documents/v3/api-docs
+          filters:
+            - RewritePath=/docs/documents/v3/api-docs, /v3/api-docs
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@userOrIpKeyResolver}"
+        - id: docs-notifications
+          uri: ${NOTIFICATION_SERVICE_URL:http://localhost:9114}
+          predicates:
+            - Path=/docs/notifications/v3/api-docs
+          filters:
+            - RewritePath=/docs/notifications/v3/api-docs, /v3/api-docs
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@userOrIpKeyResolver}"
+        - id: docs-reporting
+          uri: ${REPORTING_SERVICE_URL:http://localhost:9115}
+          predicates:
+            - Path=/docs/reporting/v3/api-docs
+          filters:
+            - RewritePath=/docs/reporting/v3/api-docs, /v3/api-docs
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@userOrIpKeyResolver}"
+
+hr:
+  security:
+    jwt:
+      secret: ${JWT_SECRET}
+  gateway:
+    cors:
+      allowed-origins: ${HR_CORS_ORIGINS:http://localhost:3000,http://localhost:4200,http://localhost:5173}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    urls:
+      - name: auth
+        url: /docs/auth/v3/api-docs
+      - name: employees
+        url: /docs/employees/v3/api-docs
+      - name: organization
+        url: /docs/organization/v3/api-docs
+      - name: leaves
+        url: /docs/leaves/v3/api-docs
+      - name: attendance
+        url: /docs/attendance/v3/api-docs
+      - name: holidays
+        url: /docs/holidays/v3/api-docs
+      - name: payroll
+        url: /docs/payroll/v3/api-docs
+      - name: tax
+        url: /docs/tax/v3/api-docs
+      - name: performance
+        url: /docs/performance/v3/api-docs
+      - name: projects
+        url: /docs/projects/v3/api-docs
+      - name: timesheets
+        url: /docs/timesheets/v3/api-docs
+      - name: exit
+        url: /docs/exit/v3/api-docs
+      - name: documents
+        url: /docs/documents/v3/api-docs
+      - name: notifications
+        url: /docs/notifications/v3/api-docs
+      - name: reporting
+        url: /docs/reporting/v3/api-docs

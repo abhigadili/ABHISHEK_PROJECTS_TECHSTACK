@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: menu-service
+  config:
+    import: classpath:food-common.yml
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/food_menu_db${DB_SUFFIX:}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=utf8
+server:
+  port: 9104
+food:
+  security:
+    # anonymous browsing of menus (all menu GETs are public; writes need an owner/admin token)
+    public-get-paths:
+      - /api/menu/**
+  cache:
+    ttls:
+      menu: 5m
+      menu-item: 10m
+      menu-popular: 15m

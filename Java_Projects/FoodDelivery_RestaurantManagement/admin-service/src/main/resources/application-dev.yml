@@ -1,0 +1,7 @@
+# Development profile: verbose application logging, Swagger UI on.
+logging:
+  level:
+    com.fooddelivery: debug
+springdoc:
+  swagger-ui:
+    enabled: true

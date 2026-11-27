@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: hr-exit-service
+  config:
+    import: classpath:hr-common.yml
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/hr_exit_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+  kafka:
+    consumer:
+      group-id: hr-exit-service
+
+server:
+  port: ${EXIT_SERVICE_PORT:9112}
+
+hr:
+  audit:
+    base-path: /api/v1/exit

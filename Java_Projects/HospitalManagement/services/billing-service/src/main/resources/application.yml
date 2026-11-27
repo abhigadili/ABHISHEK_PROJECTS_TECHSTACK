@@ -1,0 +1,24 @@
+spring:
+  config:
+    import: classpath:hospital-common.yml
+  application:
+    name: billing-service
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/BillingDB?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+
+server:
+  port: ${SERVER_PORT:18108}
+
+hospital:
+  clients:
+    patient:
+      enabled: true
+  billing:
+    due-days: 7
+    pending-payment-timeout-minutes: ${PAYMENT_TIMEOUT_MINUTES:30}
+    reminder-interval-hours: ${BILL_REMINDER_INTERVAL_HOURS:24}
+  scheduler:
+    pending-payments:
+      fixed-delay-ms: ${PENDING_PAYMENTS_FIXED_DELAY_MS:60000}
+    overdue:
+      fixed-delay-ms: ${OVERDUE_FIXED_DELAY_MS:300000}
