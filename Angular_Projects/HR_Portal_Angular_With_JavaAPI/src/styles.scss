@@ -1,0 +1,71 @@
+@use '@angular/material' as mat;
+@use './styles/bootstrap';
+@use './styles/tokens';
+
+html {
+  color-scheme: light;
+  @include mat.theme((color: mat.$violet-palette, typography: (plain-family: 'Inter, "Noto Sans Telugu", "Noto Sans Devanagari", system-ui, sans-serif'), density: -2));
+}
+html[data-theme='dark'] { color-scheme: dark; }
+@include mat.core();
+
+@tailwind components;
+@tailwind utilities;
+
+// Tailwind preflight is off: restore its border defaults so `border-b border-border` renders a line.
+*, ::before, ::after { border-width: 0; border-style: solid; border-color: var(--hr-border); }
+
+html, body { min-height: 100%; }
+body { margin: 0; background: var(--hr-bg); color: var(--hr-text); font-size: 14px; overflow-x: hidden; font-family: var(--bs-body-font-family); }
+img, svg { vertical-align: middle; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--hr-primary); outline-offset: 2px; }
+::selection { background: var(--hr-primary-soft); }
+a { color: var(--hr-primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1, h2, h3, h4, h5, h6 { font-weight: 600; letter-spacing: -.01em; }
+.page-title { font-size: 1.5rem; margin: 0; }
+.form-control, .form-select { background-color: var(--hr-surface); color: var(--hr-text); border: 1px solid var(--hr-border); font-size: 13px; }
+.form-control:focus, .form-select:focus { background-color: var(--hr-surface); color: var(--hr-text); border-color: var(--hr-primary); box-shadow: 0 0 0 .2rem rgb(var(--hr-primary-rgb) / .15); }
+
+.hr-card { background: var(--hr-surface); border: 1px solid var(--hr-border); border-radius: var(--hr-radius); box-shadow: var(--hr-shadow); }
+.hr-card-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; flex-wrap: wrap; padding: 12px 16px; border-bottom: 1px solid var(--hr-border); }
+.hr-card-title { font-size: 14px; font-weight: 600; margin: 0; }
+.hr-card-body { padding: 16px; }
+.field-label { font-size: 12px; font-weight: 600; color: var(--hr-muted); margin-bottom: 4px; display: block; }
+.field-error { color: var(--hr-danger); font-size: 12px; margin-top: 3px; }
+.skeleton { background: linear-gradient(90deg, var(--hr-surface-2) 25%, var(--hr-border) 37%, var(--hr-surface-2) 63%); background-size: 400% 100%; animation: sk 1.3s ease infinite; border-radius: 6px; }
+@keyframes sk { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+.rich-html { img { max-width: 100%; } table { border-collapse: collapse; td, th { border: 1px solid var(--hr-border); padding: 4px 8px; } } p { margin-bottom: .5rem; } ul, ol { padding-left: 1.4rem; } }
+.org-tree { list-style: none; padding-left: 22px; margin: 0; border-left: 1px dashed var(--hr-border); li { margin: 6px 0; } }
+.btn-hr { outline: 0; display: inline-flex; align-items: center; gap: 6px; border-radius: 8px; border: 1px solid transparent; padding: 6px 12px; font-size: 13px; font-weight: 500; line-height: 1.4; transition: background .15s, border-color .15s; background: transparent; color: var(--hr-text); white-space: nowrap;
+  &:disabled { opacity: .55; cursor: not-allowed; }
+  &.sm { padding: 3px 9px; font-size: 12px; }
+  &.icon { padding: 5px; }
+  &.primary { background: var(--hr-primary); color: rgb(var(--hr-primary-fg-rgb)); &:hover:not(:disabled) { filter: brightness(1.08); } }
+  &.outline { border-color: var(--hr-border); background: var(--hr-surface); &:hover:not(:disabled) { background: var(--hr-surface-2); } }
+  &.ghost:hover:not(:disabled) { background: var(--hr-surface-2); }
+  &.danger { background: var(--hr-danger); color: #fff; }
+  &.success { background: var(--hr-success); color: #fff; }
+  &.danger-ghost { color: var(--hr-danger); &:hover:not(:disabled) { background: rgb(var(--hr-danger-rgb) / .1); } }
+  &.soft { background: var(--hr-primary-soft); color: var(--hr-primary); }
+}
+.btn-hr:focus-visible { outline: 2px solid var(--hr-primary); outline-offset: 2px; }
+.hr-badge { display: inline-flex; align-items: center; border-radius: 999px; padding: 1px 9px; font-size: 11px; font-weight: 600; white-space: nowrap;
+  &.success { background: rgb(var(--hr-success-rgb) / .14); color: var(--hr-success); } &.warning { background: rgb(var(--hr-warning-rgb) / .16); color: var(--hr-warning); }
+  &.danger { background: rgb(var(--hr-danger-rgb) / .14); color: var(--hr-danger); } &.info { background: rgb(var(--hr-info-rgb) / .14); color: var(--hr-info); }
+  &.primary { background: var(--hr-primary-soft); color: var(--hr-primary); } &.neutral { background: var(--hr-surface-2); color: var(--hr-muted); } }
+@media print { .no-print { display: none !important; } body { background: #fff; } }
+
+// Grid / flex children must be allowed to shrink below their content, otherwise a wide table stretches the whole page.
+.d-grid > *, .row > *, .hr-card, main { min-width: 0; }
+
+// Overlays (Material dialog / menu, PrimeNG, toastr) share one z-order scale
+.cdk-overlay-container { z-index: 1300; }
+.toast-container { z-index: 1500 !important; }
+.mat-mdc-dialog-surface { border-radius: 14px !important; }
+.mat-mdc-form-field { width: 100%; }
+.mat-mdc-form-field-subscript-wrapper { display: none; }
+.p-datatable .p-datatable-thead > tr > th { white-space: nowrap; font-size: 12.5px; }
+.p-datatable .p-datatable-tbody > tr > td { font-size: 13px; }
+.p-component { font-family: inherit; }

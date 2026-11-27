@@ -1,0 +1,28 @@
+// Design tokens: RGB channels (space separated) so Tailwind opacity modifiers work; Material, PrimeNG and Bootstrap are mapped onto the same palette.
+:root {
+  --hr-bg-rgb: 245 246 250; --hr-surface-rgb: 255 255 255; --hr-surface-2-rgb: 240 242 248; --hr-border-rgb: 228 231 238; --hr-text-rgb: 27 33 51; --hr-muted-rgb: 102 112 133;
+  --hr-primary-rgb: 79 70 229; --hr-primary-fg-rgb: 255 255 255; --hr-primary-soft-rgb: 238 240 255;
+  --hr-success-rgb: 22 163 74; --hr-warning-rgb: 217 119 6; --hr-danger-rgb: 220 38 38; --hr-info-rgb: 2 132 199;
+  --hr-shadow: 0 1px 2px rgba(16, 24, 40, .06), 0 1px 3px rgba(16, 24, 40, .08);
+  --hr-sidebar: 264px; --hr-sidebar-collapsed: 72px; --hr-topbar: 64px; --hr-radius: 12px;
+}
+[data-theme='dark'] {
+  --hr-bg-rgb: 15 19 32; --hr-surface-rgb: 23 28 46; --hr-surface-2-rgb: 31 37 64; --hr-border-rgb: 42 49 80; --hr-text-rgb: 230 233 245; --hr-muted-rgb: 154 164 192;
+  --hr-primary-rgb: 129 140 248; --hr-primary-fg-rgb: 15 19 32; --hr-primary-soft-rgb: 35 42 82;
+  --hr-shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 1px 3px rgba(0, 0, 0, .4);
+}
+:root, [data-theme='dark'] {
+  --hr-bg: rgb(var(--hr-bg-rgb)); --hr-surface: rgb(var(--hr-surface-rgb)); --hr-surface-2: rgb(var(--hr-surface-2-rgb)); --hr-border: rgb(var(--hr-border-rgb));
+  --hr-text: rgb(var(--hr-text-rgb)); --hr-muted: rgb(var(--hr-muted-rgb)); --hr-primary: rgb(var(--hr-primary-rgb)); --hr-primary-soft: rgb(var(--hr-primary-soft-rgb));
+  --hr-success: rgb(var(--hr-success-rgb)); --hr-warning: rgb(var(--hr-warning-rgb)); --hr-danger: rgb(var(--hr-danger-rgb)); --hr-info: rgb(var(--hr-info-rgb));
+  // Bootstrap
+  --bs-body-bg: var(--hr-bg); --bs-body-color: var(--hr-text); --bs-border-color: var(--hr-border);
+  --bs-primary-rgb: var(--hr-primary-rgb); --bs-success-rgb: var(--hr-success-rgb); --bs-warning-rgb: var(--hr-warning-rgb); --bs-danger-rgb: var(--hr-danger-rgb); --bs-info-rgb: var(--hr-info-rgb);
+  --bs-secondary-color: var(--hr-muted); --bs-secondary-bg: var(--hr-surface-2); --bs-tertiary-bg: var(--hr-surface-2); --bs-emphasis-color: var(--hr-text);
+  --bs-body-font-family: Inter, 'Noto Sans Telugu', 'Noto Sans Devanagari', system-ui, sans-serif;
+  // Angular Material (M3 system tokens)
+  --mat-sys-primary: var(--hr-primary); --mat-sys-on-primary: rgb(var(--hr-primary-fg-rgb)); --mat-sys-surface: var(--hr-surface); --mat-sys-on-surface: var(--hr-text);
+  --mat-sys-surface-container: var(--hr-surface); --mat-sys-surface-container-high: var(--hr-surface); --mat-sys-surface-container-highest: var(--hr-surface-2); --mat-sys-surface-container-low: var(--hr-surface); --mat-sys-surface-container-lowest: var(--hr-surface);
+  --mat-sys-on-surface-variant: var(--hr-muted); --mat-sys-outline: var(--hr-border); --mat-sys-outline-variant: var(--hr-border);
+  --mat-sys-secondary-container: var(--hr-primary-soft); --mat-sys-on-secondary-container: var(--hr-primary); --mat-sys-surface-variant: var(--hr-surface-2);
+}

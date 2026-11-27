@@ -1,0 +1,50 @@
+import { Routes } from '@angular/router';
+import { accessGuard, authGuard, publicOnlyGuard } from './core/guards/auth.guards';
+import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
+
+const ADMIN = ['HR_ADMIN', 'SUPER_ADMIN'];
+export const routes: Routes = [
+  { path: 'login', canActivate: [publicOnlyGuard], loadComponent: () => import('./features/authentication/login.page') },
+  { path: 'forgot-password', canActivate: [publicOnlyGuard], loadComponent: () => import('./features/authentication/forgot-password.page') },
+  { path: 'reset-password', canActivate: [publicOnlyGuard], loadComponent: () => import('./features/authentication/reset-password.page') },
+  { path: 'register', canActivate: [publicOnlyGuard], loadComponent: () => import('./features/authentication/register-info.page') },
+  { path: 'change-password', loadComponent: () => import('./features/authentication/change-password.form') },
+  {
+    path: '', component: MainLayoutComponent, canActivate: [authGuard],
+    children: [
+      { path: '', pathMatch: 'full', loadComponent: () => import('./features/dashboard/dashboard.page') },
+      { path: 'employees', canActivate: [accessGuard], data: { anyOp: ['employee.search'] }, loadComponent: () => import('./features/employees/employees.page') },
+      { path: 'employees/:id', loadComponent: () => import('./features/employees/employee-profile.page') },
+      { path: 'directory', loadComponent: () => import('./features/employees/directory.page') },
+      { path: 'org-chart', loadComponent: () => import('./features/organization/org-chart.page') },
+      { path: 'organization', canActivate: [accessGuard], data: { roles: ['HR_ADMIN', 'SUPER_ADMIN', 'FINANCE_ADMIN'] }, loadComponent: () => import('./features/organization/organization-setup.page') },
+      { path: 'leave', loadComponent: () => import('./features/leaves/leave.page') },
+      { path: 'holidays', loadComponent: () => import('./features/holidays/holidays.page') },
+      { path: 'attendance', loadComponent: () => import('./features/attendance/attendance.page') },
+      { path: 'payroll', loadComponent: () => import('./features/payroll/payroll.page') },
+      { path: 'tax', loadComponent: () => import('./features/tax/tax.page') },
+      { path: 'performance', loadComponent: () => import('./features/performance/performance.page') },
+      { path: 'customers', canActivate: [accessGuard], data: { anyOp: ['project.listCustomers'] }, loadComponent: () => import('./features/customers/customers.pages').then((m) => m.CustomersPage) },
+      { path: 'customers/:id', canActivate: [accessGuard], data: { anyOp: ['project.getCustomers'] }, loadComponent: () => import('./features/customers/customers.pages').then((m) => m.CustomerDetailPage) },
+      { path: 'projects', loadComponent: () => import('./features/projects/projects.pages').then((m) => m.ProjectsPage) },
+      { path: 'projects/:id', loadComponent: () => import('./features/projects/projects.pages').then((m) => m.ProjectDetailPage) },
+      { path: 'timesheets', loadComponent: () => import('./features/timesheets/timesheets.page') },
+      { path: 'exit', loadComponent: () => import('./features/exit-interviews/exit.page') },
+      { path: 'documents', loadComponent: () => import('./features/documents/documents.page') },
+      { path: 'approvals', loadComponent: () => import('./features/approvals/approvals.page') },
+      { path: 'notifications', loadComponent: () => import('./features/notifications/notifications.page') },
+      { path: 'reports', canActivate: [accessGuard], data: { roles: ['MANAGER', 'HR_ADMIN', 'PAYROLL_ADMIN', 'FINANCE_ADMIN', 'PROJECT_MANAGER', 'SUPER_ADMIN'] }, loadComponent: () => import('./features/reports/reports.page') },
+      { path: 'profile', loadComponent: () => import('./features/profile/profile.page') },
+      { path: 'help', loadComponent: () => import('./features/misc/help.page') },
+      { path: 'admin', pathMatch: 'full', redirectTo: 'admin/users' },
+      { path: 'admin/users', canActivate: [accessGuard], data: { roles: ADMIN }, loadComponent: () => import('./features/administration/users.page') },
+      { path: 'admin/roles', canActivate: [accessGuard], data: { roles: ADMIN }, loadComponent: () => import('./features/administration/roles.page') },
+      { path: 'admin/audit', canActivate: [accessGuard], data: { roles: ADMIN }, loadComponent: () => import('./features/administration/audit.page') },
+      { path: 'admin/notifications', canActivate: [accessGuard], data: { anyOp: ['notification.templates'] }, loadComponent: () => import('./features/administration/notification-admin.page') },
+      { path: 'admin/api-explorer', canActivate: [accessGuard], data: { roles: ADMIN }, loadComponent: () => import('./features/administration/api-explorer.page') },
+      { path: 'admin/coverage', canActivate: [accessGuard], data: { roles: ADMIN }, loadComponent: () => import('./features/administration/coverage.page') },
+      { path: 'forbidden', loadComponent: () => import('./features/misc/forbidden.page') },
+      { path: '**', loadComponent: () => import('./features/misc/not-found.page') },
+    ],
+  },
+];
