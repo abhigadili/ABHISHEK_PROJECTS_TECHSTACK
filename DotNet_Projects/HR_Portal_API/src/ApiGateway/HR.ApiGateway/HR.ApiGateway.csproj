@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <RootNamespace>HR.ApiGateway</RootNamespace>
+    <AssemblyName>HR.ApiGateway</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\BuildingBlocks\HR.Common\HR.Common.csproj" />
+    <PackageReference Include="Yarp.ReverseProxy" />
+  </ItemGroup>
+</Project>

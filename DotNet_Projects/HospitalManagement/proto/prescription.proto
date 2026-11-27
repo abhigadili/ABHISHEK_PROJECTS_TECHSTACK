@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option csharp_namespace = "HMS.Contracts.Prescriptions";
+package hms.prescriptions;
+
+// Used by the Pharmacy Service to verify a prescription is still ACTIVE before dispensing.
+service PrescriptionGrpc {
+  rpc GetStatus (PrescriptionIdRequest) returns (PrescriptionStatusReply);
+}
+
+message PrescriptionIdRequest { int64 prescription_id = 1; }
+
+message PrescriptionStatusReply {
+  int64 id = 1;
+  int64 patient_id = 2;
+  string status = 3;
+}

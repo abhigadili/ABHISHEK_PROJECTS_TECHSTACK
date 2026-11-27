@@ -1,0 +1,207 @@
+networks:
+  studentmgmt-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  zookeeper-data:
+  zookeeper-log:
+  kafka-data:
+
+x-jwt-env: &jwt-env
+  Jwt__Secret: "Sm_D0tNet_JWT_Sup3rSecretSigningKey_2026_MinimumThirtyTwoCharsLong!"
+  Jwt__Issuer: "StudentManagementSystem"
+  Jwt__Audience: "StudentManagementSystem.Clients"
+  Jwt__AccessTokenExpirationMinutes: "30"
+  Jwt__RefreshTokenExpirationDays: "7"
+  Cors__AllowedOrigins__0: "http://localhost:3000"
+  Cors__AllowedOrigins__1: "http://localhost:4200"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: studentmgmt-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "Root@12345"
+    ports:
+      - "3311:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./sql/init-databases.sql:/docker-entrypoint-initdb.d/init-databases.sql:ro
+    networks:
+      - studentmgmt-network
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -pRoot@12345 --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.0
+    container_name: studentmgmt-zookeeper
+    restart: unless-stopped
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - zookeeper-data:/var/lib/zookeeper/data
+      - zookeeper-log:/var/lib/zookeeper/log
+    networks:
+      - studentmgmt-network
+    healthcheck:
+      test: ["CMD-SHELL", "echo > /dev/tcp/localhost/2181 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    container_name: studentmgmt-kafka
+    restart: unless-stopped
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_LISTENERS: "PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9095"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "PLAINTEXT"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    ports:
+      - "9095:9092"
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    networks:
+      - studentmgmt-network
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092 > /dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+
+  studentservice:
+    build:
+      context: .
+      dockerfile: Services/StudentService/Dockerfile
+    container_name: studentmgmt-student-service
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      <<: *jwt-env
+      ASPNETCORE_ENVIRONMENT: "Docker"
+      ConnectionStrings__DefaultConnection: "Server=mysql;Port=3306;Database=StudentDotnetDB;Uid=root;Pwd=Root@12345;AllowPublicKeyRetrieval=True;SslMode=none;"
+      Kafka__BootstrapServers: "kafka:29092"
+      Kafka__ConsumerGroupId: "student-service-group"
+      Kafka__ClientId: "student-service"
+    ports:
+      - "8121:8080"
+    networks:
+      - studentmgmt-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  courseservice:
+    build:
+      context: .
+      dockerfile: Services/CourseService/Dockerfile
+    container_name: studentmgmt-course-service
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      <<: *jwt-env
+      ASPNETCORE_ENVIRONMENT: "Docker"
+      ConnectionStrings__DefaultConnection: "Server=mysql;Port=3306;Database=CourseDotnetDB;Uid=root;Pwd=Root@12345;AllowPublicKeyRetrieval=True;SslMode=none;"
+      Kafka__BootstrapServers: "kafka:29092"
+      Kafka__ConsumerGroupId: "course-service-group"
+      Kafka__ClientId: "course-service"
+    ports:
+      - "8122:8080"
+    networks:
+      - studentmgmt-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  enrollmentservice:
+    build:
+      context: .
+      dockerfile: Services/EnrollmentService/Dockerfile
+    container_name: studentmgmt-enrollment-service
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      studentservice:
+        condition: service_started
+      courseservice:
+        condition: service_started
+    environment:
+      <<: *jwt-env
+      ASPNETCORE_ENVIRONMENT: "Docker"
+      ConnectionStrings__DefaultConnection: "Server=mysql;Port=3306;Database=EnrollmentDotnetDB;Uid=root;Pwd=Root@12345;AllowPublicKeyRetrieval=True;SslMode=none;"
+      Kafka__BootstrapServers: "kafka:29092"
+      Kafka__ConsumerGroupId: "enrollment-service-group"
+      Kafka__ClientId: "enrollment-service"
+    ports:
+      - "8123:8080"
+    networks:
+      - studentmgmt-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  notificationservice:
+    build:
+      context: .
+      dockerfile: Services/NotificationService/Dockerfile
+    container_name: studentmgmt-notification-service
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      <<: *jwt-env
+      ASPNETCORE_ENVIRONMENT: "Docker"
+      ConnectionStrings__DefaultConnection: "Server=mysql;Port=3306;Database=NotificationDotnetDB;Uid=root;Pwd=Root@12345;AllowPublicKeyRetrieval=True;SslMode=none;"
+      Kafka__BootstrapServers: "kafka:29092"
+      Kafka__ConsumerGroupId: "notification-service-group"
+      Kafka__ClientId: "notification-service"
+    ports:
+      - "8124:8080"
+    networks:
+      - studentmgmt-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s

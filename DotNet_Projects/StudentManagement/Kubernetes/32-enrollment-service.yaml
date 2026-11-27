@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: enrollment-service, namespace: sms-dn }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: enrollment-service } }
+  template:
+    metadata: { labels: { app: enrollment-service } }
+    spec:
+      containers:
+        - name: enrollment-service
+          image: sms-dn/enrollment-service:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports: [{ containerPort: 8080 }]
+          envFrom: [{ configMapRef: { name: sms-config } }]
+          env:
+            - { name: MYSQL_USER, valueFrom: { secretKeyRef: { name: sms-secrets, key: MYSQL_USER } } }
+            - { name: MYSQL_PASSWORD, valueFrom: { secretKeyRef: { name: sms-secrets, key: MYSQL_PASSWORD } } }
+            - name: ConnectionStrings__EnrollmentDb
+              value: "Server=mysql-host;Port=3306;Database=EnrollmentDB;User=$(MYSQL_USER);Password=$(MYSQL_PASSWORD);"
+            - { name: Jwt__Secret, valueFrom: { secretKeyRef: { name: sms-secrets, key: Jwt__Secret } } }
+            - { name: RabbitMq__UserName, valueFrom: { secretKeyRef: { name: sms-secrets, key: RabbitMq__UserName } } }
+            - { name: RabbitMq__Password, valueFrom: { secretKeyRef: { name: sms-secrets, key: RabbitMq__Password } } }
+          resources: { requests: { cpu: 100m, memory: 192Mi }, limits: { cpu: 500m, memory: 512Mi } }
+          livenessProbe: { httpGet: { path: /health/live, port: 8080 }, initialDelaySeconds: 20, periodSeconds: 15, timeoutSeconds: 3 }
+          readinessProbe: { httpGet: { path: /health/ready, port: 8080 }, initialDelaySeconds: 20, periodSeconds: 10, timeoutSeconds: 5, failureThreshold: 6 }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: enrollment-service, namespace: sms-dn }
+spec:
+  type: ClusterIP
+  selector: { app: enrollment-service }
+  ports: [{ port: 8080, targetPort: 8080 }]

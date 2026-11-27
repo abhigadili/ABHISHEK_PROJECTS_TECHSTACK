@@ -1,0 +1,265 @@
+# Infrastructure for the .NET HR Portal. MySQL is NOT started here: the existing MySQL server (shared with the Java/Node
+# HR Portal builds) is used. Ports are offset from the other stacks (Kafka 9492, Kafka UI 9490, Redis 9579).
+name: hr-portal-dotnet
+services:
+  kafka:
+    image: apache/kafka:3.9.0
+    container_name: hrdn-kafka
+    ports: ["9492:9492"]
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9492,INTERNAL://:9094,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9492,INTERNAL://kafka:9094
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,INTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    volumes: [hrdn-kafka-data:/var/lib/kafka/data]
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9492 --list >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: hrdn-kafka-ui
+    ports: ["9490:8080"]
+    environment:
+      KAFKA_CLUSTERS_0_NAME: hr-dotnet
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9094
+    depends_on:
+      kafka: { condition: service_healthy }
+  redis:
+    image: redis:7-alpine
+    container_name: hrdn-redis
+    command: ["redis-server", "--appendonly", "yes", "--port", "9579"]
+    ports: ["9579:9579"]
+    volumes: [hrdn-redis-data:/data]
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "9579", "ping"]
+      interval: 5s
+      retries: 10
+
+# ---- application services: docker compose --profile apps up -d --build (MySQL stays the existing host server) ----
+  api-gateway:
+    profiles: ["apps"]
+    build: { context: ., dockerfile: infrastructure/Dockerfile, args: { PROJECT: src/ApiGateway/HR.ApiGateway, ASSEMBLY: HR.ApiGateway } }
+    image: hr-dn-api-gateway
+    container_name: hrdn-api-gateway
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["32080:32080"]
+    env_file: .env
+    environment: &appenv
+      MYSQL_HOST: host.docker.internal
+      REDIS_CONNECTION: redis:9579
+      KAFKA_BOOTSTRAP: kafka:9094
+      STORAGE_DIR: /app/storage
+      Ports__Http: "32080"
+      Services__Auth: http://auth:32101
+      Services__Employee: http://employee:32102
+      Services__Organization: http://organization:32103
+      Services__Leave: http://leave:32104
+      Services__Attendance: http://attendance:32105
+      Services__Holiday: http://holiday:32106
+      Services__Payroll: http://payroll:32107
+      Services__Tax: http://tax:32108
+      Services__Performance: http://performance:32109
+      Services__Project: http://project:32110
+      Services__Timesheet: http://timesheet:32111
+      Services__Exit: http://exit:32112
+      Services__Document: http://document:32113
+      Services__Notification: http://notification:32114
+      Services__Reporting: http://reporting:32115
+    depends_on: [redis, kafka]
+  auth:
+    profiles: ["apps"]
+    build: { context: ., dockerfile: infrastructure/Dockerfile, args: { PROJECT: src/Services/Auth/HR.AuthService, ASSEMBLY: HR.AuthService } }
+    image: hr-dn-auth
+    container_name: hrdn-auth
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    env_file: .env
+    environment:
+      <<: *appenv
+      Ports__Http: "32101"
+    depends_on: [redis, kafka]
+    volumes: [hrdn-storage:/app/storage]
+  employee:
+    profiles: ["apps"]
+    build: { context: ., dockerfile: infrastructure/Dockerfile, args: { PROJECT: src/Services/Employee/HR.EmployeeService, ASSEMBLY: HR.EmployeeService } }
+    image: hr-dn-employee
+    container_name: hrdn-employee
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    env_file: .env
+    environment:
+      <<: *appenv
+      Ports__Http: "32102"
+    depends_on: [redis, kafka]
+    volumes: [hrdn-storage:/app/storage]
+  organization:
+    profiles: ["apps"]
+    build: { context: ., dockerfile: infrastructure/Dockerfile, args: { PROJECT: src/Services/Organization/HR.OrganizationService, ASSEMBLY: HR.OrganizationService } }
+    image: hr-dn-organization
+    container_name: hrdn-organization
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    env_file: .env
+    environment:
+      <<: *appenv
+      Ports__Http: "32103"
+    depends_on: [redis, kafka]
+    volumes: [hrdn-storage:/app/storage]
+  leave:
+    profiles: ["apps"]
+    build: { context: ., dockerfile: infrastructure/Dockerfile, args: { PROJECT: src/Services/Leave/HR.LeaveService, ASSEMBLY: HR.LeaveService } }
+    image: hr-dn-leave
+    container_name: hrdn-leave
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    env_file: .env
+    environment:
+      <<: *appenv
+      Ports__Http: "32104"
+    depends_on: [redis, kafka]
+    volumes: [hrdn-storage:/app/storage]
+  attendance:
+    profiles: ["apps"]
+    build: { context: ., dockerfile: infrastructure/Dockerfile, args: { PROJECT: src/Services/Attendance/HR.AttendanceService, ASSEMBLY: HR.AttendanceService } }
+    image: hr-dn-attendance
+    container_name: hrdn-attendance
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    env_file: .env
+    environment:
+      <<: *appenv
+      Ports__Http: "32105"
+    depends_on: [redis, kafka]
+    volumes: [hrdn-storage:/app/storage]
+  holiday:
+    profiles: ["apps"]
+    build: { context: ., dockerfile: infrastructure/Dockerfile, args: { PROJECT: src/Services/Holiday/HR.HolidayService, ASSEMBLY: HR.HolidayService } }
+    image: hr-dn-holiday
+    container_name: hrdn-holiday
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    env_file: .env
+    environment:
+      <<: *appenv
+      Ports__Http: "32106"
+    depends_on: [redis, kafka]
+    volumes: [hrdn-storage:/app/storage]
+  payroll:
+    profiles: ["apps"]
+    build: { context: ., dockerfile: infrastructure/Dockerfile, args: { PROJECT: src/Services/Payroll/HR.PayrollService, ASSEMBLY: HR.PayrollService } }
+    image: hr-dn-payroll
+    container_name: hrdn-payroll
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    env_file: .env
+    environment:
+      <<: *appenv
+      Ports__Http: "32107"
+    depends_on: [redis, kafka]
+    volumes: [hrdn-storage:/app/storage]
+  tax:
+    profiles: ["apps"]
+    build: { context: ., dockerfile: infrastructure/Dockerfile, args: { PROJECT: src/Services/Tax/HR.TaxService, ASSEMBLY: HR.TaxService } }
+    image: hr-dn-tax
+    container_name: hrdn-tax
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    env_file: .env
+    environment:
+      <<: *appenv
+      Ports__Http: "32108"
+    depends_on: [redis, kafka]
+    volumes: [hrdn-storage:/app/storage]
+  performance:
+    profiles: ["apps"]
+    build: { context: ., dockerfile: infrastructure/Dockerfile, args: { PROJECT: src/Services/Performance/HR.PerformanceService, ASSEMBLY: HR.PerformanceService } }
+    image: hr-dn-performance
+    container_name: hrdn-performance
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    env_file: .env
+    environment:
+      <<: *appenv
+      Ports__Http: "32109"
+    depends_on: [redis, kafka]
+    volumes: [hrdn-storage:/app/storage]
+  project:
+    profiles: ["apps"]
+    build: { context: ., dockerfile: infrastructure/Dockerfile, args: { PROJECT: src/Services/Project/HR.ProjectService, ASSEMBLY: HR.ProjectService } }
+    image: hr-dn-project
+    container_name: hrdn-project
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    env_file: .env
+    environment:
+      <<: *appenv
+      Ports__Http: "32110"
+    depends_on: [redis, kafka]
+    volumes: [hrdn-storage:/app/storage]
+  timesheet:
+    profiles: ["apps"]
+    build: { context: ., dockerfile: infrastructure/Dockerfile, args: { PROJECT: src/Services/Timesheet/HR.TimesheetService, ASSEMBLY: HR.TimesheetService } }
+    image: hr-dn-timesheet
+    container_name: hrdn-timesheet
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    env_file: .env
+    environment:
+      <<: *appenv
+      Ports__Http: "32111"
+    depends_on: [redis, kafka]
+    volumes: [hrdn-storage:/app/storage]
+  exit:
+    profiles: ["apps"]
+    build: { context: ., dockerfile: infrastructure/Dockerfile, args: { PROJECT: src/Services/Exit/HR.ExitService, ASSEMBLY: HR.ExitService } }
+    image: hr-dn-exit
+    container_name: hrdn-exit
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    env_file: .env
+    environment:
+      <<: *appenv
+      Ports__Http: "32112"
+    depends_on: [redis, kafka]
+    volumes: [hrdn-storage:/app/storage]
+  document:
+    profiles: ["apps"]
+    build: { context: ., dockerfile: infrastructure/Dockerfile, args: { PROJECT: src/Services/Document/HR.DocumentService, ASSEMBLY: HR.DocumentService } }
+    image: hr-dn-document
+    container_name: hrdn-document
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    env_file: .env
+    environment:
+      <<: *appenv
+      Ports__Http: "32113"
+    depends_on: [redis, kafka]
+    volumes: [hrdn-storage:/app/storage]
+  notification:
+    profiles: ["apps"]
+    build: { context: ., dockerfile: infrastructure/Dockerfile, args: { PROJECT: src/Services/Notification/HR.NotificationService, ASSEMBLY: HR.NotificationService } }
+    image: hr-dn-notification
+    container_name: hrdn-notification
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    env_file: .env
+    environment:
+      <<: *appenv
+      Ports__Http: "32114"
+    depends_on: [redis, kafka]
+    volumes: [hrdn-storage:/app/storage]
+  reporting:
+    profiles: ["apps"]
+    build: { context: ., dockerfile: infrastructure/Dockerfile, args: { PROJECT: src/Services/Reporting/HR.ReportingService, ASSEMBLY: HR.ReportingService } }
+    image: hr-dn-reporting
+    container_name: hrdn-reporting
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    env_file: .env
+    environment:
+      <<: *appenv
+      Ports__Http: "32115"
+    depends_on: [redis, kafka]
+    volumes: [hrdn-storage:/app/storage]
+
+volumes:
+  hrdn-kafka-data:
+  hrdn-redis-data:
+  hrdn-storage:

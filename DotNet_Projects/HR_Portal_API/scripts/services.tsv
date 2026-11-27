@@ -1,0 +1,15 @@
+Auth	hr_auth_db	32101
+Employee	hr_employee_db	32102
+Organization	hr_organization_db	32103
+Leave	hr_leave_db	32104
+Attendance	hr_attendance_db	32105
+Holiday	hr_holiday_db	32106
+Payroll	hr_payroll_db	32107
+Tax	hr_tax_db	32108
+Performance	hr_performance_db	32109
+Project	hr_project_db	32110
+Timesheet	hr_timesheet_db	32111
+Exit	hr_exit_db	32112
+Document	hr_document_db	32113
+Notification	hr_notification_db	32114
+Reporting	hr_reporting_db	32115

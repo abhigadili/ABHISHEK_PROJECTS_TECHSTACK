@@ -1,0 +1,9 @@
+# The existing MySQL server runs OUTSIDE the cluster. Services reach it through the DNS name "mysql-host".
+# Option A (hostname): kind ExternalName -> set externalName to the hostname of your MySQL server.
+# Option B (IP): replace this Service by a selector-less Service + Endpoints object holding the server IP.
+apiVersion: v1
+kind: Service
+metadata: { name: mysql-host, namespace: sms-dn }
+spec:
+  type: ExternalName
+  externalName: host.docker.internal   # CHANGE to your MySQL host (e.g. 192.168.1.10 needs the Endpoints variant)

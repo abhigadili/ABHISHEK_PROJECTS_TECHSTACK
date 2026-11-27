@@ -1,0 +1,28 @@
+## .NET
+bin/
+obj/
+out/
+*.user
+*.suo
+
+## Logs
+logs/
+*.log
+
+## Rider / VS
+.vs/
+.idea/
+*.userosscache
+*.sln.docstates
+
+## Test results
+TestResults/
+coverage/
+*.trx
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Docker volumes (local dev data)
+.mysql-data/

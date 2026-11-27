@@ -1,0 +1,145 @@
+# Student Management System (.NET) - docker compose
+# MySQL is NOT part of this file: containers connect to the MySQL server already running on the host (MYSQL_HOST/MYSQL_PORT in .env).
+# Infrastructure only:   docker compose up -d rabbitmq redis jaeger prometheus grafana
+# Whole stack:           docker compose --profile apps up -d --build
+name: student-management-dn
+
+x-app-env: &app-env
+  ConnectionStrings__Redis: redis:6379
+  RabbitMq__HostName: rabbitmq
+  RabbitMq__UserName: ${RABBITMQ_USER:-guest}
+  RabbitMq__Password: ${RABBITMQ_PASSWORD:-guest}
+  Jwt__Secret: ${JWT_SECRET:?set JWT_SECRET in .env}
+  OpenTelemetry__OtlpEndpoint: http://jaeger:4317
+  ASPNETCORE_URLS: http://+:8080
+  ASPNETCORE_ENVIRONMENT: Production
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: sms-dn-rabbitmq
+    ports: ["5672:5672", "15672:15672"]
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-guest}
+    volumes: [rabbitmq-data:/var/lib/rabbitmq]
+    healthcheck: { test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"], interval: 10s, timeout: 10s, retries: 10, start_period: 20s }
+    networks: [sms-net]
+
+  redis:
+    image: redis:7-alpine
+    container_name: sms-dn-redis
+    command: ["redis-server", "--appendonly", "yes"]
+    ports: ["6379:6379"]
+    volumes: [redis-data:/data]
+    healthcheck: { test: ["CMD", "redis-cli", "ping"], interval: 5s, timeout: 3s, retries: 10 }
+    networks: [sms-net]
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.62.0
+    container_name: sms-dn-jaeger
+    environment: { COLLECTOR_OTLP_ENABLED: "true" }
+    ports: ["16686:16686", "4317:4317"]
+    networks: [sms-net]
+
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    container_name: sms-dn-prometheus
+    volumes: ["./Monitoring/Prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro"]
+    ports: ["9090:9090"]
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    networks: [sms-net]
+
+  grafana:
+    image: grafana/grafana:11.3.0
+    container_name: sms-dn-grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+    volumes:
+      - ./Monitoring/Grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./Monitoring/Grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    ports: ["3001:3000"]
+    depends_on: [prometheus]
+    networks: [sms-net]
+
+  # ------------------------------------------------------------------ applications (profile "apps")
+  student-service:
+    profiles: ["apps"]
+    build: { context: ., dockerfile: Docker/Dockerfile, args: { PROJECT: Services/StudentService, ASSEMBLY: StudentService } }
+    image: sms-dn/student-service:1.0.0
+    container_name: sms-dn-student
+    environment:
+      <<: *app-env
+      ConnectionStrings__StudentDb: "Server=${MYSQL_HOST:-host.docker.internal};Port=${MYSQL_PORT:-3306};Database=StudentDB;User=${MYSQL_USER:?set MYSQL_USER in .env};Password=${MYSQL_PASSWORD:?set MYSQL_PASSWORD in .env};"
+      Bootstrap__AdminPassword: ${ADMIN_PASSWORD:?set ADMIN_PASSWORD in .env}
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    depends_on: { redis: { condition: service_healthy } }
+    healthcheck: &hc { test: ["CMD", "/usr/local/bin/healthcheck"], interval: 15s, timeout: 5s, retries: 6, start_period: 40s }
+    networks: [sms-net]
+
+  course-service:
+    profiles: ["apps"]
+    build: { context: ., dockerfile: Docker/Dockerfile, args: { PROJECT: Services/CourseService, ASSEMBLY: CourseService } }
+    image: sms-dn/course-service:1.0.0
+    container_name: sms-dn-course
+    environment:
+      <<: *app-env
+      ConnectionStrings__CourseDb: "Server=${MYSQL_HOST:-host.docker.internal};Port=${MYSQL_PORT:-3306};Database=CourseDB;User=${MYSQL_USER};Password=${MYSQL_PASSWORD};"
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    depends_on: { redis: { condition: service_healthy }, rabbitmq: { condition: service_healthy } }
+    healthcheck: *hc
+    networks: [sms-net]
+
+  enrollment-service:
+    profiles: ["apps"]
+    build: { context: ., dockerfile: Docker/Dockerfile, args: { PROJECT: Services/EnrollmentService, ASSEMBLY: EnrollmentService } }
+    image: sms-dn/enrollment-service:1.0.0
+    container_name: sms-dn-enrollment
+    environment:
+      <<: *app-env
+      ConnectionStrings__EnrollmentDb: "Server=${MYSQL_HOST:-host.docker.internal};Port=${MYSQL_PORT:-3306};Database=EnrollmentDB;User=${MYSQL_USER};Password=${MYSQL_PASSWORD};"
+      Services__Student: http://student-service:8080
+      Services__Course: http://course-service:8080
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    depends_on: { rabbitmq: { condition: service_healthy }, student-service: { condition: service_healthy }, course-service: { condition: service_healthy } }
+    healthcheck: *hc
+    networks: [sms-net]
+
+  notification-service:
+    profiles: ["apps"]
+    build: { context: ., dockerfile: Docker/Dockerfile, args: { PROJECT: Services/NotificationService, ASSEMBLY: NotificationService } }
+    image: sms-dn/notification-service:1.0.0
+    container_name: sms-dn-notification
+    environment:
+      <<: *app-env
+      ConnectionStrings__NotificationDb: "Server=${MYSQL_HOST:-host.docker.internal};Port=${MYSQL_PORT:-3306};Database=NotificationDB;User=${MYSQL_USER};Password=${MYSQL_PASSWORD};"
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    depends_on: { rabbitmq: { condition: service_healthy } }
+    healthcheck: *hc
+    networks: [sms-net]
+
+  api-gateway:
+    profiles: ["apps"]
+    build: { context: ., dockerfile: Docker/Dockerfile, args: { PROJECT: ApiGateway, ASSEMBLY: ApiGateway } }
+    image: sms-dn/api-gateway:1.0.0
+    container_name: sms-dn-gateway
+    environment:
+      <<: *app-env
+      ReverseProxy__Clusters__student__Destinations__d1__Address: http://student-service:8080/
+      ReverseProxy__Clusters__course__Destinations__d1__Address: http://course-service:8080/
+      ReverseProxy__Clusters__enrollment__Destinations__d1__Address: http://enrollment-service:8080/
+      ReverseProxy__Clusters__notification__Destinations__d1__Address: http://notification-service:8080/
+    ports: ["8080:8080"]
+    depends_on: { student-service: { condition: service_healthy }, course-service: { condition: service_healthy }, enrollment-service: { condition: service_healthy }, notification-service: { condition: service_healthy } }
+    healthcheck: *hc
+    networks: [sms-net]
+
+volumes:
+  rabbitmq-data:
+  redis-data:
+  grafana-data:
+
+networks:
+  sms-net:

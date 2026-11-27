@@ -1,0 +1,3 @@
+apiVersion: 1
+providers:
+  - { name: sms, folder: Student Management, type: file, options: { path: /var/lib/grafana/dashboards } }

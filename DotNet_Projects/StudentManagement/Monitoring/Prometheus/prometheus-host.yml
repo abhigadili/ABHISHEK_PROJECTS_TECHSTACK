@@ -1,0 +1,10 @@
+# For services running as plain host processes (scripts/start-local.sh), which listen on localhost only.
+# Run Prometheus on the host network bound to loopback so nothing extra is exposed:
+#   docker run --rm --network host -v $PWD/Monitoring/Prometheus/prometheus-host.yml:/etc/prometheus/prometheus.yml:ro \
+#     prom/prometheus:v2.55.1 --config.file=/etc/prometheus/prometheus.yml --web.listen-address=127.0.0.1:9091
+global: { scrape_interval: 5s }
+scrape_configs:
+  - job_name: sms-host
+    metrics_path: /metrics
+    static_configs:
+      - targets: [localhost:8080, localhost:8081, localhost:8082, localhost:8083, localhost:8084]
